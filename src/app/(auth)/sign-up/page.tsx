@@ -1,17 +1,18 @@
 import { Button } from '@/components/common/Button';
 import Image from 'next/image';
 import RegisterFrom from './partials/RegisterFrom';
+import Link from 'next/link';
 
 const SignUp = () => {
     return (
         <div className="h-screen min-h-screen">
             <div className="grid grid-cols-3 h-full">
-                <div className="col-span-2 h-full bg-card flex justify-center items-center">
+                <div className="col-span-3 md:col-span-2 px-4 md:px-0 h-full bg-card flex justify-center items-center">
                     <div className="w-[450px]">
                         <RegisterFrom />
                     </div>
                 </div>
-                <div className="col-span-1 h-full bg-gray-100 flex justify-center items-center">
+                <div className="col-span-1 h-full bg-gray-100 hidden md:flex justify-center items-center">
                     <div className="py-[42px]">
                         <div className="text-center py-8">
                             <h1 className="text-3xl font-bold text-neutral-950">
@@ -34,9 +35,11 @@ const SignUp = () => {
                         </div>
 
                         <div className="text-center py-8">
-                            <Button className="w-[200px] h-[40px]">
-                                Sign in
-                            </Button>
+                            <Link href="/login">
+                                <Button className="w-[200px] h-[40px]">
+                                    Sign in
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>

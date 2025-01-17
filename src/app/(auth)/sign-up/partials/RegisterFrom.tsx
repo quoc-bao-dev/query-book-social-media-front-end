@@ -2,13 +2,13 @@
 
 import { Button } from '@/components/common/Button';
 import FloatInput from '@/components/common/FloatInput';
-import Image from 'next/image';
-import { set, useForm } from 'react-hook-form';
-import { registerSchema, RegisterSchema } from '../schemas';
+import axiosClient from '@/httpClient';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import axiosClient from '@/httpClient';
+import { useForm } from 'react-hook-form';
+import { registerSchema, RegisterSchema } from '../schemas';
 
 const RegisterFrom = () => {
     const [message, setMessage] = useState('');
