@@ -51,7 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             <button
                 ref={ref}
                 className={cn(
-                    'ripple-container inline-flex items-center justify-center rounded-md transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90',
+                    'ripple-container inline-flex items-center justify-center font-semibold rounded-md transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90',
                     {
                         'bg-primary text-primary-foreground ':
                             variant === 'primary',
@@ -63,8 +63,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         'button-hover': hoverEffect,
                     },
                     {
-                        'text-xs px-2 py-1': size === 'sm',
-                        'text-sm px-4 py-2': size === 'md',
+                        'text-sm px-2 py-1': size === 'sm',
+                        'text-base px-4 py-2': size === 'md',
                         'text-base px-6 py-3': size === 'lg',
                     },
                     {

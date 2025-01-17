@@ -7,7 +7,7 @@ export default function Home() {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const res = await axiosClient.get('/posts');
+                const res = await axiosClient.get('/users/me');
                 console.log(res.data.data);
             } catch (error) {
                 console.log(error);
