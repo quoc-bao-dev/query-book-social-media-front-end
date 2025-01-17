@@ -32,10 +32,10 @@ export default function RootLayout({
             >
                 <ClientOnly>
                     <AppProvider>
-                        <div className="fixed top-[50%] translate-y-[-50%] z-10">
+                        {children}
+                        <div className="fixed top-[50%] translate-y-[-50%] z-[100]">
                             <ModeToggle />
                         </div>
-                        {children}
                     </AppProvider>
                 </ClientOnly>
             </body>
