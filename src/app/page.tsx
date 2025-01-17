@@ -1,4 +1,22 @@
+'use client';
+
+import axiosClient from '@/httpClient';
+import { useEffect } from 'react';
+
 export default function Home() {
+    useEffect(() => {
+        const fetch = async () => {
+            try {
+                const res = await axiosClient.get('/posts');
+                console.log(res.data.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetch();
+    }, []);
+
     return (
         <div className="h-screen bg-primary-500">
             Home page
