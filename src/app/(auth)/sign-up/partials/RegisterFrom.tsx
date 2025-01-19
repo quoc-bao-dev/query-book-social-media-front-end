@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { registerSchema, RegisterSchema } from '../schemas';
+import axios from 'axios';
 
 const RegisterFrom = () => {
     const [message, setMessage] = useState('');
@@ -17,7 +18,7 @@ const RegisterFrom = () => {
         register,
         handleSubmit,
         setError,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm<RegisterSchema>({
         resolver: zodResolver(registerSchema),
     });
@@ -38,20 +39,24 @@ const RegisterFrom = () => {
                 localStorage.setItem('refreshToken', refreshToken);
                 router.push('/');
             }
-        } catch (error: any) {
-            const { message } = error.response.data;
-            if (message) {
-                if (message.includes('Email')) {
-                    setError('email', {
-                        type: 'manual',
-                    });
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                const { message }: { message: string } = error.response.data;
+                if (message) {
+                    if (message.includes('Email')) {
+                        setError('email', {
+                            type: 'manual',
+                        });
+                    }
+                    if (message.includes('Username')) {
+                        setError('username', {
+                            type: 'manual',
+                        });
+                    }
+                    setMessage(message);
                 }
-                if (message.includes('Username')) {
-                    setError('username', {
-                        type: 'manual',
-                    });
-                }
-                setMessage(message);
+            } else {
+                setMessage('An unexpected error occurred.');
             }
         }
     };

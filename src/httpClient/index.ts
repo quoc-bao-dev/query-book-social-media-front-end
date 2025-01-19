@@ -3,20 +3,6 @@ import axios from 'axios';
 
 // Base URL của API
 const BASE_URL = config.BASE_URL;
-console.log(BASE_URL);
-
-// Hàm lấy và lưu trữ token
-const getAccessToken = () => localStorage.getItem('accessToken');
-const getRefreshToken = () => localStorage.getItem('refreshToken');
-export const setAccessToken = (token: string) =>
-    localStorage.setItem('accessToken', token);
-export const setRefreshToken = (token: string) =>
-    localStorage.setItem('refreshToken', token);
-
-const clearTokens = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-};
 
 // Hàm chuyển hướng đến trang đăng nhập
 const redirectToLogin = () => {
@@ -36,10 +22,6 @@ const axiosClient = axios.create({
 // Interceptor cho request để thêm accessToken
 axiosClient.interceptors.request.use(
     (config) => {
-        const token = getAccessToken();
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
         return config;
     },
     (error) => Promise.reject(error)
@@ -57,40 +39,27 @@ axiosClient.interceptors.response.use(
         ) {
             originalRequest._retry = true;
 
-            const refreshToken = getRefreshToken();
-            if (refreshToken) {
-                try {
-                    // Gọi API refresh token
-                    const response = await axios.post(
-                        `${BASE_URL}/auth/refresh-token`,
-                        {
-                            refreshToken,
-                        }
-                    );
-
-                    const { accessToken: newAccessToken } = response.data;
-
-                    // Lưu accessToken mới và gắn lại vào header
-                    setAccessToken(newAccessToken);
-                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-                    // Gửi lại request ban đầu
-                    return axiosClient(originalRequest);
-                } catch (refreshError) {
-                    console.error(
-                        'Refresh token expired, redirecting to login...',
-                        refreshError
-                    );
-                    clearTokens();
-                    redirectToLogin();
-                }
-            } else {
-                console.error('No refresh token, redirecting to login...');
-                clearTokens();
+            // const refreshToken = getRefreshToken();
+            try {
+                // Gọi API refresh token
+                await axios.post(
+                    `/api/auth/refresh-token`,
+                    {},
+                    {
+                        withCredentials: true,
+                        baseURL: '',
+                    }
+                );
+                // Gửi lại request ban đầu
+                return axiosClient(originalRequest, { withCredentials: true });
+            } catch (refreshError) {
+                console.error(
+                    'Refresh token expired, redirecting to login...',
+                    refreshError
+                );
                 redirectToLogin();
             }
         }
-
         return Promise.reject(error);
     }
 );
