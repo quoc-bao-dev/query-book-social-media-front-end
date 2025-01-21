@@ -1,9 +1,10 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { PostResponse } from '@/types/post';
+import toImage from '@/utils/imageUtils';
 import Image from 'next/image';
 
 interface PostProps {
-    post: {
-        images: string;
-    };
+    post: Pick<PostResponse, 'id' | 'author' | 'content' | 'hashTags'>;
 }
 const Post = ({ post }: PostProps) => {
     return (
@@ -11,12 +12,10 @@ const Post = ({ post }: PostProps) => {
             <div className="px-8 pt-8 pb-4">
                 <div className="flex justify-between">
                     <div className="">
-                        <Image
-                            src={'/images/git.png'}
-                            alt=""
-                            width={40}
-                            height={0}
-                        />
+                        <Avatar>
+                            <AvatarImage src={toImage(post.author.avatar)} />
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
                     </div>
 
                     <div className="text-left w-full px-4">

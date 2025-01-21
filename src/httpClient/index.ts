@@ -1,4 +1,5 @@
 import { config } from '@/config';
+import { authActions } from '@/store/authSignal';
 import axios from 'axios';
 
 // Base URL của API
@@ -17,6 +18,7 @@ const axiosClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials: true,
 });
 
 // Interceptor cho request để thêm accessToken
@@ -58,6 +60,7 @@ axiosClient.interceptors.response.use(
                     refreshError
                 );
                 redirectToLogin();
+                authActions.logout();
             }
         }
         return Promise.reject(error);
