@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     if (!cookies) {
         return NextResponse.json(
             { message: 'Refresh token not found' },
-            { status: 401 }
+            { status: 400 }
         );
     }
     const cookiesObj = Object.fromEntries(
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     if (!refreshToken) {
         return NextResponse.json(
             { message: 'Refresh token not found' },
-            { status: 401 }
+            { status: 400 }
         );
     }
 

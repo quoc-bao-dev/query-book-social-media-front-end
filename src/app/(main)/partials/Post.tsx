@@ -3,6 +3,8 @@ import { PostResponse } from '@/types/post';
 import toImage from '@/utils/imageUtils';
 import Image from 'next/image';
 
+// FIXME: fix interface of post
+
 interface PostProps {
     post: Pick<PostResponse, 'id' | 'author' | 'content' | 'hashTags'>;
 }

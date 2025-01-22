@@ -14,6 +14,8 @@ import axios from 'axios';
 const RegisterFrom = () => {
     const [message, setMessage] = useState('');
 
+    const router = useRouter();
+
     const {
         register,
         handleSubmit,
@@ -23,21 +25,21 @@ const RegisterFrom = () => {
         resolver: zodResolver(registerSchema),
     });
 
-    const router = useRouter();
-
     const onSubmit = async (data: RegisterSchema) => {
         try {
             setMessage('');
-            const response = await axiosClient.post('/auth/register', data);
-            const {
-                status,
-                data: { accessToken, refreshToken },
-            } = response.data;
+            const response = await axiosClient.post(
+                '/api/auth/register',
+                data,
+                {
+                    baseURL: '',
+                }
+            );
+
+            const status = response.status;
 
             if (status === 200) {
-                localStorage.setItem('accessToken', accessToken);
-                localStorage.setItem('refreshToken', refreshToken);
-                router.push('/');
+                router.push('/active-account');
             }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
@@ -48,7 +50,10 @@ const RegisterFrom = () => {
                             type: 'manual',
                         });
                     }
-                    if (message.includes('Username')) {
+                    if (
+                        message.includes('Username') ||
+                        message.includes('Handle')
+                    ) {
                         setError('username', {
                             type: 'manual',
                         });
@@ -74,6 +79,7 @@ const RegisterFrom = () => {
                     type="email"
                     label="Email"
                     className="h-[50px]"
+                    value={'quocbaodev1102@gmail.com'}
                 />
                 {errors.email && (
                     <p className="text-red-500 pt-1">{errors.email.message}</p>
@@ -85,6 +91,7 @@ const RegisterFrom = () => {
                     error={!!errors.username}
                     label="User Name"
                     className="h-[50px]"
+                    value={'quocbaodev1102'}
                 />
                 {errors.username && (
                     <p className="text-red-500 pt-1">
@@ -99,6 +106,7 @@ const RegisterFrom = () => {
                     label="Password"
                     type="password"
                     className="h-[50px]"
+                    value={'Passwrod1234@'}
                 />
                 {errors.password && (
                     <p className="text-red-500 pt-1">
@@ -113,6 +121,7 @@ const RegisterFrom = () => {
                     label="Confirm Password"
                     type="password"
                     className="h-[50px]"
+                    value={'Passwrod1234@'}
                 />
                 {errors.confirmPassword && (
                     <p className="text-red-500 pt-1">
