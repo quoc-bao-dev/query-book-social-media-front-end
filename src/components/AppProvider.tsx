@@ -1,3 +1,4 @@
+import QueryProvider from '@/provider/QueryProvider';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { PropsWithChildren } from 'react';
 
@@ -16,7 +17,7 @@ const AppProvider = ({ children }: PropsWithChildren) => {
                 enableSystem
                 disableTransitionOnChange
             >
-                {children}
+                <QueryProvider>{children}</QueryProvider>
             </ThemeProvider>
         </>
     );
