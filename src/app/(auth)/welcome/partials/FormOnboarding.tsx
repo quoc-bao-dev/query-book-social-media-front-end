@@ -3,15 +3,15 @@
 import { Button } from '@/components/common/Button';
 import UploadIcon from '@/components/icons/UploadIcon';
 import { Input } from '@/components/ui/input';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { useAuth } from '@/store/authSignal';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { formUserOnboarding } from '../schema/formUserOnboarding';
-import { useState } from 'react';
-import Image from 'next/image';
 import FollowItem from './FollowItem';
-import { useAuth } from '@/store/authSignal';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 const FormOnboarding = ({ step = 1 }: { step: number }) => {
     const [avatar, setAvatar] = useState<File>();

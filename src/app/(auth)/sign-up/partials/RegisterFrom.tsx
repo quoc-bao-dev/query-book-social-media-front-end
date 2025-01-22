@@ -79,7 +79,6 @@ const RegisterFrom = () => {
                     type="email"
                     label="Email"
                     className="h-[50px]"
-                    value={'quocbaodev1102@gmail.com'}
                 />
                 {errors.email && (
                     <p className="text-red-500 pt-1">{errors.email.message}</p>
@@ -91,7 +90,6 @@ const RegisterFrom = () => {
                     error={!!errors.username}
                     label="User Name"
                     className="h-[50px]"
-                    value={'quocbaodev1102'}
                 />
                 {errors.username && (
                     <p className="text-red-500 pt-1">
@@ -106,7 +104,6 @@ const RegisterFrom = () => {
                     label="Password"
                     type="password"
                     className="h-[50px]"
-                    value={'Passwrod1234@'}
                 />
                 {errors.password && (
                     <p className="text-red-500 pt-1">
@@ -121,7 +118,6 @@ const RegisterFrom = () => {
                     label="Confirm Password"
                     type="password"
                     className="h-[50px]"
-                    value={'Passwrod1234@'}
                 />
                 {errors.confirmPassword && (
                     <p className="text-red-500 pt-1">

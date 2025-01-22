@@ -18,7 +18,7 @@ const Avatar = () => {
     return (
         <div>
             <AvatarUI>
-                <AvatarImage src={toImage(user.user?.avatar.file)} />
+                <AvatarImage src={toImage(user.user?.avatar?.file)} />
                 <AvatarFallback>{name}</AvatarFallback>
             </AvatarUI>
         </div>
