@@ -1,5 +1,6 @@
 import FormActiveAccount from './partials/FormActiveAccount';
 import Image from 'next/image';
+import Timer from './partials/Timer';
 
 export const metadata = {
     title: 'Active Account',
@@ -17,7 +18,8 @@ const Page = () => {
                     <div className="pt-6 text-gray-700">
                         <p>Active your account, please check your email</p>
                     </div>
-                    <div className="pt-6 flex justify-center">
+                    <div className="pt-6 flex justify-center flex-col gap-5">
+                        <Timer />
                         <FormActiveAccount />
                     </div>
                     <div className="pt-6 text-gray-700">

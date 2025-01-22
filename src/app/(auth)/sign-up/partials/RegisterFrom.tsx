@@ -39,7 +39,7 @@ const RegisterFrom = () => {
             const status = response.status;
 
             if (status === 200) {
-                router.push('/active-account');
+                router.push('/verify-otp/active-account');
             }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {

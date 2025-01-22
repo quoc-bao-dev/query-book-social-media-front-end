@@ -19,8 +19,6 @@ export async function POST(request: Request) {
             data: { activeToken },
         } = registerResponse.data;
 
-        console.log(activeToken);
-
         const response = NextResponse.json({
             message:
                 'Register success, please check your email to activate your account',
