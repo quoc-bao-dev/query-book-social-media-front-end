@@ -5,6 +5,11 @@ import FormOnboarding from './partials/FormOnboarding';
 import Bell from '@/components/icons/Bell';
 import ProcessItem from './partials/ProcessItem';
 import { cn } from '@/lib/utils';
+import { User } from 'lucide-react';
+import UsersIcon from '@/components/icons/UsersIcon';
+import JobIcon from '@/components/icons/JobIcon';
+import UserIcon from '@/components/icons/UserIcon';
+import InfoIcon from '@/components/icons/InfoIcon';
 
 type PageProps = {
     searchParams?: { [key: string]: string | string[] | undefined };
@@ -43,7 +48,7 @@ const Page = async ({ searchParams }: PageProps) => {
                     )}
                     {!!stepProp && (
                         <div className="grid grid-cols-12 h-full">
-                            <div className="col-span-3 h-full bg-gray-200 px-6 py-8 ">
+                            <div className="hidden lg:block lg:col-span-3 h-full bg-gray-200 px-6 py-8 ">
                                 <div className="flex flex-col h-full">
                                     <Image
                                         src={'/images/logo_QBook.png'}
@@ -54,20 +59,28 @@ const Page = async ({ searchParams }: PageProps) => {
                                     <div className="pt-10 flex flex-col">
                                         <div className="">
                                             <ProcessItem
-                                                selected
-                                                title="Step 1"
-                                                icon={<Bell />}
-                                                description="Welcome to Query Book"
+                                                selected={step === 1}
+                                                title="Enter Your Name"
+                                                icon={<InfoIcon />}
+                                                description="Let us know how to address you."
                                             />
                                             <ProcessItem
-                                                title="Step 2"
-                                                icon={<Bell />}
-                                                description="Welcome to Query Book"
+                                                selected={step === 2}
+                                                title="Upload Your Avatar"
+                                                icon={<UserIcon />}
+                                                description="Make your profile stand out."
                                             />
                                             <ProcessItem
-                                                title="Step 3"
-                                                icon={<Bell />}
-                                                description="Welcome to Query Book"
+                                                selected={step === 3}
+                                                title="Choose Your Job Title"
+                                                icon={<JobIcon />}
+                                                description="Tell us what you do."
+                                            />
+                                            <ProcessItem
+                                                selected={step === 4}
+                                                title="Add People to Follow"
+                                                icon={<UsersIcon />}
+                                                description="Start connecting."
                                                 isEnd
                                             />
                                         </div>
@@ -96,7 +109,7 @@ const Page = async ({ searchParams }: PageProps) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-span-9 h-full px-6 py-8 relative">
+                            <div className="col-span-12 lg:col-span-9 h-full px-6 py-8 relative">
                                 <div className="flex items-center justify-center w-full">
                                     <div className="pt-16">
                                         <div className="flex justify-center">
@@ -110,7 +123,7 @@ const Page = async ({ searchParams }: PageProps) => {
                                         <h1 className="text-center font-semibold text-3xl">
                                             Welcome to Query Book
                                         </h1>
-                                        <div className="pt-10">
+                                        <div className="pt-6">
                                             <FormOnboarding step={step} />
                                         </div>
                                     </div>

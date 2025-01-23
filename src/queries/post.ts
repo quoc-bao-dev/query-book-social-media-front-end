@@ -1,8 +1,11 @@
 import axiosClient from '@/httpClient';
+import { HttpResponse } from '@/types/common';
+import { PostResponse } from '@/types/post';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
 
 const getPost = ({ pageParam = 1 }: { pageParam: number }) =>
-    axiosClient.get('/posts', {
+    axiosClient.get<HttpResponse<PostResponse>>('/posts', {
         params: {
             page: pageParam,
             limit: 10,
@@ -12,7 +15,7 @@ export const usePostQuery = () => {
     return useInfiniteQuery({
         queryKey: ['posts'],
         queryFn: getPost,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: AxiosResponse) => {
             // Lấy thông tin phân trang từ lastPage
             const { hasNextPage, page } = lastPage.data.pagination;
 
