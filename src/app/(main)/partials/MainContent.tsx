@@ -101,7 +101,7 @@ const MainContent = () => {
             {/* main content */}
             <main className="mx-auto pb-[75px] w-full">
                 {/* Story */}
-                <ScrollArea className=" whitespace-nowrap">
+                <ScrollArea className=" whitespace-nowrap rounded-xl overflow-hidden">
                     <div className="w-full flex gap-4 justify-between ">
                         <div className="w-[159px] h-[225px] rounded-xl relative">
                             <Image

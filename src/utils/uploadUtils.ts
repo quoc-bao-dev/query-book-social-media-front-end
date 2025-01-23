@@ -27,3 +27,32 @@ export const uploadImage = async (file: File) => {
         }
     }
 };
+
+export const uploadImages = async (files: File[]) => {
+    if (files.length === 0) {
+        return;
+    }
+
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+    }
+
+    try {
+        const response = await axiosClient.post(
+            `${config.IMAGE_SERVER_URL}/uploads`,
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'x-api-key': config.IMAGE_API_KEY,
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

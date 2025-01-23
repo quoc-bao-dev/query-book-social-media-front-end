@@ -14,19 +14,23 @@ const Layout = ({ children }: PropsWithChildren) => {
                 <div className="fixed w-full top-0 z-50">
                     <Header />
                 </div>
-                <div className="relative mx-auto pt-[calc(var(--header-height)+20px)] flex justify-center md:justify-between gap-4 z-40 px-4 ">
-                    <div className="hidden md:block sticky top-[calc(var(--header-height)+20px)] w-[316px] h-[calc(100vh-var(--header-height)-40px)] p-4 rounded-lg border-gray-300 border bg-card">
+                <div className="relative mx-auto pt-[calc(var(--header-height))] flex justify-center md:justify-between gap-4 z-40">
+                    <div className="hidden md:block sticky top-[calc(var(--header-height))] w-[316px] h-[calc(100vh-var(--header-height))] bg-card ">
                         <ScrollArea className="h-full">
-                            <SideBarLeft />
+                            <div className="p-4">
+                                <SideBarLeft />
+                            </div>
                             <ScrollBar orientation="vertical" />
                         </ScrollArea>
                     </div>
-                    <div className="max-w-[680px] flex flex-col gap-4">
+                    <div className="max-w-[680px] flex flex-col gap-4 mt-5 px-4">
                         {children}
                     </div>
-                    <div className="hidden xl:block sticky top-[calc(var(--header-height)+20px)] w-[316px] h-[calc(100vh-var(--header-height)-40px)]">
+                    <div className="hidden xl:block sticky top-[calc(var(--header-height))] w-[316px] h-[calc(100vh-var(--header-height))]">
                         <ScrollArea className="h-full">
-                            <SidebarRight />
+                            <div className="p-4">
+                                <SidebarRight />
+                            </div>
                             <ScrollBar orientation="vertical" />
                         </ScrollArea>
                     </div>

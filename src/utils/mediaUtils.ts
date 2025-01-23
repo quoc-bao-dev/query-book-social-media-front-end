@@ -1,11 +1,6 @@
 import { config } from '@/config';
+import { Media } from '@/types/common';
 
-type Media = {
-    sourceType: 'file' | 'url';
-    type: 'image' | 'video';
-    fileName?: string;
-    url?: string;
-};
 export const media = {
     toImage: (media: Media) => {
         if (media.sourceType === 'file')

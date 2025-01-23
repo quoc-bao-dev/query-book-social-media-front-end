@@ -10,7 +10,7 @@ import SearchHeader from './SearchHeader';
 const Header = () => {
     return (
         <>
-            <header className="flex items-center bg-card border-b fixed top-0 left-0 w-full z-50 h-[var(--header-height)]">
+            <header className="flex items-center bg-card border-b border-gray-500/40 fixed top-0 left-0 w-full z-50 h-[var(--header-height)]">
                 <div className="w-full mx-auto px-4 flex justify-between items-center relative">
                     {/* logo & search */}
                     <div className="flex gap-6 items-center">
