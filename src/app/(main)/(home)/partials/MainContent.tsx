@@ -9,8 +9,8 @@ import { AxiosResponse } from 'axios';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Post from './Post';
-import PostCreate from './PostCreate';
 import { useTranslations } from 'next-intl';
+import PostCreate from './PostCreate';
 
 const feeds = [
     {

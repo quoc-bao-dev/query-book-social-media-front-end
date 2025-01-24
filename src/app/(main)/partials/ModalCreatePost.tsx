@@ -12,7 +12,10 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { signify } from 'react-signify';
-import { createPost, CreatePostSchema } from '../schema/CreatePostSchema';
+import {
+    createPost,
+    CreatePostSchema,
+} from '../(home)/schema/CreatePostSchema';
 import {
     Select,
     SelectContent,
@@ -26,6 +29,7 @@ import {
 type ModalCreatePostSignal = {
     isOpen: boolean;
 };
+
 export const sModalCreatePost = signify<ModalCreatePostSignal>({
     isOpen: false,
 });
