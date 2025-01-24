@@ -47,7 +47,7 @@ export async function POST(request: Request) {
         response.cookies.set('refreshTokenNext', refreshToken, {
             httpOnly: true, // Cookie chỉ có thể được truy cập từ server
             secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
-            maxAge: 60 * 10,
+            maxAge: 60 * 60 * 24 * 15,
             path: '/',
             sameSite: 'strict',
         });

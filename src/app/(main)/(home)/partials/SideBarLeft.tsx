@@ -69,11 +69,11 @@ const SideBarLeft = () => {
                 />
             </div>
 
-            <div className="py-4">
+            <div className="py-4 hidden lg:block">
                 <hr className="" />
             </div>
 
-            <div className="">
+            <div className="hidden lg:block">
                 <p className="font-semibold text-sm text-neutral-800/70 mb-2">
                     Recomend for you
                 </p>

@@ -6,7 +6,7 @@ import SidebarRight from './partials/SidebarRight';
 const layout = ({ children }: PropsWithChildren) => {
     return (
         <>
-            <div className="hidden md:block sticky top-[calc(var(--header-height))] w-[316px] h-[calc(100vh-var(--header-height))] bg-card ">
+            <div className="hidden md:block sticky top-[calc(var(--header-height))] w-[316px] h-[calc(100vh-var(--header-height))] bg-card">
                 <ScrollArea className="h-full">
                     <div className="p-4">
                         <SideBarLeft />
@@ -14,7 +14,7 @@ const layout = ({ children }: PropsWithChildren) => {
                     <ScrollBar orientation="vertical" />
                 </ScrollArea>
             </div>
-            <div className="max-w-[680px] flex flex-col gap-4 mt-5 px-4">
+            <div className="lg:max-w-[680px] flex flex-col gap-4 mt-5 px-4">
                 {children}
             </div>
             <div className="hidden xl:block sticky top-[calc(var(--header-height))] w-[316px] h-[calc(100vh-var(--header-height))]">

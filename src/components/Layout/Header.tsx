@@ -7,6 +7,7 @@ import Avatar from './Avatar';
 import LocaleSwitcher from './LocaleSwitcher';
 import NavMenu from './NavMenu';
 import SearchHeader from './SearchHeader';
+import UserDrawer from '@/app/(main)/partials/UserDrawer';
 
 const Header = () => {
     return (
@@ -57,6 +58,8 @@ const Header = () => {
                         <div className="block md:hidden">
                             <Bar3 className="size-6 text-primary-500" />
                         </div>
+
+                        <UserDrawer />
                     </div>
                     {/* action buttons */}
                 </div>

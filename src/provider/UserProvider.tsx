@@ -10,11 +10,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
     useEffect(() => {
         (async () => {
             try {
-                const user = await axiosClient.get('/users/me', {
-                    withCredentials: true,
-                });
-                console.log(user.data.data);
-
+                const user = await axiosClient.get('/users/me');
                 authActions.login(user.data.data);
             } catch (error) {
                 console.log(error);

@@ -11,7 +11,7 @@ const Layout = ({ children }: PropsWithChildren) => {
                 <div className="fixed w-full top-0 z-50">
                     <Header />
                 </div>
-                <div className="relative mx-auto pt-[calc(var(--header-height))] flex justify-center md:justify-between gap-4 z-40">
+                <div className="relative mx-auto pt-[calc(var(--header-height))] flex justify-center md:justify-between gap-4 max-w-[(100vdh)] z-40">
                     {children}
                 </div>
 
