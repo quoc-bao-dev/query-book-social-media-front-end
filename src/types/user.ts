@@ -51,7 +51,26 @@ type Social = {
 };
 
 type Avatar = {
+    id?: string;
     type: string;
     sourceType: string;
-    file: string;
+    file?: string;
+    url?: string;
+};
+
+export type UserSearchResponse = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    username: string;
+    email: string;
+    avatar?: Avatar;
+    handle: string;
+    friendCount: number;
+    followerCount: number;
+    followingCount: number;
+    role: string;
+    isBlock: boolean;
+    createdAt: string;
 };

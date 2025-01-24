@@ -1,0 +1,10 @@
+{
+    "HomePage": {
+        "title": "Xin Chao Quoc Bao!"
+    },
+    "LocaleSwitcher": {
+        "vi": "Vietnamese",
+        "en": "English",
+        "label": "Ngôn ngữ"
+    }
+}

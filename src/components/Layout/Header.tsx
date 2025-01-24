@@ -1,16 +1,18 @@
 import Image from 'next/image';
 import Bar3 from '../icons/Bar3';
 import Bell from '../icons/Bell';
-import Cog6Tooth from '../icons/Cog6Tooth';
 import ChatBubbleOvalLeftEllipsis from '../icons/ChatBubbleOvalLeftEllipsis';
+import Cog6Tooth from '../icons/Cog6Tooth';
 import Avatar from './Avatar';
+import LocaleSwitcher from './LocaleSwitcher';
 import NavMenu from './NavMenu';
 import SearchHeader from './SearchHeader';
+import UserDrawer from '@/app/(main)/partials/UserDrawer';
 
 const Header = () => {
     return (
         <>
-            <header className="flex items-center bg-card border-b fixed top-0 left-0 w-full z-50 h-[var(--header-height)]">
+            <header className="flex items-center bg-card border-b border-gray-500/40 fixed top-0 left-0 w-full z-50 h-[var(--header-height)]">
                 <div className="w-full mx-auto px-4 flex justify-between items-center relative">
                     {/* logo & search */}
                     <div className="flex gap-6 items-center">
@@ -33,11 +35,14 @@ const Header = () => {
                     {/* Nav */}
 
                     {/* action buttons */}
-                    <div className="flex gap-6 items-center justify-center">
+                    <div className="flex gap-6 items-center justify-center z-50">
                         <div className="hidden md:block">
                             <Cog6Tooth className="size-6 text-primary-500" />
                         </div>
 
+                        <div className="hidden md:block z-50">
+                            <LocaleSwitcher />
+                        </div>
                         <div className="hidden md:block">
                             <ChatBubbleOvalLeftEllipsis className="size-6 text-primary-500" />
                         </div>
@@ -53,6 +58,8 @@ const Header = () => {
                         <div className="block md:hidden">
                             <Bar3 className="size-6 text-primary-500" />
                         </div>
+
+                        <UserDrawer />
                     </div>
                     {/* action buttons */}
                 </div>
