@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Post from './Post';
 import PostCreate from './PostCreate';
+import { useTranslations } from 'next-intl';
 
 const feeds = [
     {
@@ -96,11 +97,15 @@ const MainContent = () => {
             window.removeEventListener('scroll', onScroll);
         };
     }, [handleScroll]);
+
+    const t = useTranslations('HomePage');
     return (
         <>
             {/* main content */}
             <main className="mx-auto pb-[75px] w-full">
                 {/* Story */}
+
+                <h1>{t('title')}</h1>
                 <ScrollArea className=" whitespace-nowrap rounded-xl overflow-hidden">
                     <div className="w-full flex gap-4 justify-between ">
                         <div className="w-[159px] h-[225px] rounded-xl relative">
