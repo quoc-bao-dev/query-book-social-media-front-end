@@ -9,6 +9,7 @@ import { LoginSchema, loginSchema } from '../schemas';
 import axiosClient from '@/httpClient';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import axios from 'axios';
 
 function FormLogin() {
     const [message, setMessage] = useState('');
@@ -24,28 +25,31 @@ function FormLogin() {
     const router = useRouter();
 
     const onSubmit = async (data: LoginSchema) => {
+        setMessage('');
         try {
-            const response = await axiosClient.post('/auth/login', data);
-            const {
-                status,
-                data: { accessToken, refreshToken },
-            } = response.data;
+            const response = await axiosClient.post('api/auth/login', data, {
+                baseURL: '',
+            });
+
+            const status = response.status;
 
             if (status === 200) {
-                localStorage.setItem('accessToken', accessToken);
-                localStorage.setItem('refreshToken', refreshToken);
                 router.push('/');
             }
-        } catch (error: any) {
-            const { message } = error.response.data;
-            if (message) {
-                setError('email', {
-                    type: 'manual',
-                });
-                setError('password', {
-                    type: 'manual',
-                });
-                setMessage(message);
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                const { message }: { message: string } = error.response.data;
+                if (message) {
+                    setError('email', {
+                        type: 'manual',
+                    });
+                    setError('password', {
+                        type: 'manual',
+                    });
+                    setMessage(message);
+                }
+            } else {
+                setMessage('An unexpected error occurred.');
             }
         }
     };
@@ -59,6 +63,7 @@ function FormLogin() {
                 <FloatInput
                     {...register('email')}
                     error={!!errors.email}
+                    defaultValue={'pythagore1102@gmail.com'}
                     type="email"
                     label="Email address"
                     className="h-[50px]"
@@ -73,6 +78,7 @@ function FormLogin() {
                 <p className="my-2 text-right">Forgot password?</p>
                 <FloatInput
                     {...register('password')}
+                    defaultValue={'password1234'}
                     error={!!errors.password}
                     type="password"
                     label="Password"

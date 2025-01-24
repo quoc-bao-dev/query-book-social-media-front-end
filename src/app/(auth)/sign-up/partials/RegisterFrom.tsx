@@ -9,49 +9,59 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { registerSchema, RegisterSchema } from '../schemas';
+import axios from 'axios';
 
 const RegisterFrom = () => {
     const [message, setMessage] = useState('');
+
+    const router = useRouter();
 
     const {
         register,
         handleSubmit,
         setError,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm<RegisterSchema>({
         resolver: zodResolver(registerSchema),
     });
 
-    const router = useRouter();
-
     const onSubmit = async (data: RegisterSchema) => {
         try {
             setMessage('');
-            const response = await axiosClient.post('/auth/register', data);
-            const {
-                status,
-                data: { accessToken, refreshToken },
-            } = response.data;
+            const response = await axiosClient.post(
+                '/api/auth/register',
+                data,
+                {
+                    baseURL: '',
+                }
+            );
+
+            const status = response.status;
 
             if (status === 200) {
-                localStorage.setItem('accessToken', accessToken);
-                localStorage.setItem('refreshToken', refreshToken);
-                router.push('/');
+                router.push('/verify-otp/active-account');
             }
-        } catch (error: any) {
-            const { message } = error.response.data;
-            if (message) {
-                if (message.includes('Email')) {
-                    setError('email', {
-                        type: 'manual',
-                    });
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                const { message }: { message: string } = error.response.data;
+                if (message) {
+                    if (message.includes('Email')) {
+                        setError('email', {
+                            type: 'manual',
+                        });
+                    }
+                    if (
+                        message.includes('Username') ||
+                        message.includes('Handle')
+                    ) {
+                        setError('username', {
+                            type: 'manual',
+                        });
+                    }
+                    setMessage(message);
                 }
-                if (message.includes('Username')) {
-                    setError('username', {
-                        type: 'manual',
-                    });
-                }
-                setMessage(message);
+            } else {
+                setMessage('An unexpected error occurred.');
             }
         }
     };
@@ -69,6 +79,7 @@ const RegisterFrom = () => {
                     type="email"
                     label="Email"
                     className="h-[50px]"
+                    defaultValue="quocbaodev1102@gmail.com"
                 />
                 {errors.email && (
                     <p className="text-red-500 pt-1">{errors.email.message}</p>
@@ -80,6 +91,7 @@ const RegisterFrom = () => {
                     error={!!errors.username}
                     label="User Name"
                     className="h-[50px]"
+                    defaultValue="Quoc_Bao_Dev"
                 />
                 {errors.username && (
                     <p className="text-red-500 pt-1">
@@ -94,6 +106,7 @@ const RegisterFrom = () => {
                     label="Password"
                     type="password"
                     className="h-[50px]"
+                    defaultValue="Pass1234@"
                 />
                 {errors.password && (
                     <p className="text-red-500 pt-1">
@@ -108,6 +121,7 @@ const RegisterFrom = () => {
                     label="Confirm Password"
                     type="password"
                     className="h-[50px]"
+                    defaultValue="Pass1234@"
                 />
                 {errors.confirmPassword && (
                     <p className="text-red-500 pt-1">

@@ -57,7 +57,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                             variant === 'primary',
                         'bg-secondary text-secondary-foreground hover:bg-secondary/90':
                             variant === 'secondary',
-                        'bg-transparent text-primary-foreground hover:bg-primary/10':
+                        'bg-transparent text-primary hover:bg-primary/20 ':
                             variant === 'ghost',
                         'text-neutral-900 hover:underline': variant === 'link',
                         'button-hover': hoverEffect,
