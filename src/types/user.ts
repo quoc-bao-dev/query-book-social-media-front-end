@@ -80,3 +80,13 @@ type Avatar = {
 };
 
 export type UserSearchResponse = UserResponse;
+
+export type UserSuggestResponse = {
+    id: string;
+    fullName: string;
+    username: string;
+    avatarUrl?: string;
+    professional?: string;
+    email: string;
+    handle: string;
+};
