@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface HttpClient {
-    get<T>(url: string, headers?: HeadersInit): Promise<T>;
-    post<T>(url: string, data: unknown, headers?: HeadersInit): Promise<T>;
-    patch<T>(url: string, data: unknown, headers?: HeadersInit): Promise<T>;
-    delete<T>(url: string, headers?: HeadersInit): Promise<T>;
+    get<T = any>(url: string, headers?: HeadersInit): Promise<T>;
+    post<T = any>(url: string, data?: any, headers?: HeadersInit): Promise<T>;
+    patch<T = any>(url: string, data?: any, headers?: HeadersInit): Promise<T>;
+    delete<T = any>(url: string, headers?: HeadersInit): Promise<T>;
 }
 
 const httpClient: HttpClient = {

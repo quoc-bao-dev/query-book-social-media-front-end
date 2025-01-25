@@ -1,4 +1,8 @@
-const Page = ({ params: { keyword } }: { params: { keyword: string } }) => {
+type PageProps = {
+    params: { keyword: string };
+};
+const Page = async ({ params }: PageProps) => {
+    const { keyword } = await params;
     return <div>Page search {keyword}</div>;
 };
 
