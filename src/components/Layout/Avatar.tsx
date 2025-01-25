@@ -6,7 +6,7 @@ import {
     Avatar as AvatarUI,
 } from '@/components/ui/avatar';
 import { sAuth } from '@/store/authSignal';
-import toImage from '@/utils/imageUtils';
+import { media } from '@/utils/mediaUtils';
 
 const Avatar = () => {
     const user = sAuth.use();
@@ -18,7 +18,7 @@ const Avatar = () => {
     return (
         <div>
             <AvatarUI>
-                <AvatarImage src={toImage(user.user?.avatar?.file)} />
+                <AvatarImage src={user.user?.avatarUrl} />
                 <AvatarFallback>{name}</AvatarFallback>
             </AvatarUI>
         </div>

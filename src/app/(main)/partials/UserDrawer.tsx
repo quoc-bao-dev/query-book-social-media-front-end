@@ -51,9 +51,7 @@ const UserDrawer = () => {
                     <div className="py-[36px] flex justify-center">
                         <div className="w-[100px] aspect-square">
                             <Avatar className="w-full h-full object-cover">
-                                <AvatarImage
-                                    src={media.toImage(user?.avatar)}
-                                />
+                                <AvatarImage src={user?.avatarUrl} />
                                 <AvatarFallback>QB</AvatarFallback>
                             </Avatar>
                         </div>

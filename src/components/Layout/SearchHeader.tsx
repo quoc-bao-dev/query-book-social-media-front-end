@@ -60,10 +60,7 @@ function SearchHeader() {
                                 <SearchResultRow
                                     key={_item.id}
                                     name={_item.firstName ?? _item.username}
-                                    avatar={
-                                        _item.avatar &&
-                                        media.toImage(_item.avatar)
-                                    }
+                                    avatar={_item.avatarUrl}
                                     title={_item.handle}
                                     onClick={() => setIsShow(false)}
                                 />

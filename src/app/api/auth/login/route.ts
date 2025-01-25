@@ -1,18 +1,22 @@
 import { config } from '@/config';
+import httpClient from '@/httpClient/httpClient';
 import { setCookies } from '@/utils/cookies';
-import axios from 'axios';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
     try {
         const { email, password } = await request.json();
 
-        const res = await axios.post(`${config.BASE_URL}/auth/login`, {
+        // const res = await axios.post(`${config.BASE_URL}/auth/login`, {
+        //     email,
+        //     password,
+        // });
+
+        const res = await httpClient.post(`${config.BASE_URL}/auth/login`, {
             email,
             password,
         });
-
-        const { accessToken, refreshToken } = (await res.data).data;
+        const { accessToken, refreshToken } = await res.data;
 
         const response = NextResponse.json({ message: 'Login success' });
 

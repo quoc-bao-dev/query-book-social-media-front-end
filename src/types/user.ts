@@ -3,21 +3,16 @@ export type UserResponse = {
     firstName: string;
     lastName: string;
     fullName: string;
+    username: string;
+    email: string;
+    avatar?: Avatar;
+    avatarUrl?: string;
     handle: string;
-    avatar: Avatar;
-    coverPage: Avatar;
-    socials: Social[];
-    links: Link[];
-    skills: Skill[];
-    projects: Project[];
     friendCount: number;
     followerCount: number;
     followingCount: number;
-    friends: Friend[];
-    followers: any[];
-    followings: any[];
-    interests: any[];
-    address: any[];
+    role: string;
+    isBlock: boolean;
     createdAt: string;
 };
 
@@ -28,8 +23,10 @@ export type UserProfileResponse = {
     fullName: string;
     handle: string;
     email: string;
-    avatar: Avatar;
-    coverPage: Avatar;
+    avatar?: Avatar;
+    avatarUrl?: string;
+    coverPage?: Avatar;
+    coverPageUrl?: string;
     socials: Social[];
     links: Link[];
     skills: Skill[];
@@ -82,19 +79,4 @@ type Avatar = {
     url?: string;
 };
 
-export type UserSearchResponse = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    fullName: string;
-    username: string;
-    email: string;
-    avatar?: Avatar;
-    handle: string;
-    friendCount: number;
-    followerCount: number;
-    followingCount: number;
-    role: string;
-    isBlock: boolean;
-    createdAt: string;
-};
+export type UserSearchResponse = UserResponse;
