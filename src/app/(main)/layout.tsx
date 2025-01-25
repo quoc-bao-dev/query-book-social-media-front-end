@@ -3,6 +3,8 @@ import NavbarMobile from '@/components/Layout/NavbarMobile';
 import UserProvider from '@/provider/UserProvider';
 import { PropsWithChildren } from 'react';
 import ModalCreatePost from './partials/ModalCreatePost';
+import NotifyDrawer from './partials/NotifyDrawer';
+import UserDrawer from './partials/UserDrawer';
 
 const Layout = ({ children }: PropsWithChildren) => {
     return (
@@ -16,8 +18,10 @@ const Layout = ({ children }: PropsWithChildren) => {
                 </div>
 
                 <NavbarMobile />
-                <ModalCreatePost />
             </div>
+            <ModalCreatePost />
+            <NotifyDrawer />
+            <UserDrawer />
         </UserProvider>
     );
 };

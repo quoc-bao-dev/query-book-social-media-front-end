@@ -3,9 +3,30 @@ export type UserResponse = {
     firstName: string;
     lastName: string;
     fullName: string;
+    username: string;
+    email: string;
+    avatar?: Avatar;
+    avatarUrl?: string;
     handle: string;
-    avatar: Avatar;
-    coverPage: Avatar;
+    friendCount: number;
+    followerCount: number;
+    followingCount: number;
+    role: string;
+    isBlock: boolean;
+    createdAt: string;
+};
+
+export type UserProfileResponse = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    handle: string;
+    email: string;
+    avatar?: Avatar;
+    avatarUrl?: string;
+    coverPage?: Avatar;
+    coverPageUrl?: string;
     socials: Social[];
     links: Link[];
     skills: Skill[];
@@ -52,25 +73,10 @@ type Social = {
 
 type Avatar = {
     id?: string;
-    type: string;
-    sourceType: string;
+    type: 'image' | 'video';
+    sourceType: 'url' | 'file';
     file?: string;
     url?: string;
 };
 
-export type UserSearchResponse = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    fullName: string;
-    username: string;
-    email: string;
-    avatar?: Avatar;
-    handle: string;
-    friendCount: number;
-    followerCount: number;
-    followingCount: number;
-    role: string;
-    isBlock: boolean;
-    createdAt: string;
-};
+export type UserSearchResponse = UserResponse;

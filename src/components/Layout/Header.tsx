@@ -1,3 +1,6 @@
+'use client';
+
+import { useNotifyDrawer } from '@/app/(main)/partials/NotifyDrawer';
 import Image from 'next/image';
 import Bar3 from '../icons/Bar3';
 import Bell from '../icons/Bell';
@@ -7,9 +10,12 @@ import Avatar from './Avatar';
 import LocaleSwitcher from './LocaleSwitcher';
 import NavMenu from './NavMenu';
 import SearchHeader from './SearchHeader';
-import UserDrawer from '@/app/(main)/partials/UserDrawer';
+import { useUserDrawer } from '@/app/(main)/partials/UserDrawer';
 
 const Header = () => {
+    const { open: openNotifyDrawer } = useNotifyDrawer();
+    const { open: openUserDrawer } = useUserDrawer();
+
     return (
         <>
             <header className="flex items-center bg-card border-b border-gray-500/40 fixed top-0 left-0 w-full z-50 h-[var(--header-height)]">
@@ -36,30 +42,34 @@ const Header = () => {
 
                     {/* action buttons */}
                     <div className="flex gap-6 items-center justify-center z-50">
-                        <div className="hidden md:block">
+                        <div className="hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200">
                             <Cog6Tooth className="size-6 text-primary-500" />
                         </div>
 
                         <div className="hidden md:block z-50">
                             <LocaleSwitcher />
                         </div>
-                        <div className="hidden md:block">
+                        <div className="hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200">
                             <ChatBubbleOvalLeftEllipsis className="size-6 text-primary-500" />
                         </div>
 
-                        <div className="hidden md:block">
+                        <div
+                            className="hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200"
+                            onClick={openNotifyDrawer}
+                        >
                             <Bell className="size-6 text-primary-500" />
                         </div>
 
-                        <div className="hidden lg:block">
+                        <div
+                            className="hidden lg:block"
+                            onClick={openUserDrawer}
+                        >
                             <Avatar />
                         </div>
 
-                        <div className="block md:hidden">
+                        <div className="block md:hidden p-2 rounded-full hover:bg-gray-200 transition-all duration-200">
                             <Bar3 className="size-6 text-primary-500" />
                         </div>
-
-                        <UserDrawer />
                     </div>
                     {/* action buttons */}
                 </div>

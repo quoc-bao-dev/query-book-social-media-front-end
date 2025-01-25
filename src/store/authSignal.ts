@@ -1,9 +1,9 @@
-import { UserResponse } from '@/types/user';
+import { UserProfileResponse } from '@/types/user';
 import { signify } from 'react-signify';
 
 type AuthSignal = {
     isLogin: boolean;
-    user: UserResponse | null;
+    user: UserProfileResponse | null;
 };
 
 export const sAuth = signify<AuthSignal>({
@@ -14,7 +14,7 @@ export const sAuth = signify<AuthSignal>({
 export const useAuth = sAuth.use;
 
 export const authActions = {
-    login: (user: UserResponse) => {
+    login: (user: UserProfileResponse) => {
         sAuth.set({ isLogin: true, user });
     },
     logout: () => {

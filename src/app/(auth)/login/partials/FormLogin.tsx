@@ -10,6 +10,7 @@ import axiosClient from '@/httpClient';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import axios from 'axios';
+import PasswordInput from '@/components/common/PasswordInput';
 
 function FormLogin() {
     const [message, setMessage] = useState('');
@@ -76,11 +77,10 @@ function FormLogin() {
             </div>
             <div className="py-2">
                 <p className="my-2 text-right">Forgot password?</p>
-                <FloatInput
+                <PasswordInput
                     {...register('password')}
                     defaultValue={'password1234'}
                     error={!!errors.password}
-                    type="password"
                     label="Password"
                     className="h-[50px]"
                 />
@@ -90,6 +90,7 @@ function FormLogin() {
                     </p>
                 )}
             </div>
+
             {isSubmitting && <p>Loading...</p>}
             <div className="text-center pt-4">
                 <Button className=" w-full h-[50px]">Sign in</Button>

@@ -1,18 +1,16 @@
 import { Button } from '@/components/common/Button';
+import InfoIcon from '@/components/icons/InfoIcon';
+import JobIcon from '@/components/icons/JobIcon';
+import UserIcon from '@/components/icons/UserIcon';
+import UsersIcon from '@/components/icons/UsersIcon';
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import FormOnboarding from './partials/FormOnboarding';
-import Bell from '@/components/icons/Bell';
 import ProcessItem from './partials/ProcessItem';
-import { cn } from '@/lib/utils';
-import { User } from 'lucide-react';
-import UsersIcon from '@/components/icons/UsersIcon';
-import JobIcon from '@/components/icons/JobIcon';
-import UserIcon from '@/components/icons/UserIcon';
-import InfoIcon from '@/components/icons/InfoIcon';
 
 type PageProps = {
-    searchParams?: { [key: string]: string | string[] | undefined };
+    searchParams: { step?: string };
 };
 
 export const metadata = {
@@ -21,7 +19,7 @@ export const metadata = {
 };
 
 const Page = async ({ searchParams }: PageProps) => {
-    const stepProp = await searchParams?.step;
+    const stepProp = (await searchParams).step;
     const step = Number(stepProp);
     return (
         <>
