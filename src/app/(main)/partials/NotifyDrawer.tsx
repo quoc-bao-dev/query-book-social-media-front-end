@@ -5,6 +5,7 @@ import Drawer from '@/components/common/Drawer';
 import Cog6Tooth from '@/components/icons/Cog6Tooth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { useEffect } from 'react';
 import { signify } from 'react-signify';
 
 type UserDrawerType = {
@@ -25,6 +26,12 @@ const NotifyDrawer = () => {
     const toggleDrawer = () => {
         close();
     };
+
+    useEffect(() => {
+        return () => {
+            sNotifyDrawer.reset();
+        };
+    }, []);
     return (
         <>
             <Drawer isOpen={isShow} onOpenChange={toggleDrawer}>

@@ -10,7 +10,7 @@ import UserIcon from '@/components/icons/UserIcon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/store/authSignal';
 import { media } from '@/utils/mediaUtils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signify } from 'react-signify';
 import Drawer from '@/components/common/Drawer';
 import { useLogout } from '@/hooks/useLogout';
@@ -31,6 +31,12 @@ const UserDrawer = () => {
     const { isShow } = sUserDrawer.use();
     const { close } = useUserDrawer();
     const logout = useLogout();
+
+    useEffect(() => {
+        return () => {
+            sUserDrawer.reset();
+        };
+    }, []);
 
     return (
         <Drawer isOpen={isShow} onOpenChange={close}>
