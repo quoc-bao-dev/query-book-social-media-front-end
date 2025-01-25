@@ -33,7 +33,7 @@ const Drawer = ({ isOpen, children, onOpenChange }: DrawerProps) => {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isOpen]);
+    }, [isOpen, handleClose]);
 
     return (
         <AnimatePresence>
@@ -50,7 +50,7 @@ const Drawer = ({ isOpen, children, onOpenChange }: DrawerProps) => {
                         animate={{ opacity: 0.5 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="absolute inset-0 bg-black"
+                        className="absolute inset-0 bg-black/50"
                         onClick={handleOverlayClick}
                     ></motion.div>
 

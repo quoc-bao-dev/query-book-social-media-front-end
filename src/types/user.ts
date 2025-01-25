@@ -21,6 +21,30 @@ export type UserResponse = {
     createdAt: string;
 };
 
+export type UserProfileResponse = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    handle: string;
+    email: string;
+    avatar: Avatar;
+    coverPage: Avatar;
+    socials: Social[];
+    links: Link[];
+    skills: Skill[];
+    projects: Project[];
+    friendCount: number;
+    followerCount: number;
+    followingCount: number;
+    friends: Friend[];
+    followers: any[];
+    followings: any[];
+    interests: any[];
+    address: any[];
+    createdAt: string;
+};
+
 type Friend = {
     fullName: string;
     handle: string;
@@ -52,8 +76,8 @@ type Social = {
 
 type Avatar = {
     id?: string;
-    type: string;
-    sourceType: string;
+    type: 'image' | 'video';
+    sourceType: 'url' | 'file';
     file?: string;
     url?: string;
 };

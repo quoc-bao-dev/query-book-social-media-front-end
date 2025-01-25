@@ -1,139 +1,115 @@
 'use client';
 
-import { Button } from '@/components/common/Button';
-import Drawer from '@/components/common/Drawer';
+import SidebarRow from '@/components/common/SidebarRow';
+import ArrowStartLeftIcon from '@/components/icons/ArrowStartLeftIcon';
+import ChevronRightIcon from '@/components/icons/ChevronRightIcon';
 import Cog6Tooth from '@/components/icons/Cog6Tooth';
+import LockIcon from '@/components/icons/LockIcon';
+import QuestionIcon from '@/components/icons/QuestionIcon';
+import UserIcon from '@/components/icons/UserIcon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { useAuth } from '@/store/authSignal';
+import { media } from '@/utils/mediaUtils';
 import { useState } from 'react';
+import { signify } from 'react-signify';
+import Drawer from '@/components/common/Drawer';
+import { useLogout } from '@/hooks/useLogout';
+
+type UserDrawer = {
+    isShow: boolean;
+};
+export const sUserDrawer = signify<UserDrawer>({ isShow: false });
+
+export const useUserDrawer = () => ({
+    open: () => sUserDrawer.set((n) => (n.value.isShow = true)),
+    close: () => sUserDrawer.set((n) => (n.value.isShow = false)),
+});
 
 const UserDrawer = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleDrawer = () => {
-        setIsOpen(!isOpen);
-    };
+    const [selected, setSelected] = useState('');
+    const { user } = useAuth();
+    const { isShow } = sUserDrawer.use();
+    const { close } = useUserDrawer();
+    const logout = useLogout();
+
     return (
-        <>
-            <Button onClick={toggleDrawer}>Toggle</Button>
-            <Drawer isOpen={isOpen} onOpenChange={toggleDrawer}>
-                <div className="w-[400px] h-screen flex flex-col bg-card right-0 top-0 z-50 shadow-5">
-                    <div className="px-3 py-6 flex justify-between items-center">
-                        <p className="font-semibold text-neutral-900">
-                            Notification
+        <Drawer isOpen={isShow} onOpenChange={close}>
+            <div className="w-[320px] h-screen z-50 bg-card">
+                <div className="px-3 py-6 h-full flex flex-col">
+                    <div
+                        className="p-3 w-fit inline rounded-full hover:bg-gray-200 cursor-pointer"
+                        onClick={close}
+                    >
+                        <ChevronRightIcon />
+                    </div>
+                    <div className="py-[36px] flex justify-center">
+                        <div className="w-[100px] aspect-square">
+                            <Avatar className="w-full h-full object-cover">
+                                <AvatarImage
+                                    src={media.toImage(user?.avatar)}
+                                />
+                                <AvatarFallback>QB</AvatarFallback>
+                            </Avatar>
+                        </div>
+                    </div>
+                    <div className="px-3">
+                        <h2 className="font-bold text-xl text-center">
+                            {user?.fullName}
+                        </h2>
+                        <p className="text-neutral-900/70 text-center text-sm">
+                            {user?.email}
                         </p>
-                        <Cog6Tooth className="font-semibold text-neutral-900" />
                     </div>
+                    <hr className="bg-gray-300 my-6" />
+                    <div className="flex-1 px-3 pt-3  flex flex-col gap-2">
+                        <SidebarRow
+                            icon={<UserIcon />}
+                            title="Profile"
+                            selected={selected === 'profile'}
+                            onClick={() => {
+                                setSelected('profile');
+                            }}
+                        />
 
-                    {/* number */}
-                    <div className="px-3 py-2 bg-gray-300">
-                        <div className="grid grid-cols-3 gap-2">
-                            {/* item */}
-                            <div className="px-3 py-2 rounded-sm bg-card flex items-center justify-between text-neutral-900/70">
-                                <p className="text-sm font-semibold">All</p>
-                                <div className="py-1 px-2 rounded-sm text-xs font-semibold text-gray-50 bg-neutral-900/70">
-                                    22
-                                </div>
-                            </div>
-                            {/* item */}
+                        <SidebarRow
+                            icon={<Cog6Tooth />}
+                            title="Setting"
+                            selected={selected === 'setting'}
+                            onClick={() => {
+                                setSelected('setting');
+                            }}
+                        />
 
-                            {/* item */}
-                            <div className="px-3 py-2 rounded-sm bg-card flex items-center justify-between text-neutral-900/70">
-                                <p className="text-sm font-semibold">All</p>
-                                <div className="py-1 px-2 rounded-sm text-xs font-semibold text-gray-50 bg-neutral-900/70">
-                                    22
-                                </div>
-                            </div>
-                            {/* item */}
+                        <SidebarRow
+                            icon={<LockIcon />}
+                            title="Privacy"
+                            selected={selected === 'privacy'}
+                            onClick={() => {
+                                setSelected('privacy');
+                            }}
+                        />
 
-                            {/* item */}
-                            <div className="px-3 py-2 rounded-sm bg-card flex items-center justify-between text-neutral-900/70">
-                                <p className="text-sm font-semibold">All</p>
-                                <div className="py-1 px-2 rounded-sm text-xs font-semibold text-gray-50 bg-neutral-900/70">
-                                    22
-                                </div>
-                            </div>
-                            {/* item */}
+                        <SidebarRow
+                            icon={<QuestionIcon />}
+                            title="Support"
+                            selected={selected === 'support'}
+                            onClick={() => {
+                                setSelected('support');
+                            }}
+                        />
+                        <div className="mt-auto">
+                            <button
+                                className="w-full p-5 py-3  flex gap-5 font-semibold text-error-600 bg-error-100/70  hover:bg-error-100 rounded-lg"
+                                onClick={logout}
+                            >
+                                <ArrowStartLeftIcon />
+                                <p>Logout</p>
+                            </button>
                         </div>
-                    </div>
-                    {/* number */}
-
-                    <ScrollArea className="flex-1 pt-4 ">
-                        <div className="flex flex-col gap-3">
-                            {/* row */}
-                            <div className="py-4 px-3 flex gap-4 border-b border-gray-200">
-                                <div className="">
-                                    <Avatar>
-                                        <AvatarImage src="/images/that.png" />
-                                        <AvatarFallback>QB</AvatarFallback>
-                                    </Avatar>
-                                </div>
-                                <div className="">
-                                    <p className="">
-                                        <span className="font-semibold">
-                                            Quoc Bao
-                                        </span>
-                                        has sent a friend request
-                                    </p>
-                                    <p className="text-neutral-900/30">1h</p>
-                                    <div className="pt-2 flex gap-3 ">
-                                        <Button size="sm" className="px-5">
-                                            Accept
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            className="px-5 bg-primary-100/70"
-                                        >
-                                            Reject
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* row */}
-
-                            {/* row */}
-                            <div className="py-4 px-3 flex gap-4 border-b border-gray-200">
-                                <div className="">
-                                    <Avatar>
-                                        <AvatarImage src="/images/that.png" />
-                                        <AvatarFallback>QB</AvatarFallback>
-                                    </Avatar>
-                                </div>
-                                <div className="">
-                                    <p className="">
-                                        <span className="font-semibold">
-                                            Quoc Bao
-                                        </span>
-                                        has sent a friend request
-                                    </p>
-                                    <p className="text-neutral-900/30">1h</p>
-                                    <div className="pt-2 flex gap-3 ">
-                                        <Button size="sm" className="px-5">
-                                            Accept
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            className="px-5 bg-primary-100/70"
-                                        >
-                                            Reject
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* row */}
-                        </div>
-                        <ScrollBar orientation="vertical" />
-                    </ScrollArea>
-
-                    <div className="px-3 py-6">
-                        <Button className="w-full bg-neutral-900 hover:bg-neutral-700">
-                            See all
-                        </Button>
                     </div>
                 </div>
-            </Drawer>
-        </>
+            </div>
+        </Drawer>
     );
 };
 
