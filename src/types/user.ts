@@ -25,7 +25,7 @@ export type UserProfileResponse = {
     email: string;
     avatar: Avatar;
     avatarUrl: string;
-    jobTitle: string;
+    jobTitle: JobTitle;
     socials: Social[];
     links: Link[];
     skills: Skill[];
@@ -81,6 +81,12 @@ type Avatar = {
     sourceType: 'url' | 'file';
     file?: string;
     url?: string;
+};
+
+type JobTitle = {
+    id: string;
+    title: string;
+    description: string;
 };
 
 export type UserSearchResponse = UserResponse;

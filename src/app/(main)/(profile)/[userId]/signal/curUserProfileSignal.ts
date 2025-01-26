@@ -1,7 +1,8 @@
+import { UserProfileResponse } from '@/types/user';
 import { signify } from 'react-signify';
 
 export type CurUserProfileSignal = {
-    user: any;
+    user: UserProfileResponse | null;
 };
 
 export const sCurUserProfileSignal = signify<CurUserProfileSignal>({
