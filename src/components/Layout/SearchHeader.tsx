@@ -1,11 +1,10 @@
 'use client';
 
+import { useSearchUserQuery } from '@/queries/search';
 import { useState } from 'react';
 import Glass from '../icons/Glass';
-import SearchResultRow from './SearchResultRow';
-import { useSearchUserQuery } from '@/queries/search';
-import { media } from '@/utils/mediaUtils';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import SearchResultRow from './SearchResultRow';
 
 function SearchHeader() {
     const [isShow, setIsShow] = useState(false);
@@ -23,7 +22,11 @@ function SearchHeader() {
                         setKeyword(e.target.value);
                     }}
                     onFocus={() => setIsShow(true)}
-                    onBlur={() => setIsShow(false)}
+                    onBlur={() => {
+                        setTimeout(() => {
+                            setIsShow(false);
+                        }, 200);
+                    }}
                     type="text"
                     className="bg-background pr-6 pl-12 py-2 border-none outline-none ring-blue-500 rounded-md focus:w-[300px] duration-300 transition-all w-full group"
                     placeholder="Search..."
@@ -59,10 +62,11 @@ function SearchHeader() {
                             {lsUserResult?.map((_item) => (
                                 <SearchResultRow
                                     key={_item.id}
+                                    id={_item.id}
                                     name={_item.firstName ?? _item.username}
                                     avatar={_item.avatarUrl}
                                     title={_item.handle}
-                                    onClick={() => setIsShow(false)}
+                                    onClick={() => {}}
                                 />
                             ))}
                         </div>

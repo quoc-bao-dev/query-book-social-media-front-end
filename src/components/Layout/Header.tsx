@@ -11,6 +11,7 @@ import LocaleSwitcher from './LocaleSwitcher';
 import NavMenu from './NavMenu';
 import SearchHeader from './SearchHeader';
 import { useUserDrawer } from '@/app/(main)/partials/UserDrawer';
+import Link from 'next/link';
 
 const Header = () => {
     const { open: openNotifyDrawer } = useNotifyDrawer();
@@ -22,13 +23,15 @@ const Header = () => {
                 <div className="w-full mx-auto px-4 flex justify-between items-center relative">
                     {/* logo & search */}
                     <div className="flex gap-6 items-center">
-                        <Image
-                            src={'/images/logo_QBook.png'}
-                            alt="logo-qbook"
-                            className="w-[120px]"
-                            width={200}
-                            height={0}
-                        />
+                        <Link href="/">
+                            <Image
+                                src={'/images/logo_QBook.png'}
+                                alt="logo-qbook"
+                                className="w-[120px]"
+                                width={200}
+                                height={0}
+                            />
+                        </Link>
                         <SearchHeader />
                     </div>
                     {/* logo & search */}

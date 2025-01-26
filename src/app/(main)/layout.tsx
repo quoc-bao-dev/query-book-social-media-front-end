@@ -1,5 +1,5 @@
-import Header from '@/components/Layout/Header';
-import NavbarMobile from '@/components/Layout/NavbarMobile';
+import Header from '@/components/layout/Header';
+import NavbarMobile from '@/components/layout/NavbarMobile';
 import UserProvider from '@/provider/UserProvider';
 import { PropsWithChildren } from 'react';
 import ModalCreatePost from './partials/ModalCreatePost';

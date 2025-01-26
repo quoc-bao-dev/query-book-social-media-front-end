@@ -23,10 +23,9 @@ export type UserProfileResponse = {
     fullName: string;
     handle: string;
     email: string;
-    avatar?: Avatar;
-    avatarUrl?: string;
-    coverPage?: Avatar;
-    coverPageUrl?: string;
+    avatar: Avatar;
+    avatarUrl: string;
+    jobTitle: string;
     socials: Social[];
     links: Link[];
     skills: Skill[];
@@ -35,8 +34,8 @@ export type UserProfileResponse = {
     followerCount: number;
     followingCount: number;
     friends: Friend[];
-    followers: any[];
-    followings: any[];
+    followers: Follower[];
+    followings: Following[];
     interests: any[];
     address: any[];
     createdAt: string;
@@ -45,9 +44,14 @@ export type UserProfileResponse = {
 type Friend = {
     fullName: string;
     handle: string;
+    avatar?: Avatar;
+    avatarUrl?: string;
     followerCount: number;
     followingCount: number;
 };
+
+type Following = Friend;
+type Follower = Friend;
 
 type Project = {
     projectName: string;
@@ -80,3 +84,13 @@ type Avatar = {
 };
 
 export type UserSearchResponse = UserResponse;
+
+export type UserSuggestResponse = {
+    id: string;
+    fullName: string;
+    username: string;
+    avatarUrl?: string;
+    professional?: string;
+    email: string;
+    handle: string;
+};
