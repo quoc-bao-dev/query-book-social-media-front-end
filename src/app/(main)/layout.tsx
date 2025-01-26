@@ -3,7 +3,7 @@ import NavbarMobile from '@/components/layout/NavbarMobile';
 import UserProvider from '@/provider/UserProvider';
 import { PropsWithChildren } from 'react';
 import ModalCreatePost from './partials/ModalCreatePost';
-import NotifyDrawer from './partials/NotifyDrawer';
+import NotifyDrawer from '../../components/NotifyDrawer/NotifyDrawer';
 import UserDrawer from './partials/UserDrawer';
 
 const Layout = ({ children }: PropsWithChildren) => {

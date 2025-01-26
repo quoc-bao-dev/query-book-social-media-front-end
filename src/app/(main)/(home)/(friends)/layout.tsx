@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 
 const Layout = ({ children }: PropsWithChildren) => {
-    return <div className="mx-auto max-[1028px] mt-3">{children}</div>;
+    return <div className="flex-1 pr-4">{children}</div>;
 };
 
 export default Layout;

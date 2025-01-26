@@ -1,6 +1,6 @@
 'use client';
 
-import { useNotifyDrawer } from '@/app/(main)/partials/NotifyDrawer';
+import { useNotifyDrawer } from '@/components/NotifyDrawer/NotifyDrawer';
 import Image from 'next/image';
 import Bar3 from '../icons/Bar3';
 import Bell from '../icons/Bell';

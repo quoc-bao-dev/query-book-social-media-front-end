@@ -1,44 +1,68 @@
 'use client';
 
 import IdentifyIcon from '@/components/icons/IdentifyIcon';
-import MessageIcon from '@/components/icons/MessageIcon';
-import UserIcon from '@/components/icons/UserIcon';
-import UsersIcon from '@/components/icons/UsersIcon';
-import { useState } from 'react';
-import LeftSidebarItem from './LeftSidebarItem';
 import InfoIcon from '@/components/icons/InfoIcon';
 import LockIcon from '@/components/icons/LockIcon';
+import MessageIcon from '@/components/icons/MessageIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
+import UserIcon from '@/components/icons/UserIcon';
+import UsersIcon from '@/components/icons/UsersIcon';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import LeftSidebarItem from './LeftSidebarItem';
+import { usePathname } from 'next/navigation';
 
 const SideBarLeft = () => {
     const [selected, setSelected] = useState('feeds');
+    const pathname = usePathname();
+
+    useEffect(() => {
+        if (pathname === '/') {
+            setSelected('feeds');
+        } else if (pathname === '/me') {
+            setSelected('profile');
+        } else if (pathname === '/friends') {
+            setSelected('friend');
+        } else if (pathname === '/messages') {
+            setSelected('message');
+        }
+    }, [pathname]);
     return (
         <>
             <div className="flex flex-col gap-2">
-                <LeftSidebarItem
-                    icon={<UserIcon />}
-                    title="Profile"
-                    selected={selected === 'profile'}
-                    onClick={() => setSelected('profile')}
-                />
-                <LeftSidebarItem
-                    icon={<IdentifyIcon />}
-                    title="Feed"
-                    selected={selected === 'feeds'}
-                    onClick={() => setSelected('feeds')}
-                />
-                <LeftSidebarItem
-                    icon={<UsersIcon />}
-                    title="Friend"
-                    selected={selected === 'friend'}
-                    onClick={() => setSelected('friend')}
-                />
-                <LeftSidebarItem
-                    icon={<MessageIcon />}
-                    title="Chat"
-                    selected={selected === 'message'}
-                    onClick={() => setSelected('message')}
-                />
+                <Link href="/">
+                    <LeftSidebarItem
+                        icon={<IdentifyIcon />}
+                        title="Feed"
+                        selected={selected === 'feeds'}
+                        onClick={() => setSelected('feeds')}
+                    />
+                </Link>
+                <Link href="/me">
+                    <LeftSidebarItem
+                        icon={<UserIcon />}
+                        title="Profile"
+                        selected={selected === 'profile'}
+                        onClick={() => setSelected('profile')}
+                    />
+                </Link>
+
+                <Link href="/friends">
+                    <LeftSidebarItem
+                        icon={<UsersIcon />}
+                        title="Friend"
+                        selected={selected === 'friend'}
+                        onClick={() => setSelected('friend')}
+                    />
+                </Link>
+                <Link href="/messages">
+                    <LeftSidebarItem
+                        icon={<MessageIcon />}
+                        title="Chat"
+                        selected={selected === 'message'}
+                        onClick={() => setSelected('message')}
+                    />
+                </Link>
             </div>
 
             <div className="py-4">

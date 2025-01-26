@@ -100,3 +100,12 @@ export type UserSuggestResponse = {
     email: string;
     handle: string;
 };
+
+export type UserRequestResponse = {
+    id: string;
+    fullName: string;
+    username: string;
+    email: string;
+    avatar: string;
+    handle: string;
+};
