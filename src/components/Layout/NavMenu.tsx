@@ -35,25 +35,14 @@ const NavMenu = () => {
                     onClick={() => setSelected(index)}
                 >
                     {item.icon}
+                    {selected === index && (
+                        <motion.div
+                            layoutId="active"
+                            className="absolute -bottom-2 w-full h-[2.5px] bg-primary-500 rounded-full"
+                        />
+                    )}
                 </div>
             ))}
-            {/* Thanh underline */}
-            <motion.div
-                className="absolute bottom-0 h-[2px] bg-primary-500 rounded-full"
-                layout
-                initial={false}
-                animate={{
-                    x: `calc(${selected} * (100% + 80px))`, // 100% + gap giữa các mục
-                }}
-                transition={{
-                    type: 'spring',
-                    stiffness: 500,
-                    damping: 30,
-                }}
-                style={{
-                    width: '50px', // Chiều rộng của thanh underline
-                }}
-            />
         </div>
     );
 };
