@@ -2,15 +2,16 @@
 
 import IdentifyIcon from '@/components/icons/IdentifyIcon';
 import InfoIcon from '@/components/icons/InfoIcon';
-import LockIcon from '@/components/icons/LockIcon';
 import MessageIcon from '@/components/icons/MessageIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
+import SafeIcon from '@/components/icons/SafeIcon';
+import ServerIcon from '@/components/icons/ServerIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LeftSidebarItem from './LeftSidebarItem';
-import { usePathname } from 'next/navigation';
 
 const SideBarLeft = () => {
     const [selected, setSelected] = useState('feeds');
@@ -25,6 +26,8 @@ const SideBarLeft = () => {
             setSelected('friend');
         } else if (pathname === '/messages') {
             setSelected('message');
+        } else if (pathname.startsWith('/hosting')) {
+            setSelected('hosting');
         }
     }, [pathname]);
     return (
@@ -63,6 +66,14 @@ const SideBarLeft = () => {
                         onClick={() => setSelected('message')}
                     />
                 </Link>
+                <Link href="/hosting">
+                    <LeftSidebarItem
+                        icon={<ServerIcon />}
+                        title="Hosting"
+                        selected={selected === 'hosting'}
+                        onClick={() => setSelected('hosting')}
+                    />
+                </Link>
             </div>
 
             <div className="py-4">
@@ -80,7 +91,7 @@ const SideBarLeft = () => {
                     onClick={() => setSelected('about')}
                 />
                 <LeftSidebarItem
-                    icon={<LockIcon />}
+                    icon={<SafeIcon />}
                     title="Privacy"
                     selected={selected === 'privacy'}
                     onClick={() => setSelected('privacy')}

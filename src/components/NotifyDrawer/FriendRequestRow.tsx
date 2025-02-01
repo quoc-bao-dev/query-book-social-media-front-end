@@ -1,7 +1,6 @@
-import { use } from 'react';
+import { useAcceptRequestMutation } from '@/queries/friend';
 import { Button } from '../common/Button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { useAcceptRequestMutation } from '@/queries/friend';
 
 type FriendRequestRowProps = {
     id: string;
@@ -23,8 +22,8 @@ const FriendRequestRow = ({ avatar, name, id }: FriendRequestRowProps) => {
             </div>
             <div className="">
                 <p className="">
-                    <span className="font-semibold">{name}</span>
-                    has sent a friend request
+                    <span className="font-semibold">{name} </span> has sent a
+                    friend request
                 </p>
                 <p className="text-neutral-900/30">1h</p>
                 <div className="pt-2 flex gap-3 ">
