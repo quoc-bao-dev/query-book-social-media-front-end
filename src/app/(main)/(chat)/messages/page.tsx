@@ -91,8 +91,6 @@ const Page = () => {
                     {/* button */}
                     <div className="flex gap-2 items-center text-primary-500">
                         <Phone className="w-6 h-6 " />
-                        <Phone className="w-6 h-6 " />
-                        <Phone className="w-6 h-6 " />
                     </div>
                     {/* button */}
                 </div>

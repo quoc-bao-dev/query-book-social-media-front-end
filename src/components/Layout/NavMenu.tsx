@@ -27,18 +27,18 @@ const NavMenu = () => {
     ];
 
     return (
-        <div className="relative flex gap-20">
+        <div className="relative lg:grid lg:grid-cols-3 gap-4 w-[400px]">
             {menuItems.map((item, index) => (
                 <div
                     key={item.id}
-                    className="relative cursor-pointer flex-1 flex justify-center"
+                    className="relative cursor-pointer flex justify-center hover:bg-gray-100/80 rounded-lg py-2"
                     onClick={() => setSelected(index)}
                 >
                     {item.icon}
                     {selected === index && (
                         <motion.div
                             layoutId="active"
-                            className="absolute -bottom-2 w-full h-[2.5px] bg-primary-500 rounded-full"
+                            className="absolute bottom-0 w-full h-[2.5px] bg-primary-500 rounded-full"
                         />
                     )}
                 </div>
