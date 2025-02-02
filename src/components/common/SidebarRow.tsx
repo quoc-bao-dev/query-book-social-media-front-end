@@ -7,7 +7,7 @@ type SideBarProps = {
     icon: ReactNode;
     onClick: () => void;
 };
-const LeftSidebarItem = ({ onClick, selected, title, icon }: SideBarProps) => {
+const SidebarRow = ({ onClick, selected, title, icon }: SideBarProps) => {
     return (
         <div
             onClick={onClick}
@@ -24,4 +24,4 @@ const LeftSidebarItem = ({ onClick, selected, title, icon }: SideBarProps) => {
     );
 };
 
-export default LeftSidebarItem;
+export default SidebarRow;

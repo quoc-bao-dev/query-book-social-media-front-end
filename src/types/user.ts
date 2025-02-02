@@ -3,9 +3,29 @@ export type UserResponse = {
     firstName: string;
     lastName: string;
     fullName: string;
+    username: string;
+    email: string;
+    avatar?: Avatar;
+    avatarUrl?: string;
     handle: string;
+    friendCount: number;
+    followerCount: number;
+    followingCount: number;
+    role: string;
+    isBlock: boolean;
+    createdAt: string;
+};
+
+export type UserProfileResponse = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
+    handle: string;
+    email: string;
     avatar: Avatar;
-    coverPage: Avatar;
+    avatarUrl: string;
+    jobTitle: JobTitle;
     socials: Social[];
     links: Link[];
     skills: Skill[];
@@ -14,8 +34,8 @@ export type UserResponse = {
     followerCount: number;
     followingCount: number;
     friends: Friend[];
-    followers: any[];
-    followings: any[];
+    followers: Follower[];
+    followings: Following[];
     interests: any[];
     address: any[];
     createdAt: string;
@@ -24,9 +44,14 @@ export type UserResponse = {
 type Friend = {
     fullName: string;
     handle: string;
+    avatar?: Avatar;
+    avatarUrl?: string;
     followerCount: number;
     followingCount: number;
 };
+
+type Following = Friend;
+type Follower = Friend;
 
 type Project = {
     projectName: string;
@@ -52,25 +77,35 @@ type Social = {
 
 type Avatar = {
     id?: string;
-    type: string;
-    sourceType: string;
+    type: 'image' | 'video';
+    sourceType: 'url' | 'file';
     file?: string;
     url?: string;
 };
 
-export type UserSearchResponse = {
+type JobTitle = {
     id: string;
-    firstName: string;
-    lastName: string;
+    title: string;
+    description: string;
+};
+
+export type UserSearchResponse = UserResponse;
+
+export type UserSuggestResponse = {
+    id: string;
+    fullName: string;
+    username: string;
+    avatarUrl?: string;
+    professional?: string;
+    email: string;
+    handle: string;
+};
+
+export type UserRequestResponse = {
+    id: string;
     fullName: string;
     username: string;
     email: string;
-    avatar?: Avatar;
+    avatar: string;
     handle: string;
-    friendCount: number;
-    followerCount: number;
-    followingCount: number;
-    role: string;
-    isBlock: boolean;
-    createdAt: string;
 };

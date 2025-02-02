@@ -1,5 +1,6 @@
 import { config } from '@/config';
-import axios from 'axios';
+import httpClient from '@/httpClient/httpClient';
+import { setCookies } from '@/utils/cookies';
 import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
     const { otp } = await request.json();
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     }
 
     try {
-        const res = await axios.post(
+        const res = await httpClient.post(
             `${config.BASE_URL}/auth/register/verify-otp`,
             {
                 activeToken,
@@ -39,56 +40,22 @@ export async function POST(request: Request) {
             }
         );
 
-        const { accessToken, refreshToken } = (await res.data).data;
+        const { accessToken, refreshToken } = res.data;
 
         const response = NextResponse.json({
             message: 'Active account success',
         });
 
-        // Set cookie
-        // TODO: check samesite here
-        response.cookies.set('accessToken', accessToken, {
-            httpOnly: true, // Cookie chỉ có thể được truy cập từ server
-            secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
-            maxAge: 60 * 10, // 10 phut)
-            path: config.API_PATH,
-            domain: config.API_DOMAIN,
-            // sameSite: 'none',
-        });
-
-        // TODO: check samesite here
-        response.cookies.set('refreshToken', refreshToken, {
-            httpOnly: true, // Cookie chỉ có thể được truy cập từ server
-            secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
-            maxAge: 60 * 60 * 24 * 15, // 15 ngày)
-            path: config.API_PATH,
-            domain: config.API_DOMAIN,
-            // sameSite: 'none',
-        });
-
-        response.cookies.set('accessTokenNext', accessToken, {
-            httpOnly: true, // Cookie chỉ có thể được truy cập từ server
-            secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
-            maxAge: 60 * 10,
-            path: '/',
-            sameSite: 'strict',
-        });
-
-        response.cookies.set('refreshTokenNext', refreshToken, {
-            httpOnly: true, // Cookie chỉ có thể được truy cập từ server
-            secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
-            maxAge: 60 * 10,
-            path: '/',
-            sameSite: 'strict',
-        });
+        setCookies(response).accessToken(accessToken);
+        setCookies(response).accessTokenNext(accessToken);
+        setCookies(response).refreshToken(refreshToken);
+        setCookies(response).refreshTokenNext(refreshToken);
 
         return response;
     } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-            const { message }: { message: string } = error.response.data;
-            if (message) {
-                return NextResponse.json({ message }, { status: 400 });
-            }
-        }
+        const { message }: { message: string } = error;
+        console.log(error);
+
+        return NextResponse.json({ message }, { status: 400 });
     }
 }

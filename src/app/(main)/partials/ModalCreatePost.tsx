@@ -15,7 +15,7 @@ import { signify } from 'react-signify';
 import {
     createPost,
     CreatePostSchema,
-} from '../(home)/schema/CreatePostSchema';
+} from '../(home)/(feeds)/schema/CreatePostSchema';
 import {
     Select,
     SelectContent,

@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/common/Button';
-import { sModalCreatePost } from '../../partials/ModalCreatePost';
+import { sModalCreatePost } from '../../../partials/ModalCreatePost';
 
 const PostCreate = () => {
     const showModal = () => {
