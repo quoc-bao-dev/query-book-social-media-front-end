@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LeftSidebarItem from './LeftSidebarItem';
+import Sparkles from '@/components/icons/Sparkles';
 
 const SideBarLeft = () => {
     const [selected, setSelected] = useState('feeds');
@@ -109,6 +110,25 @@ const SideBarLeft = () => {
             </div>
 
             <div className="hidden lg:block">
+                <div>
+                    <div className="p-4 rounded-3xl bg-gradient-to-tl from-neutral-950 to-neutral-800 dark:from-neutral-100 dark:to-neutral-50">
+                        <p className="text-xl font-semibold text-white mt-2">
+                            Upgrade to pro
+                        </p>
+                        <p className="text-neutral-400 text-sm mt-2">
+                            Get access to the premium features by upgrading to
+                            pro
+                        </p>
+
+                        <Link href={'payment'}>
+                            <button className="mt-4 py-2 px-3 rounded-lg flex gap-2 justify-center bg-primary-500 text-white w-full font-semibold">
+                                Upgrade <Sparkles />
+                            </button>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+            {/* <div className="hidden lg:block">
                 <p className="font-semibold text-sm text-neutral-800/70 mb-2">
                     Recomend for you
                 </p>
@@ -119,7 +139,7 @@ const SideBarLeft = () => {
                     </p>
                     <p className="text-secondary-500 hover:underline">#VueJS</p>
                 </div>
-            </div>
+            </div> */}
         </>
     );
 };

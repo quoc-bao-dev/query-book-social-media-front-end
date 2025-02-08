@@ -6,4 +6,6 @@ export const config = {
     API_PATH: process.env.NEXT_PUBLIC_API_PATH as string,
     MESSAGE_SERVER_URL: process.env.NEXT_PUBLIC_MESSAGE_SERVER_URL as string,
     MESSAGE_SOCKET_URL: process.env.NEXT_PUBLIC_MESSAGE_SOCKET_URL as string,
+    NEXT_PUBLIC_STRIPE_PUBLISH_KEY: process.env
+        .NEXT_PUBLIC_STRIPE_PUBLISH_KEY as string,
 };
