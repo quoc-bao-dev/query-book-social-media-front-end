@@ -5,8 +5,10 @@ import Drawer from '@/components/common/Drawer';
 import Cog6Tooth from '@/components/icons/Cog6Tooth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { useFriendRequestQuery } from '@/queries/friend';
 import { useEffect } from 'react';
 import { signify } from 'react-signify';
+import FriendRequestRow from './FriendRequestRow';
 
 type UserDrawerType = {
     isShow: boolean;
@@ -19,6 +21,8 @@ export const useNotifyDrawer = () => ({
 });
 
 const NotifyDrawer = () => {
+    const { data: friendRequests } = useFriendRequestQuery();
+
     const { isShow } = sNotifyDrawer.use();
 
     const { close } = useNotifyDrawer();
@@ -26,6 +30,8 @@ const NotifyDrawer = () => {
     const toggleDrawer = () => {
         close();
     };
+
+    const lsFriendsRequest = friendRequests?.data.data;
 
     useEffect(() => {
         return () => {
@@ -79,35 +85,14 @@ const NotifyDrawer = () => {
                     <ScrollArea className="flex-1 pt-4 ">
                         <div className="flex flex-col gap-3">
                             {/* row */}
-                            <div className="py-4 px-3 flex gap-4 border-b border-gray-200">
-                                <div className="">
-                                    <Avatar>
-                                        <AvatarImage src="/images/that.png" />
-                                        <AvatarFallback>QB</AvatarFallback>
-                                    </Avatar>
-                                </div>
-                                <div className="">
-                                    <p className="">
-                                        <span className="font-semibold">
-                                            Quoc Bao
-                                        </span>
-                                        has sent a friend request
-                                    </p>
-                                    <p className="text-neutral-900/30">1h</p>
-                                    <div className="pt-2 flex gap-3 ">
-                                        <Button size="sm" className="px-5">
-                                            Accept
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            className="px-5 bg-primary-100/70"
-                                        >
-                                            Reject
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
+                            {lsFriendsRequest?.map((friend) => (
+                                <FriendRequestRow
+                                    key={friend.id}
+                                    id={friend.id}
+                                    avatar={friend.avatar}
+                                    name={friend.fullName}
+                                />
+                            ))}
                             {/* row */}
 
                             {/* row */}

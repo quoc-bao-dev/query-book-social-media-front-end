@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
-import { Eye, EyeClosed } from 'lucide-react';
 import { forwardRef, InputHTMLAttributes, useState } from 'react';
+import EyeIcon from '../icons/EyeIcon';
+import EyeSlashIcon from '../icons/EyeSlashIcon';
 interface PasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
     label: string;
     error?: boolean;
@@ -48,7 +49,11 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
                     className="absolute right-3 top-[50%] translate-y-[-50%] text-gray-400"
                     onClick={toggleIsShow}
                 >
-                    {isShow ? <Eye /> : <EyeClosed />}
+                    {isShow ? (
+                        <EyeIcon className="text-gray-800" />
+                    ) : (
+                        <EyeSlashIcon />
+                    )}
                 </div>
             </div>
         );
