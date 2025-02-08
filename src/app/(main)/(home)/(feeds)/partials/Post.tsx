@@ -2,13 +2,17 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PostResponse } from '@/types/post';
 import toImage from '@/utils/imageUtils';
 import Image from 'next/image';
+import PostImage from './PostImage';
 
 // FIXME: fix interface of post
 
 interface PostProps {
-    post: Pick<PostResponse, 'id' | 'author' | 'content' | 'hashTags'>;
+    post: Pick<PostResponse, 'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls'>;
+
+
 }
 const Post = ({ post }: PostProps) => {
+
     return (
         <div className="w-full gap-5 border rounded-xl px-4 py-4 bg-card">
             <div className="px-8 pt-8 pb-4">
@@ -44,29 +48,12 @@ const Post = ({ post }: PostProps) => {
                 </div>
 
                 <div className="pt-4">
-                    <p>Hãy trao cho anh!</p>
+                    <p>{post.content}</p>
                 </div>
             </div>
 
             <div className="relative">
-                <div className="absolute inset-0 overflow-hidden rounded-md">
-                    <Image
-                        src={`/images/${post.images}`}
-                        className="rounded-md text-center w-full h-full backdrop:blur-lg blur-lg object-cover"
-                        alt=""
-                        width={650}
-                        height={0}
-                    />
-                </div>
-                <div className="relative z-40">
-                    <Image
-                        src={`/images/${post.images}`}
-                        className="rounded-md text-center max-h-[600px] object-contain"
-                        alt=""
-                        width={650}
-                        height={0}
-                    />
-                </div>
+                <PostImage lsImage={post.mediaUrls} />
             </div>
 
             <div className="grid grid-cols-2">
@@ -92,21 +79,21 @@ const Post = ({ post }: PostProps) => {
                         <div className="flex items-center ">
                             <Image
                                 src={'/images/post.jpg'}
-                                className="w-[40px] h-[40px] rounded-[50%]"
+                                className="w-[25px] h-[25px] rounded-[50%]"
                                 alt=""
                                 width={40}
                                 height={40}
                             />
                             <Image
                                 src={'/images/post.jpg'}
-                                className="w-[40px] h-[40px] rounded-[50%]"
+                                className="w-[25px] h-[25px] rounded-[50%] -ml-4"
                                 alt=""
                                 width={40}
                                 height={40}
                             />
                             <Image
                                 src={'/images/post.jpg'}
-                                className="w-[40px] h-[40px] rounded-[50%]"
+                                className="w-[25px] h-[25px] rounded-[50%] -ml-4"
                                 alt=""
                                 width={40}
                                 height={40}

@@ -8,6 +8,7 @@ export type PostResponse = {
     comments: any[];
     hashTags: string[];
     media: any[];
+    mediaUrls: string[];
     status: string;
     createdAt: string;
     updatedAt: string;

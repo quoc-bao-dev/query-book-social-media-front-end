@@ -1,6 +1,7 @@
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { PropsWithChildren } from 'react';
 import SidebarRight from './partials/SidebarRight';
+import ImageDetailModal from './partials/ImageDetailModal';
 
 const Layout = ({ children }: PropsWithChildren) => {
     return (
