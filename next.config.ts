@@ -5,7 +5,10 @@ const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
     /* config options here */
-    reactStrictMode: false,
+    reactStrictMode: true,
+    images: {
+        domains: ['localhost'], // Add your local development domain
+    },
 };
 
 export default withNextIntl(nextConfig);
