@@ -41,6 +41,8 @@ const MainContent = () => {
     const posts =
         data?.pages.flatMap((page: AxiosResponse) => page.data.data) ||
         ([] as PostResponse[]);
+    console.log('post:', posts);
+
 
     const clearPost = useDebouncedCallback(() => {
         if (posts.length > 50) {
@@ -185,6 +187,7 @@ const MainContent = () => {
                 <PostCreate />
                 {/* From create Post */}
 
+
                 {/* Post */}
                 <div className="flex gap-5 flex-col">
                     {posts.map((item, index) => (
@@ -192,6 +195,8 @@ const MainContent = () => {
                     ))}
                 </div>
                 {/* Post */}
+
+
                 {isLoading && (
                     <div className="w-full flex justify-center items-center">
                         <div className="h-[400px] bg-gray-200">

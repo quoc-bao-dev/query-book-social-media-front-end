@@ -11,6 +11,8 @@ const getPost = ({ pageParam = 1 }: { pageParam: number }) =>
             limit: 10,
         },
     });
+
+
 export const usePostQuery = () => {
     return useInfiniteQuery({
         queryKey: ['posts'],

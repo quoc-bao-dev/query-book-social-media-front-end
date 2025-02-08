@@ -2,6 +2,15 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { config } from '@/config';
 import axiosClient from '@/httpClient';
 import { useAuth } from '@/store/authSignal';
@@ -16,15 +25,6 @@ import {
     createPost,
     CreatePostSchema,
 } from '../(home)/(feeds)/schema/CreatePostSchema';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 
 type ModalCreatePostSignal = {
     isOpen: boolean;
@@ -79,6 +79,9 @@ const ModalCreatePost = () => {
                 }
             );
 
+
+            console.log(response.data);
+
             return response.data;
         } catch (error) {
             console.log(error);
@@ -101,6 +104,9 @@ const ModalCreatePost = () => {
 
         const mediasRes = await uploadFile();
 
+
+        console.log('media in post crate ', mediasRes);
+
         const medias =
             mediasRes?.files &&
             mediasRes.files.map((media: { filename: string }) => ({
@@ -109,11 +115,15 @@ const ModalCreatePost = () => {
                 sourceType: 'file',
             }));
 
+
+
+        console.log('medias to create post ', medias);
+
         await axiosClient.post('/posts', {
             content: data.content,
             status: data.status,
             hashTags,
-            medias,
+            media: medias,
         });
 
         sModalCreatePost.set((n) => (n.value.isOpen = false));
