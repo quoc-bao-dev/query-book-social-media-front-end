@@ -6,10 +6,10 @@ import { usePostQuery } from '@/queries/post';
 import { PostResponse, PostsQueryData } from '@/types/post';
 import { useQueryClient } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Post from './Post';
-import { useTranslations } from 'next-intl';
 import PostCreate from './PostCreate';
 
 const feeds = [
@@ -41,8 +41,6 @@ const MainContent = () => {
     const posts =
         data?.pages.flatMap((page: AxiosResponse) => page.data.data) ||
         ([] as PostResponse[]);
-    console.log('post:', posts);
-
 
     const clearPost = useDebouncedCallback(() => {
         if (posts.length > 50) {
@@ -187,7 +185,6 @@ const MainContent = () => {
                 <PostCreate />
                 {/* From create Post */}
 
-
                 {/* Post */}
                 <div className="flex gap-5 flex-col">
                     {posts.map((item, index) => (
@@ -196,11 +193,12 @@ const MainContent = () => {
                 </div>
                 {/* Post */}
 
-
                 {isLoading && (
                     <div className="w-full flex justify-center items-center">
-                        <div className="h-[400px] bg-gray-200">
-                            <h1>Loading</h1>
+                        <div className="h-[400px] w-full bg-gray-200 animate-pulse">
+                            <h1 className="text-center text-gray-500">
+                                Loading...
+                            </h1>
                         </div>
                     </div>
                 )}

@@ -21,10 +21,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { signify } from 'react-signify';
-import {
-    createPost,
-    CreatePostSchema,
-} from '../(home)/(feeds)/schema/CreatePostSchema';
+import { createPost, CreatePostSchema } from '../schema/CreatePostSchema';
+import { useCreatePostMutation } from '@/queries/post';
 
 type ModalCreatePostSignal = {
     isOpen: boolean;
@@ -46,6 +44,9 @@ const ModalCreatePost = () => {
     const name = getFirstCharacter(user?.fullName || '');
 
     const isShow = ssOpenFormModal.use();
+
+    const { mutateAsync } = useCreatePostMutation();
+
     const onModalChange = (isOpen: boolean) => {
         sModalCreatePost.set((n) => (n.value.isOpen = isOpen));
     };
@@ -79,7 +80,6 @@ const ModalCreatePost = () => {
                 }
             );
 
-
             console.log(response.data);
 
             return response.data;
@@ -104,9 +104,6 @@ const ModalCreatePost = () => {
 
         const mediasRes = await uploadFile();
 
-
-        console.log('media in post crate ', mediasRes);
-
         const medias =
             mediasRes?.files &&
             mediasRes.files.map((media: { filename: string }) => ({
@@ -115,19 +112,18 @@ const ModalCreatePost = () => {
                 sourceType: 'file',
             }));
 
-
-
-        console.log('medias to create post ', medias);
-
-        await axiosClient.post('/posts', {
+        const payload = {
             content: data.content,
             status: data.status,
             hashTags,
             media: medias,
-        });
+        };
+
+        await mutateAsync(payload);
 
         sModalCreatePost.set((n) => (n.value.isOpen = false));
         reset();
+        setFiles([]);
     };
 
     return (
