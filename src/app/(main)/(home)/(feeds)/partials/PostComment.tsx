@@ -5,6 +5,7 @@ import { useAuth } from "@/store/authSignal";
 import { getFirstCharacter } from "@/utils/nameUtilts";
 import { uploadImages } from "@/utils/uploadUtils";
 import { useRef, useState } from "react";
+import Image from "next/image";
 
 const PostComment = ({ postId }: { postId: string }) => {
 
@@ -39,17 +40,20 @@ const PostComment = ({ postId }: { postId: string }) => {
     const { user } = useAuth();
 
     const handleComment = async () => {
-        const media = (await uploadImages(images))?.files?.[0];
-
-        console.log('[media]', media?.filename);
-
-
         const payload = {
             content: inputRef.current?.value,
-            media: {
-                fileName: media?.filename,
-                type: "image",
-                sourceType: "file"
+        }
+
+        if (images.length > 0) {
+
+            const media = (await uploadImages(images))?.files?.[0];
+
+            if (media) {
+                payload.media = {
+                    fileName: media.filename,
+                    type: "image",
+                    sourceType: "file"
+                }
             }
         }
 
@@ -62,7 +66,7 @@ const PostComment = ({ postId }: { postId: string }) => {
         <>
             {images.map((image, index) => (
                 <div key={index} className="relative">
-                    <img src={URL.createObjectURL(image)} alt="" />
+                    <Image src={URL.createObjectURL(image)} alt="" width={1000} height={1000} />
                     <div className="absolute top-1 right-1 cursor-pointer" onClick={handleRemoveImage(index)}>x</div>
                 </div>
             ))}

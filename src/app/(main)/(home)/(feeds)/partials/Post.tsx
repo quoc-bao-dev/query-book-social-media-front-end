@@ -132,7 +132,7 @@ const Post = ({ post }: PostProps) => {
                 </div>
             </div> */}
 
-            <PostComment />
+            <PostComment postId={post.id} />
             {/* comment */}
         </div>
     );
