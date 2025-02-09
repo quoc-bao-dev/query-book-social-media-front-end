@@ -4,22 +4,37 @@ import { getFirstCharacter } from '@/utils/nameUtilts';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import Image from 'next/image';
 import PostImage from './PostImage';
+import HeartIcon from '@/components/icons/HeartIcon';
+import { useLikeMutation } from '@/queries/like';
+import { sAuth, useAuth } from '@/store/authSignal';
+import { cn } from '@/lib/utils';
+import CommentIcon from '@/components/icons/CommentIcon';
+import { Share } from 'next/font/google';
+import ShareIcon from '@/components/icons/ShareIcon';
+import PostComment from './PostComment';
 
 // FIXME: fix interface of post
 
 interface PostProps {
     post: Pick<
         PostResponse,
-        'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls' | 'createdAt'
+        'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls' | 'createdAt' | 'likesCount' | 'likes'
     >;
 }
 const Post = ({ post }: PostProps) => {
+    const { user } = useAuth()
+    const { mutateAsync: likePost } = useLikeMutation()
+
     // Chuyển đổi chuỗi thành đối tượng Date
     const date = parseISO(post.createdAt);
 
     // Tính toán khoảng cách thời gian từ thời điểm cụ thể đến hiện tại
     const distance = formatDistanceToNow(date, { addSuffix: true });
-    console.log(post.author?.avatarUrl);
+
+    const isLiked = post.likes.some((like) => like.id === user?.id);
+
+    const handleLike = () => { likePost(post.id) };
+
 
     return (
         <div className="w-full gap-5 border rounded-xl px-4 py-4 bg-card">
@@ -66,81 +81,40 @@ const Post = ({ post }: PostProps) => {
                 <PostImage lsImage={post.mediaUrls} />
             </div>
 
-            <div className="grid grid-cols-2">
+            <div className="grid grid-cols-2 border-b-[1px]">
                 <div className="flex px-8 py-4 items-center">
-                    <div className="">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                            />
-                        </svg>
+                    <div onClick={handleLike}>
+                        {!isLiked ? <HeartIcon /> : <HeartIcon className="fill-error-500 stroke-error-500" />}
                     </div>
-                    <div className="px-2">20</div>
+                    <div className="px-2">{post.likesCount}</div>
                     <div className="w-full">
                         <div className="flex items-center ">
-                            <Image
-                                src={'/images/post.jpg'}
-                                className="w-[25px] h-[25px] rounded-[50%]"
-                                alt=""
-                                width={40}
-                                height={40}
-                            />
-                            <Image
-                                src={'/images/post.jpg'}
-                                className="w-[25px] h-[25px] rounded-[50%] -ml-4"
-                                alt=""
-                                width={40}
-                                height={40}
-                            />
-                            <Image
-                                src={'/images/post.jpg'}
-                                className="w-[25px] h-[25px] rounded-[50%] -ml-4"
-                                alt=""
-                                width={40}
-                                height={40}
-                            />
+                            {post.likes.sort((a,) => a.id !== user?.id ? 1 : -1).map((like, index) => (
+                                <Avatar key={like.id} className={cn("w-[25px] h-[25px] object-cover", {
+                                    "-ml-3": index > 0,
+                                    "rounded-[50%] z-30": index === 0
+                                })}>
+                                    <AvatarImage src={like.avatarUrl} />
+                                    <AvatarFallback>
+                                        <p className="text-xs">{getFirstCharacter(like.name)}</p>
+                                    </AvatarFallback>
+                                </Avatar>
+                            ))}
+                            <div className="">
+                                {post.likes.sort((a,) => a.id !== user?.id ? 1 : -1).map((like) => (
+                                    <p className="text-xs" key={like.id}> {like.name}</p>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-end px-8 py-4 gap-3">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="size-6"
-                    >
-                        <path
-                            fillRule="evenodd"
-                            d="M4.804 21.644A6.707 6.707 0 0 0 6 21.75a6.721 6.721 0 0 0 3.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 0 1-.814 1.686.75.75 0 0 0 .44 1.223ZM8.25 10.875a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25ZM10.875 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875-1.125a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
-
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="size-6"
-                    >
-                        <path
-                            fillRule="evenodd"
-                            d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
+                <div className="flex text-neutral-500 justify-end px-8 py-4 gap-3">
+                    <CommentIcon />
+                    <ShareIcon />
                 </div>
             </div>
             {/* comment */}
-            <div className="flex py-3">
+            {/* <div className="flex py-3">
                 <div className="flex justify-center">
                     <Image
                         src={'/images/git.png'}
@@ -156,47 +130,9 @@ const Post = ({ post }: PostProps) => {
                     </div>
                     <div className="text-gray-900"> Ảnh đẹp lắm nha</div>
                 </div>
-            </div>
+            </div> */}
 
-            <div className="flex py-3">
-                <div className="flex justify-center">
-                    <Image
-                        src={'/images/git.png'}
-                        className="w-[40px] h-[40px] rounded-[50%]"
-                        alt=""
-                        width={40}
-                        height={40}
-                    />
-                </div>
-                <div className="bg-gray-200 rounded-lg ml-3 py-2 px-3 w-[90%]">
-                    <div className="">
-                        <p className="font-medium ">Name</p>
-                    </div>
-                    <div className="text-gray-900">
-                        {' '}
-                        Ảnh này chụp ở đâu vậy bạn
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex py-3">
-                <div className="flex justify-center">
-                    <Image
-                        src={'/images/google.png'}
-                        className="w-[40px] h-[40px] rounded-[50%]"
-                        alt=""
-                        width={40}
-                        height={40}
-                    />
-                </div>
-                <div className="ml-3 w-[90%] ">
-                    <input
-                        type="text"
-                        className="w-full h-[40px] px-2 rounded-lg focus:border-info-500 focus:outline-none focus:ring-1 focus:ring-info-500"
-                        placeholder="Write a comment"
-                    />
-                </div>
-            </div>
+            <PostComment postId={post.id} />
             {/* comment */}
         </div>
     );

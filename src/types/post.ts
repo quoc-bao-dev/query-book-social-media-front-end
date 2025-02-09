@@ -3,7 +3,7 @@ export type PostResponse = {
     author: Author;
     content: string;
     likesCount: number;
-    likes: any[];
+    likes: Like[];
     commentsCount: number;
     comments: any[];
     hashTags: string[];
@@ -14,6 +14,13 @@ export type PostResponse = {
     updatedAt: string;
 };
 
+type Like = {
+    id: string;
+    name: string;
+    avatar: string;
+    avatarUrl: string;
+    handle: string;
+}
 type Author = {
     name: string;
     email: string;
