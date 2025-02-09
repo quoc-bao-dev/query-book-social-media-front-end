@@ -1,3 +1,5 @@
+import { Media } from "./common";
+
 export type PostResponse = {
     id: string;
     author: Author;
@@ -5,7 +7,7 @@ export type PostResponse = {
     likesCount: number;
     likes: Like[];
     commentsCount: number;
-    comments: any[];
+    comments: Comment[];
     hashTags: string[];
     media: any[];
     mediaUrls: string[];
@@ -29,6 +31,19 @@ type Author = {
     fullName: string;
 };
 
+type Comment = {
+    id: string;
+    username: string;
+    fullName: string;
+    avatarUrl?: string;
+    content: string;
+    likes: any[];
+    replies: any[];
+    media?: Media;
+    mediaUrl?: string;
+    createdAt: string;
+    updatedAt: string;
+}
 export type PostsQueryData = {
     pages: {
         data: {
