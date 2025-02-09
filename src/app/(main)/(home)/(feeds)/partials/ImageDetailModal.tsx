@@ -3,7 +3,6 @@
 import Modal from "@/components/common/Modal"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import { useState } from "react"
 import { sListImageDetail, useListImageDetail } from "../signal/listImageDetail"
 
 

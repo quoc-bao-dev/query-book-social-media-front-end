@@ -6,7 +6,6 @@ import {
     Avatar as AvatarUI,
 } from '@/components/ui/avatar';
 import { sAuth } from '@/store/authSignal';
-import { media } from '@/utils/mediaUtils';
 
 const Avatar = () => {
     const user = sAuth.use();
