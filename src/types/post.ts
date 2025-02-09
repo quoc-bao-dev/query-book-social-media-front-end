@@ -18,6 +18,8 @@ type Author = {
     name: string;
     email: string;
     avatar?: string;
+    avatarUrl?: string;
+    fullName: string;
 };
 
 export type PostsQueryData = {

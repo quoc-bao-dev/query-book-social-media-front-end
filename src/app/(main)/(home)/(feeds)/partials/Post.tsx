@@ -1,17 +1,25 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PostResponse } from '@/types/post';
-import toImage from '@/utils/imageUtils';
+import { getFirstCharacter } from '@/utils/nameUtilts';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 import Image from 'next/image';
 import PostImage from './PostImage';
 
 // FIXME: fix interface of post
 
 interface PostProps {
-    post: Pick<PostResponse, 'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls'>;
-
-
+    post: Pick<
+        PostResponse,
+        'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls' | 'createdAt'
+    >;
 }
 const Post = ({ post }: PostProps) => {
+    // Chuyển đổi chuỗi thành đối tượng Date
+    const date = parseISO(post.createdAt);
+
+    // Tính toán khoảng cách thời gian từ thời điểm cụ thể đến hiện tại
+    const distance = formatDistanceToNow(date, { addSuffix: true });
+    console.log(post.author?.avatarUrl);
 
     return (
         <div className="w-full gap-5 border rounded-xl px-4 py-4 bg-card">
@@ -19,14 +27,16 @@ const Post = ({ post }: PostProps) => {
                 <div className="flex justify-between">
                     <div className="">
                         <Avatar>
-                            <AvatarImage src={toImage(post.author.avatar)} />
-                            <AvatarFallback>CN</AvatarFallback>
+                            <AvatarImage src={post.author?.avatarUrl} />
+                            <AvatarFallback>
+                                {getFirstCharacter(post.author.fullName)}
+                            </AvatarFallback>
                         </Avatar>
                     </div>
 
                     <div className="text-left w-full px-4">
-                        <div className="">Name</div>
-                        <div className="text-gray-600">07 Sep 2024</div>
+                        <div className="">{post.author.fullName}</div>
+                        <div className="text-gray-600">{distance}</div>
                     </div>
 
                     <div className="">
@@ -48,7 +58,7 @@ const Post = ({ post }: PostProps) => {
                 </div>
 
                 <div className="pt-4">
-                    <p>{post.content}</p>
+                    <p className=" whitespace-pre-line">{post.content}</p>
                 </div>
             </div>
 

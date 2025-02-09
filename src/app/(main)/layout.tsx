@@ -4,7 +4,7 @@ import UserProvider from '@/provider/UserProvider';
 import { PropsWithChildren } from 'react';
 import NotifyDrawer from '../../components/NotifyDrawer/NotifyDrawer';
 import ImageDetailModal from './(home)/(feeds)/partials/ImageDetailModal';
-import ModalCreatePost from './partials/ModalCreatePost';
+import ModalCreatePost from './(home)/(feeds)/partials/ModalCreatePost';
 import UserDrawer from './partials/UserDrawer';
 
 const Layout = ({ children }: PropsWithChildren) => {
@@ -24,7 +24,6 @@ const Layout = ({ children }: PropsWithChildren) => {
             <NotifyDrawer />
             <UserDrawer />
             <ImageDetailModal />
-
         </UserProvider>
     );
 };

@@ -7,7 +7,12 @@ const nextConfig: NextConfig = {
     /* config options here */
     reactStrictMode: true,
     images: {
-        domains: ['localhost'], // Add your local development domain
+        domains: [
+            'localhost',
+            'picsum.photos',
+            'loremflickr.com',
+            'avatars.githubusercontent.com',
+        ], // Add your local development domain
     },
 };
 
