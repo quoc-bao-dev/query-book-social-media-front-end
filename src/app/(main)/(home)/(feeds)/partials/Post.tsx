@@ -4,22 +4,29 @@ import { getFirstCharacter } from '@/utils/nameUtilts';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import Image from 'next/image';
 import PostImage from './PostImage';
+import HeartIcon from '@/components/icons/HeartIcon';
+import { useLikeMutation } from '@/queries/like';
 
 // FIXME: fix interface of post
 
 interface PostProps {
     post: Pick<
         PostResponse,
-        'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls' | 'createdAt'
+        'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls' | 'createdAt' | 'likesCount'
     >;
 }
 const Post = ({ post }: PostProps) => {
+
+    const { mutateAsync: likePost } = useLikeMutation()
+
     // Chuyển đổi chuỗi thành đối tượng Date
     const date = parseISO(post.createdAt);
 
     // Tính toán khoảng cách thời gian từ thời điểm cụ thể đến hiện tại
     const distance = formatDistanceToNow(date, { addSuffix: true });
-    console.log(post.author?.avatarUrl);
+
+    const handleLike = () => { likePost(post.id) };
+
 
     return (
         <div className="w-full gap-5 border rounded-xl px-4 py-4 bg-card">
@@ -68,23 +75,10 @@ const Post = ({ post }: PostProps) => {
 
             <div className="grid grid-cols-2">
                 <div className="flex px-8 py-4 items-center">
-                    <div className="">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                            />
-                        </svg>
+                    <div onClick={handleLike}>
+                        <HeartIcon />
                     </div>
-                    <div className="px-2">20</div>
+                    <div className="px-2">{post.likesCount}</div>
                     <div className="w-full">
                         <div className="flex items-center ">
                             <Image

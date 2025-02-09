@@ -10,9 +10,8 @@ import { sListImageDetail, useListImageDetail } from "../signal/listImageDetail"
 
 
 const ImageDetailModal = () => {
-    const { isShow, listImages } = sListImageDetail.use()
-    const { closeModal } = useListImageDetail()
-    const [curIndex, setCurIndex] = useState(0)
+    const { isShow, listImages, curIndex } = sListImageDetail.use()
+    const { closeModal, setCurIndex } = useListImageDetail()
 
     const nextImage = () => {
         setCurIndex((curIndex + 1) % listImages.length)
