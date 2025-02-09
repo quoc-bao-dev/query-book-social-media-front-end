@@ -36,7 +36,8 @@ const MainContent = () => {
 
     const queryClient = useQueryClient();
 
-    const { data, fetchNextPage, isLoading, hasNextPage } = usePostQuery(); // Đảm bảo `hasNextPage` từ server
+    const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
+        usePostQuery(); // Đảm bảo `hasNextPage` từ server
 
     const posts =
         data?.pages.flatMap((page: AxiosResponse) => page.data.data) ||
@@ -193,12 +194,13 @@ const MainContent = () => {
                 </div>
                 {/* Post */}
 
-                {isLoading && (
-                    <div className="w-full flex justify-center items-center">
-                        <div className="h-[400px] w-full bg-gray-200 animate-pulse">
-                            <h1 className="text-center text-gray-500">
-                                Loading...
-                            </h1>
+                {(isLoading || isFetching) && (
+                    <div className="flex flex-col gap-3">
+                        <div className="w-full flex justify-center items-center">
+                            <div className="h-[400px] w-full bg-gray-400 animate-pulse rounded-lg"></div>
+                        </div>
+                        <div className="w-full flex justify-center items-center">
+                            <div className="h-[400px] w-full bg-gray-400 animate-pulse rounded-lg"></div>
                         </div>
                     </div>
                 )}
