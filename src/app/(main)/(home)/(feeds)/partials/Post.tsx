@@ -1,24 +1,22 @@
+import CommentIcon from '@/components/icons/CommentIcon';
+import HeartIcon from '@/components/icons/HeartIcon';
+import ShareIcon from '@/components/icons/ShareIcon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { cn } from '@/lib/utils';
+import { useLikeMutation } from '@/queries/like';
+import { useAuth } from '@/store/authSignal';
 import { PostResponse } from '@/types/post';
 import { getFirstCharacter } from '@/utils/nameUtilts';
 import { formatDistanceToNow, parseISO } from 'date-fns';
-import Image from 'next/image';
-import PostImage from './PostImage';
-import HeartIcon from '@/components/icons/HeartIcon';
-import { useLikeMutation } from '@/queries/like';
-import { sAuth, useAuth } from '@/store/authSignal';
-import { cn } from '@/lib/utils';
-import CommentIcon from '@/components/icons/CommentIcon';
-import { Share } from 'next/font/google';
-import ShareIcon from '@/components/icons/ShareIcon';
 import PostComment from './PostComment';
+import PostImage from './PostImage';
 
 // FIXME: fix interface of post
 
 interface PostProps {
     post: Pick<
         PostResponse,
-        'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls' | 'createdAt' | 'likesCount' | 'likes'
+        'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls' | 'createdAt' | 'likesCount' | 'likes' | 'comments'
     >;
 }
 const Post = ({ post }: PostProps) => {
@@ -114,23 +112,27 @@ const Post = ({ post }: PostProps) => {
                 </div>
             </div>
             {/* comment */}
-            {/* <div className="flex py-3">
-                <div className="flex justify-center">
-                    <Image
-                        src={'/images/git.png'}
-                        className="w-[40px] h-[40px] rounded-[50%]"
-                        alt=""
-                        width={40}
-                        height={40}
-                    />
-                </div>
-                <div className="bg-gray-200 rounded-lg ml-3 py-2 px-3 w-[90%]">
-                    <div className="">
-                        <p className="font-medium ">Name</p>
+            {post.comments.map((comment) => (
+                <div className="flex py-3" key={comment.id}>
+                    <div className="flex justify-center">
+                        <Avatar className="w-[40px] h-[40px] rounded-[50%]">
+                            <AvatarImage src={comment.avatarUrl} />
+                            <AvatarFallback>
+                                {getFirstCharacter(comment?.fullName ?? '')}
+                            </AvatarFallback>
+                        </Avatar>
                     </div>
-                    <div className="text-gray-900"> Ảnh đẹp lắm nha</div>
+                    <div className="bg-gray-200 rounded-lg ml-3 py-2 px-3 w-[90%]">
+                        <div className="">
+                            <p className="font-medium ">{comment.fullName}</p>
+                        </div>
+                        <div className="my-1">
+                            <img src={comment.mediaUrl} alt="" className="max-h-[100px] rounded-lg" />
+                        </div>
+                        <div className="text-gray-900"> {comment.content}</div>
+                    </div>
                 </div>
-            </div> */}
+            ))}
 
             <PostComment postId={post.id} />
             {/* comment */}
