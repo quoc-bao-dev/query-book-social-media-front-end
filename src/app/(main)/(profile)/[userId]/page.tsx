@@ -4,6 +4,7 @@ import { HttpResponse } from '@/types/common';
 import { UserProfileResponse } from '@/types/user';
 import Image from 'next/image';
 import SetCurUserProfileSignal from './partials/SetCurUserProfileSignal';
+import ButtonAddFriend from './partials/ButtonAddFriend';
 
 type PageProps = {
     params: { userId: string };
@@ -100,6 +101,7 @@ const Page = async ({ params }: PageProps) => {
                                         Hồ sơ
                                     </span>
                                 </div>
+                                <ButtonAddFriend userId={user.id} />
 
                                 <div className="flex items-center space-x-2">
                                     <svg

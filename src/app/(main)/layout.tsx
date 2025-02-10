@@ -1,9 +1,10 @@
-import Header from '@/components/layout/Header';
-import NavbarMobile from '@/components/layout/NavbarMobile';
+import Header from '@/components/Layout/Header';
+import NavbarMobile from '@/components/Layout/NavbarMobile';
 import UserProvider from '@/provider/UserProvider';
 import { PropsWithChildren } from 'react';
-import ModalCreatePost from './partials/ModalCreatePost';
-import NotifyDrawer from './partials/NotifyDrawer';
+import NotifyDrawer from '../../components/NotifyDrawer/NotifyDrawer';
+import ImageDetailModal from './(home)/(feeds)/partials/ImageDetailModal';
+import ModalCreatePost from './(home)/(feeds)/partials/ModalCreatePost';
 import UserDrawer from './partials/UserDrawer';
 
 const Layout = ({ children }: PropsWithChildren) => {
@@ -22,6 +23,7 @@ const Layout = ({ children }: PropsWithChildren) => {
             <ModalCreatePost />
             <NotifyDrawer />
             <UserDrawer />
+            <ImageDetailModal />
         </UserProvider>
     );
 };

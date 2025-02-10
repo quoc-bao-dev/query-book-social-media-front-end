@@ -66,6 +66,7 @@ function SearchHeader() {
                                     name={_item.firstName ?? _item.username}
                                     avatar={_item.avatarUrl}
                                     title={_item.handle}
+                                    email={_item.email}
                                     onClick={() => {}}
                                 />
                             ))}

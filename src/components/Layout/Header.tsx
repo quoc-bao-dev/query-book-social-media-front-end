@@ -1,6 +1,6 @@
 'use client';
 
-import { useNotifyDrawer } from '@/app/(main)/partials/NotifyDrawer';
+import { useNotifyDrawer } from '@/components/NotifyDrawer/NotifyDrawer';
 import Image from 'next/image';
 import Bar3 from '../icons/Bar3';
 import Bell from '../icons/Bell';
@@ -38,7 +38,7 @@ const Header = () => {
 
                     {/* Nav */}
 
-                    <div className="absolute left-[50%] translate-x-[-50%] hidden lg:flex gap-20">
+                    <div className="absolute left-[50%] translate-x-[-50%] hidden lg:block">
                         <NavMenu />
                     </div>
                     {/* Nav */}

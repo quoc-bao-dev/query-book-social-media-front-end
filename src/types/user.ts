@@ -25,7 +25,7 @@ export type UserProfileResponse = {
     email: string;
     avatar: Avatar;
     avatarUrl: string;
-    jobTitle: string;
+    jobTitle: JobTitle;
     socials: Social[];
     links: Link[];
     skills: Skill[];
@@ -83,6 +83,12 @@ type Avatar = {
     url?: string;
 };
 
+type JobTitle = {
+    id: string;
+    title: string;
+    description: string;
+};
+
 export type UserSearchResponse = UserResponse;
 
 export type UserSuggestResponse = {
@@ -92,5 +98,14 @@ export type UserSuggestResponse = {
     avatarUrl?: string;
     professional?: string;
     email: string;
+    handle: string;
+};
+
+export type UserRequestResponse = {
+    id: string;
+    fullName: string;
+    username: string;
+    email: string;
+    avatar: string;
     handle: string;
 };
