@@ -111,7 +111,7 @@ const ChatSideBarLeft = () => {
             </div>
 
             {/* user rows */}
-            <div className="relative pt-2 flex flex-col gap-2 flex-1">
+            <div className="relative py-2 flex flex-col gap-2 flex-1 mb-[56px] md:mb-0 scrollbar-custom ">
                 {lsRoomChat?.map((room) => (
                     <ChatUserRow
                         key={room.id}
@@ -124,7 +124,7 @@ const ChatSideBarLeft = () => {
                 ))}
 
                 {isShowSearch && (
-                    <div className="absolute inset-0  ">
+                    <div className="absolute inset-0 bg-red-400">
                         <div className="w-full h-full bg-card flex flex-col gap-2 px-4 py-2">
                             {(lsUser?.length === 0 || !lsUser) && (
                                 <p className="text-sm text-center text-neutral-600/70 font-semibold">

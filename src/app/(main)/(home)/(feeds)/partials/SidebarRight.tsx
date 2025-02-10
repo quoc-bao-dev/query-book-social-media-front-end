@@ -4,15 +4,21 @@ import { useFollowMutation } from '@/queries/follow';
 import { useUserSuggestionQuery } from '@/queries/user';
 import UserFollowSuggestRow from './UserFollowSuggestRow';
 import FriendSuggestRow from './FriendSuggestRow';
+import { useTranslations } from 'next-intl';
+import FriendCardSkeleton from './FriendCardSkeleton';
 
 const SidebarRight = () => {
-    const { data: followsSuggest } = useUserSuggestionQuery({
-        suggestMode: 'follow_suggest',
-    });
+    const t = useTranslations('Sidebar');
 
-    const { data: friendsSuggest } = useUserSuggestionQuery({
-        suggestMode: 'friend_suggest',
-    });
+    const { data: followsSuggest, isLoading: followLoading } =
+        useUserSuggestionQuery({
+            suggestMode: 'follow_suggest',
+        });
+
+    const { data: friendsSuggest, isLoading: friendLoading } =
+        useUserSuggestionQuery({
+            suggestMode: 'friend_suggest',
+        });
     const { mutateAsync } = useFollowMutation();
 
     const lsFollowSuggest = followsSuggest?.data.data;
@@ -24,7 +30,7 @@ const SidebarRight = () => {
             {/* Follow */}
             <div className="">
                 <div className="pb-1 font-semibold">
-                    <p>Follow</p>
+                    <p>{t('follow')}</p>
                 </div>
                 {lsFollowSuggest?.map((_user) => (
                     <UserFollowSuggestRow
@@ -35,13 +41,20 @@ const SidebarRight = () => {
                         }}
                     />
                 ))}
+                {followLoading && (
+                    <div className="flex flex-col gap-3">
+                        <FriendCardSkeleton />
+                        <FriendCardSkeleton />
+                        <FriendCardSkeleton />
+                    </div>
+                )}
             </div>
             {/* Follow */}
 
             {/* Jobs */}
             <div className="pt-6">
                 <div className="pb-1 font-semibold">
-                    <p>Friends Suggest</p>
+                    <p>{t('friendSuggest')}</p>
                 </div>
                 {lsFriendSuggest?.map((_user) => (
                     <FriendSuggestRow
@@ -50,12 +63,19 @@ const SidebarRight = () => {
                         isFriend={false}
                     />
                 ))}
+                {friendLoading && (
+                    <div className="flex flex-col gap-3">
+                        <FriendCardSkeleton />
+                        <FriendCardSkeleton />
+                        <FriendCardSkeleton />
+                    </div>
+                )}
             </div>
             {/* Jobs */}
             {/* Jobs */}
             <div className="pt-6">
                 <div className="pb-1 font-semibold">
-                    <p>Jobs</p>
+                    <p>{t('jobs')}</p>
                 </div>
             </div>
             {/* Jobs */}

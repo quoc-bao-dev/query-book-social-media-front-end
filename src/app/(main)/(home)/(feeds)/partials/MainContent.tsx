@@ -6,11 +6,12 @@ import { usePostQuery } from '@/queries/post';
 import { PostResponse, PostsQueryData } from '@/types/post';
 import { useQueryClient } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
-import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Post from './Post';
 import PostCreate from './PostCreate';
+import PostSkeleton from './PostSkeleton';
+import LoadingEffect from '@/components/common/Loading';
 
 const feeds = [
     {
@@ -99,14 +100,11 @@ const MainContent = () => {
         };
     }, [handleScroll]);
 
-    const t = useTranslations('HomePage');
     return (
         <>
             {/* main content */}
             <main className="mx-auto pb-[75px] w-full">
                 {/* Story */}
-
-                <h1>{t('title')}</h1>
                 <div className="w-[calc(100vw-32px)] md:w-full mx-auto">
                     <ScrollArea className="w-full rounded-xl overflow-hidden">
                         <div className="w-full flex gap-4 justify-between ">
@@ -196,12 +194,8 @@ const MainContent = () => {
 
                 {(isLoading || isFetching) && (
                     <div className="flex flex-col gap-3">
-                        <div className="w-full flex justify-center items-center">
-                            <div className="h-[400px] w-full bg-gray-400 animate-pulse rounded-lg"></div>
-                        </div>
-                        <div className="w-full flex justify-center items-center">
-                            <div className="h-[400px] w-full bg-gray-400 animate-pulse rounded-lg"></div>
-                        </div>
+                        <PostSkeleton />
+                        <PostSkeleton />
                     </div>
                 )}
             </main>
