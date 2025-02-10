@@ -24,7 +24,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
-                        className="bg-card p-6 rounded-2xl shadow-lg relative w-[90%] max-w-md"
+                        className=" rounded-2xl shadow-lg relative w-fit"
                     >
                         <button
                             onClick={onClose}

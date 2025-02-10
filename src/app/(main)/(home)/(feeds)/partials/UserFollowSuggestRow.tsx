@@ -1,5 +1,8 @@
 import { Button } from '@/components/common/Button';
+import Tooltip from '@/components/common/Tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getFirstCharacter } from '@/utils/nameUtilts';
+import { useTranslations } from 'next-intl';
 
 type UserFollowSuggestRowProps = {
     id: string;
@@ -7,6 +10,7 @@ type UserFollowSuggestRowProps = {
     avatarUrl?: string;
     professional?: string;
     handle: string;
+    email: string;
     onFollow: (userId: string) => void;
 };
 const UserFollowSuggestRow = ({
@@ -15,8 +19,10 @@ const UserFollowSuggestRow = ({
     avatarUrl,
     professional,
     handle,
+    email,
     onFollow,
 }: UserFollowSuggestRowProps) => {
+    const t = useTranslations('Sidebar');
     const handleFollow = () => {
         onFollow(id);
     };
@@ -24,17 +30,19 @@ const UserFollowSuggestRow = ({
         <div className="flex items-center gap w-full border rounded-xl px-4 py-4 my-2 bg-card">
             <Avatar className="w-[40px] h-[40px]">
                 <AvatarImage src={avatarUrl} />
-                <AvatarFallback />
+                <AvatarFallback>{getFirstCharacter(fullName)}</AvatarFallback>
             </Avatar>
             <div className="pl-3 w-[60%]">
-                <p className="">{fullName}</p>
+                <Tooltip content={email}>
+                    <p className="text-sm">{fullName}</p>
+                </Tooltip>
                 <p className="text-gray-700 text-[12px]">
                     {professional ?? handle}
                 </p>
             </div>
             <div className="">
                 <Button size="sm" onClick={handleFollow}>
-                    Follow
+                    {t('follow')}
                 </Button>
             </div>
         </div>

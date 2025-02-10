@@ -2,6 +2,15 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { config } from '@/config';
 import axiosClient from '@/httpClient';
 import { useAuth } from '@/store/authSignal';
@@ -12,19 +21,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { signify } from 'react-signify';
-import {
-    createPost,
-    CreatePostSchema,
-} from '../(home)/(feeds)/schema/CreatePostSchema';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { createPost, CreatePostSchema } from '../schema/CreatePostSchema';
+import { useCreatePostMutation } from '@/queries/post';
 
 type ModalCreatePostSignal = {
     isOpen: boolean;
@@ -46,6 +44,9 @@ const ModalCreatePost = () => {
     const name = getFirstCharacter(user?.fullName || '');
 
     const isShow = ssOpenFormModal.use();
+
+    const { mutateAsync } = useCreatePostMutation();
+
     const onModalChange = (isOpen: boolean) => {
         sModalCreatePost.set((n) => (n.value.isOpen = isOpen));
     };
@@ -79,6 +80,8 @@ const ModalCreatePost = () => {
                 }
             );
 
+            console.log(response.data);
+
             return response.data;
         } catch (error) {
             console.log(error);
@@ -109,15 +112,18 @@ const ModalCreatePost = () => {
                 sourceType: 'file',
             }));
 
-        await axiosClient.post('/posts', {
+        const payload = {
             content: data.content,
             status: data.status,
             hashTags,
-            medias,
-        });
+            media: medias,
+        };
+
+        await mutateAsync(payload);
 
         sModalCreatePost.set((n) => (n.value.isOpen = false));
         reset();
+        setFiles([]);
     };
 
     return (

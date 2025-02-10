@@ -18,9 +18,12 @@ const ChatUserRow = ({
 }: ChatUserRowProps) => {
     return (
         <div
-            className={cn('px-4 py-2 flex gap-2 hover:bg-gray-200/40', {
-                'bg-gray-200/80': selected,
-            })}
+            className={cn(
+                'px-4 py-2 flex gap-2 hover:bg-gray-200/40 cursor-pointer',
+                {
+                    'bg-gray-200/80': selected,
+                }
+            )}
             onClick={onClick}
         >
             <Avatar className="h-[48px] w-[48px]">

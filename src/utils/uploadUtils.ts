@@ -2,6 +2,16 @@ import { config } from '@/config';
 import axiosClient from '@/httpClient';
 import axios from 'axios';
 
+interface UploadsResponse {
+    message: string;
+    files: File[];
+}
+
+interface File {
+    filename: string;
+    path: string;
+}
+
 export const uploadImage = async (file: File) => {
     const formData = new FormData();
 
@@ -40,7 +50,7 @@ export const uploadImages = async (files: File[]) => {
     }
 
     try {
-        const response = await axiosClient.post(
+        const response = await axiosClient.post<UploadsResponse>(
             `${config.IMAGE_SERVER_URL}/uploads`,
             formData,
             {
