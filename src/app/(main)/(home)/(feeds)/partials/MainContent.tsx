@@ -6,11 +6,12 @@ import { usePostQuery } from '@/queries/post';
 import { PostResponse, PostsQueryData } from '@/types/post';
 import { useQueryClient } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
-import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Post from './Post';
 import PostCreate from './PostCreate';
+import PostSkeleton from './PostSkeleton';
+import LoadingEffect from '@/components/common/Loading';
 
 const feeds = [
     {
@@ -36,7 +37,8 @@ const MainContent = () => {
 
     const queryClient = useQueryClient();
 
-    const { data, fetchNextPage, isLoading, hasNextPage } = usePostQuery(); // Đảm bảo `hasNextPage` từ server
+    const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
+        usePostQuery(); // Đảm bảo `hasNextPage` từ server
 
     const posts =
         data?.pages.flatMap((page: AxiosResponse) => page.data.data) ||
@@ -98,14 +100,11 @@ const MainContent = () => {
         };
     }, [handleScroll]);
 
-    const t = useTranslations('HomePage');
     return (
         <>
             {/* main content */}
             <main className="mx-auto pb-[75px] w-full">
                 {/* Story */}
-
-                <h1>{t('title')}</h1>
                 <div className="w-[calc(100vw-32px)] md:w-full mx-auto">
                     <ScrollArea className="w-full rounded-xl overflow-hidden">
                         <div className="w-full flex gap-4 justify-between ">
@@ -193,13 +192,10 @@ const MainContent = () => {
                 </div>
                 {/* Post */}
 
-                {isLoading && (
-                    <div className="w-full flex justify-center items-center">
-                        <div className="h-[400px] w-full bg-gray-200 animate-pulse">
-                            <h1 className="text-center text-gray-500">
-                                Loading...
-                            </h1>
-                        </div>
+                {(isLoading || isFetching) && (
+                    <div className="flex flex-col gap-3">
+                        <PostSkeleton />
+                        <PostSkeleton />
                     </div>
                 )}
             </main>

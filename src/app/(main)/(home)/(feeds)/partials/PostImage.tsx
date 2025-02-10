@@ -7,10 +7,11 @@ type Props = {
 }
 const PostImage = ({ lsImage }: Props) => {
 
-    const { showModal, setImages } = useListImageDetail()
+    const { showModal, setImages, setCurIndex } = useListImageDetail()
 
-    const showDetail = () => {
+    const showDetail = (index: number) => () => {
         setImages(lsImage)
+        setCurIndex(index)
         showModal()
     }
 
@@ -22,11 +23,22 @@ const PostImage = ({ lsImage }: Props) => {
         return (
             <div>
                 <div className="absolute bg-gray-200 inset-0 overflow-hidden rounded-md">
+                    {lsImage.map((mediaUrl, index) => (
+                        <Image
+                            onClick={showDetail(index)}
+                            key={index}
+                            src={`${mediaUrl}`}
+                            className="rounded-md text-center w-full h-auto opacity-50 blur-sm object-contain"
+                            alt=""
+                            width={1000}
+                            height={1000}
+                        />
+                    ))}
                 </div>
                 <div className="relative z-40">
                     {lsImage.map((mediaUrl, index) => (
                         <Image
-                            onClick={showDetail}
+                            onClick={showDetail(index)}
                             key={index}
                             src={`${mediaUrl}`}
                             className="rounded-md text-center max-h-[600px] object-contain"
@@ -47,8 +59,8 @@ const PostImage = ({ lsImage }: Props) => {
                 </div>
                 <div className="relative z-40">
                     <div className="grid grid-cols-2 gap-2 p-2 items-center">
-                        <Image src={lsImage[0]} width={1000} height={1000} alt="Hình ảnh phòng" className="w-full rounded-lg shadow" />
-                        <Image src={lsImage[1]} alt="Khu bếp" className="w-full rounded-lg shadow" width={1000}
+                        <Image onClick={showDetail(0)} src={lsImage[0]} width={1000} height={1000} alt="Hình ảnh phòng" className="w-full rounded-lg shadow" />
+                        <Image onClick={showDetail(1)} src={lsImage[1]} alt="Khu bếp" className="w-full rounded-lg shadow" width={1000}
                             height={0} />
                     </div>
                 </div>
@@ -63,10 +75,10 @@ const PostImage = ({ lsImage }: Props) => {
                 </div>
                 <div className="relative z-40">
                     <div className="grid grid-cols-3 gap-2 p-2 items-end">
-                        <Image onClick={showDetail} src={lsImage[0]} width={1000} height={1000} alt="Hình ảnh phòng" className="w-full rounded-lg shadow mb-4" />
-                        <Image onClick={showDetail} src={lsImage[1]} alt="Khu bếp" className="w-full rounded-lg shadow" width={1000}
+                        <Image onClick={showDetail(0)} src={lsImage[0]} width={1000} height={1000} alt="Hình ảnh phòng" className="w-full rounded-lg shadow mb-4" />
+                        <Image onClick={showDetail(1)} src={lsImage[1]} alt="Khu bếp" className="w-full rounded-lg shadow" width={1000}
                             height={0} />
-                        <Image onClick={showDetail} src={lsImage[2]} alt="Nhà vệ sinh" className="w-full rounded-lg shadow mb-4" width={1000}
+                        <Image onClick={showDetail(2)} src={lsImage[2]} alt="Nhà vệ sinh" className="w-full rounded-lg shadow mb-4" width={1000}
                             height={0} />
                     </div>
                 </div>
@@ -81,12 +93,12 @@ const PostImage = ({ lsImage }: Props) => {
                 </div>
                 <div className="relative z-40">
                     <div className="grid grid-cols-2 gap-2 p-2">
-                        <Image onClick={showDetail} src={lsImage[0]} width={1000} height={1000} alt="Hình ảnh phòng" className="w-full rounded-lg shadow" />
-                        <Image onClick={showDetail} src={lsImage[1]} alt="Khu bếp" className="w-full rounded-lg shadow" width={1000}
+                        <Image onClick={showDetail(0)} src={lsImage[0]} width={1000} height={1000} alt="Hình ảnh phòng" className="w-full rounded-lg shadow" />
+                        <Image onClick={showDetail(1)} src={lsImage[1]} alt="Khu bếp" className="w-full rounded-lg shadow" width={1000}
                             height={0} />
-                        <Image onClick={showDetail} src={lsImage[2]} alt="Nhà vệ sinh" className="w-full rounded-lg shadow" width={1000}
+                        <Image onClick={showDetail(2)} src={lsImage[2]} alt="Nhà vệ sinh" className="w-full rounded-lg shadow" width={1000}
                             height={0} />
-                        <Image onClick={showDetail} src={lsImage[3]} alt="Bồn cầu" className="w-full rounded-lg shadow" width={1000}
+                        <Image onClick={showDetail(3)} src={lsImage[3]} alt="Bồn cầu" className="w-full rounded-lg shadow" width={1000}
                             height={0} />
                     </div>
 
@@ -97,7 +109,26 @@ const PostImage = ({ lsImage }: Props) => {
 
     if (lsImage.length >= 5) {
         return (
-            <div>5 image</div>
+            <div>
+                <div className="absolute bg-gray-200 inset-0 overflow-hidden rounded-md">
+                </div>
+                <div className="relative z-40">
+                    <div className="grid grid-cols-2 gap-2 p-2">
+                        <Image onClick={showDetail(0)} src={lsImage[0]} width={1000} height={1000} alt="Hình ảnh phòng" className="w-full rounded-lg shadow" />
+                        <Image onClick={showDetail(1)} src={lsImage[1]} alt="Khu bếp" className="w-full rounded-lg shadow" width={1000}
+                            height={0} />
+                        <Image onClick={showDetail(2)} src={lsImage[2]} alt="Nhà vệ sinh" className="w-full rounded-lg shadow" width={1000}
+                            height={0} />
+                        <div className="relative " onClick={showDetail(3)}>
+                            <Image src={lsImage[3]} alt="Bồn cầu" className="w-full rounded-lg shadow" width={1000}
+                                height={0} />
+                            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 flex justify-center items-center">
+                                <p className="text-white text-7xl">+{lsImage.length - 4}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         )
     }
 
