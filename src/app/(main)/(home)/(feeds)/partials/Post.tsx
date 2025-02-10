@@ -10,6 +10,7 @@ import { getFirstCharacter } from '@/utils/nameUtilts';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import PostComment from './PostComment';
 import PostImage from './PostImage';
+import Image from 'next/image';
 
 // FIXME: fix interface of post
 
@@ -111,29 +112,45 @@ const Post = ({ post }: PostProps) => {
                     <ShareIcon />
                 </div>
             </div>
+
             {/* comment */}
             {post.comments.map((comment) => (
-                <div className="flex py-3" key={comment.id}>
-                    <div className="flex justify-center">
-                        <Avatar className="w-[40px] h-[40px] rounded-[50%]">
-                            <AvatarImage src={comment.avatarUrl} />
-                            <AvatarFallback>
-                                {getFirstCharacter(comment?.fullName ?? '')}
-                            </AvatarFallback>
-                        </Avatar>
-                    </div>
-                    <div className="bg-gray-200 rounded-lg ml-3 py-2 px-3 w-[90%]">
-                        <div className="">
-                            <p className="font-medium ">{comment.fullName}</p>
+                <div className="" key={comment.id}>
+                    <div className="flex py-1">
+                        {/* user comment */}
+                        <div className="flex justify-center">
+                            <Avatar className="w-[40px] h-[40px] rounded-[50%]">
+                                <AvatarImage src={comment.avatarUrl} />
+                                <AvatarFallback>
+                                    {getFirstCharacter(comment?.fullName ?? '')}
+                                </AvatarFallback>
+                            </Avatar>
                         </div>
-                        <div className="my-1">
-                            <img src={comment.mediaUrl} alt="" className="max-h-[100px] rounded-lg" />
-                        </div>
-                        <div className="text-gray-900"> {comment.content}</div>
-                    </div>
-                </div>
-            ))}
+                        {/* show comment */}
+                        <div className="w-auto h-auto">
+                            <div className="bg-gray-50 rounded-lg ml-3 py-2 px-3">
+                                <div className="text-neutral-900 ">
+                                    <p className="font-normal">{comment.fullName}</p>
+                                </div>
 
+                                <div className="text-gray-900"> {comment.content}</div>
+                            </div>
+
+                            <div className="py-1 pl-[12px]">
+                                <Image src={comment.mediaUrl!} alt="" className="max-h-[150px] w-auto rounded-lg" width={1000} height={1000} />
+                            </div>
+
+                            <div className="flex justify-end items-center px-3 gap-5 text-neutral-600 py-1 text-[14px] font-medium">
+                                <div className="">Xóa</div>
+                                <div className="">Trả lời</div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* delete & rep comment */}
+
+                </div>
+
+            ))}
             <PostComment postId={post.id} />
             {/* comment */}
         </div>

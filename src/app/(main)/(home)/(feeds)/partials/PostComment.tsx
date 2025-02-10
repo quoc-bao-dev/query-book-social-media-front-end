@@ -6,6 +6,9 @@ import { getFirstCharacter } from "@/utils/nameUtilts";
 import { uploadImages } from "@/utils/uploadUtils";
 import { useRef, useState } from "react";
 import Image from "next/image";
+import SendIcon from "@/components/icons/SendIcon";
+import MediaIcon from "@/components/icons/MediaIcon";
+import DeleteIcon from "@/components/icons/DeleteIcon";
 
 const PostComment = ({ postId }: { postId: string }) => {
 
@@ -56,22 +59,30 @@ const PostComment = ({ postId }: { postId: string }) => {
                 }
             }
         }
+        await comment(payload)
 
-        comment(payload)
+        setImages([])
+        if (inputRef.current) {
+            inputRef.current.value = ''
+        }
+
 
     }
 
 
     return (
         <>
+            {/* Hiện images trong comment */}
             {images.map((image, index) => (
-                <div key={index} className="relative">
-                    <Image src={URL.createObjectURL(image)} alt="" width={1000} height={1000} />
-                    <div className="absolute top-1 right-1 cursor-pointer" onClick={handleRemoveImage(index)}>x</div>
+                <div key={index} className="relative flex pl-[52px] w-[250px]">
+                    <Image src={URL.createObjectURL(image)} alt="" className="w-full h-auto rounded-lg" width={1000} height={1000} />
+                    <div className="absolute top-1 right-1 cursor-pointer p-[2px] rounded-full bg-gray-200/60 text-gray-700" onClick={handleRemoveImage(index)}>
+                        <DeleteIcon className="size-[18px]" />
+                    </div>
                 </div>
             ))}
-            <div className="flex py-3">
 
+            <div className="flex py-3">
                 <div className="flex justify-center">
                     <Avatar>
                         <AvatarImage src={user?.avatarUrl} />
@@ -81,14 +92,20 @@ const PostComment = ({ postId }: { postId: string }) => {
                     </Avatar>
 
                 </div>
-                <div className="ml-3 w-[90%] ">
+                <div className="ml-3 w-[90%] flex gap-2 justify-center items-center">
                     <input
                         ref={inputRef}
                         type="text"
-                        className="w-full h-[40px] px-2 rounded-lg focus:border-info-500 focus:outline-none focus:ring-1 focus:ring-info-500"
+                        className="w-full h-[40px] border px-2 rounded-lg focus:border-info-500 focus:outline-none focus:ring-1 focus:ring-info-500"
                         placeholder="Write a comment" />
-                    <div className="p-3 bg-red-300" onClick={handleUploadImage}> img</div>
-                    <div className="p-3 bg-blue-300" onClick={handleComment}> cmt</div>
+
+                    <div onClick={handleUploadImage}>
+                        <MediaIcon className="fill-gray-700" />
+                    </div>
+                    <div onClick={handleComment}>
+                        <SendIcon className="fill-primary-500" />
+                    </div>
+
                 </div>
             </div>
         </>

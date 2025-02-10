@@ -122,7 +122,7 @@ const PostImage = ({ lsImage }: Props) => {
                         <div className="relative " onClick={showDetail(3)}>
                             <Image src={lsImage[3]} alt="Bồn cầu" className="w-full rounded-lg shadow" width={1000}
                                 height={0} />
-                            <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 flex justify-center items-center">
+                            <div className="absolute top-0 left-0 w-full h-full bg-black rounded-lg opacity-50 flex justify-center items-center">
                                 <p className="text-white text-7xl">+{lsImage.length - 4}</p>
                             </div>
                         </div>
