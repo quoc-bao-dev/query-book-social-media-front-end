@@ -24,6 +24,7 @@ import { useState } from "react";
 import SetCurUserProfileSignal from '../../../[userId]/partials/SetCurUserProfileSignal';
 import Xmark from '@/components/icons/X-mark';
 import Check from '@/components/icons/Check';
+import FloatInput from '@/components/common/FloatInput';
 
 
 const Page = () => {
@@ -205,15 +206,9 @@ const Page = () => {
                                         </div>
                                         <div className="my-3 ">
                                             <div className="relative ">
-                                                <input
-                                                    type="email"
-                                                    defaultValue="FPT"
-                                                    className="peer h-[50px] w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                                    placeholder=" " // Đặt placeholder là dấu cách để label có thể nổi lên
-                                                />
-                                                <label className="absolute left-3 top-[-10px] text-neutral-600 text-sm peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-600 peer-focus:top-0 peer-focus:text-xs peer-focus:text-primary-500 transition-all">
-                                                    Công ty
-                                                </label>
+
+                                                <FloatInput label='Công ty' />
+
                                             </div>
                                             <div className="mt-3 ">
                                                 <div className="w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full cursor-pointer">
