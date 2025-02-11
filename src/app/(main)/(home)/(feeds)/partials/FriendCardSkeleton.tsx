@@ -2,7 +2,7 @@ import React from 'react';
 
 const FriendCardSkeleton: React.FC = () => {
     return (
-        <div className="flex items-center justify-between bg-white shadow-md rounded-xl p-4 animate-pulse w-[286px]">
+        <div className="flex items-center justify-between bg-card shadow-md rounded-xl p-4 animate-pulse w-[286px]">
             {/* Avatar */}
             <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
 
