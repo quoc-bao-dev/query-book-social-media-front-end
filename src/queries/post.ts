@@ -5,6 +5,7 @@ import { PostResponse } from '@/types/post';
 import {
     useInfiniteQuery,
     useMutation,
+    useQuery,
     useQueryClient,
 } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
@@ -32,6 +33,18 @@ export const usePostQuery = () => {
     });
 };
 
+// get post by user id
+const getPostByUserId = (userId: string) =>
+    axiosClient
+        .get<HttpResponse<any[]>>(`posts/user/${userId}`)
+        .then((data) => data.data.data);
+
+export const usePostOfUserQuery = (userId: string) => {
+    return useQuery({
+        queryFn: () => getPostByUserId(userId),
+        queryKey: ['post', userId],
+    });
+};
 
 // create post
 const postCreatePost = async (payload: {

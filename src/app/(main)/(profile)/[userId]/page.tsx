@@ -1,12 +1,12 @@
 import GlobeAlt from "@/components/icons/Globe-alt";
 import Inbox from "@/components/icons/Inbox";
+import MapPin from "@/components/icons/Map-pin";
 import Phone from "@/components/icons/Phone";
 import { config } from "@/config";
 import httpClient from "@/httpClient/httpClient";
 import { HttpResponse } from "@/types/common";
 import { UserProfileResponse } from "@/types/user";
 import SetCurUserProfileSignal from "../partials/SetCurUserProfileSignal";
-import MapPin from "@/components/icons/Map-pin";
 
 type PageProps = {
   params: { userId: string };
