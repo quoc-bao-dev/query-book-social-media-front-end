@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import { config } from '@/config';
 import axiosClient from '@/httpClient';
+import { useCreatePostMutation } from '@/queries/post';
 import { useAuth } from '@/store/authSignal';
 import { extractHashtags } from '@/utils/hashtagUtils';
 import { getFirstCharacter } from '@/utils/nameUtilts';
@@ -22,7 +23,7 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { signify } from 'react-signify';
 import { createPost, CreatePostSchema } from '../schema/CreatePostSchema';
-import { useCreatePostMutation } from '@/queries/post';
+import AutoResizeTextarea from './AutoResizeTextarea';
 
 type ModalCreatePostSignal = {
     isOpen: boolean;
@@ -92,7 +93,6 @@ const ModalCreatePost = () => {
     const {
         control,
         handleSubmit,
-        register,
         reset,
         formState: { errors },
     } = useForm<CreatePostSchema>({
@@ -130,7 +130,7 @@ const ModalCreatePost = () => {
         <Dialog open={isShow} onOpenChange={onModalChange}>
             <DialogContent className="p-0 w-[500px]">
                 <form
-                    className="w-full bg-white rounded-lg"
+                    className="w-full bg-card rounded-lg"
                     onSubmit={handleSubmit(onSubmit)}
                 >
                     <DialogTitle>
@@ -190,37 +190,40 @@ const ModalCreatePost = () => {
                     </div>
 
                     <div className="mt-5">
-                        <textarea
-                            {...register('content')}
-                            id="auto-resize-textarea"
-                            className="border-none w-full break-words px-4 py-3 focus:outline-none overflow-hidden "
-                            placeholder="Nguyễn ơi, bạn đang nghĩ gì?"
-                        ></textarea>
+                        <div className="px-3 max-h-[375px] overflow-y-auto">
+                            <Controller
+                                control={control}
+                                name='content'
+                                render={({ field }) => (
+                                    <AutoResizeTextarea onchange={field.onChange} />
+                                )}
+                            />
+                            <div className="mt-5">
+                                {files.map((file, index) => (
+                                    <div
+                                        className="w-[200px] h-auto flex items-center justify-center"
+                                        key={index}
+                                    >
+                                        <Image
+                                            className="w-full object-cover"
+                                            src={URL.createObjectURL(file)}
+                                            alt=""
+                                            width={500}
+                                            height={500}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                         {errors.content && (
-                            <p className="text-red-500">
+                            <p className="text-error-500">
                                 {errors.content.message}
                             </p>
                         )}
+
                     </div>
 
-                    <div className="w-[476px] border-[0.5px] border-gray-300 h-[270px] mx-auto rounded-md px-2 py-2 mt-5">
-                        <div className="h-full overflow-y-auto">
-                            {files.map((file, index) => (
-                                <div
-                                    className="w-full flex items-center justify-center"
-                                    key={index}
-                                >
-                                    <Image
-                                        className="w-full object-cover"
-                                        src={URL.createObjectURL(file)}
-                                        alt=""
-                                        width={500}
-                                        height={500}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+
 
                     <div className="w-[476px] border-[0.5px] border-gray-300 h-[50px] mx-auto rounded-md px-2 py-2 grid grid-cols-2 mt-5">
                         <div className=" text-center pt-1">
@@ -297,7 +300,7 @@ const ModalCreatePost = () => {
 
                     <button
                         type="submit"
-                        className="w-[476px] bg-secondary-950 border-[0.5px] h-[35px] mx-auto rounded-md flex items-center justify-center mt-5 mb-4"
+                        className="w-[476px] bg-primary-500 border-[0.5px] h-[35px] mx-auto rounded-md flex items-center justify-center mt-5 mb-4"
                     >
                         <div className=" text-center text-white">Đăng</div>
                     </button>

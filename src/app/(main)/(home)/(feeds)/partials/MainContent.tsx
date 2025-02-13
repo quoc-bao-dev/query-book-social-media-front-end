@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react';
 import Post from './Post';
 import PostCreate from './PostCreate';
 import PostSkeleton from './PostSkeleton';
-import LoadingEffect from '@/components/common/Loading';
 
 const feeds = [
     {
