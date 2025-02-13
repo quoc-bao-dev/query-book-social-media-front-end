@@ -7,6 +7,7 @@ import httpClient from "@/httpClient/httpClient";
 import { HttpResponse } from "@/types/common";
 import { UserProfileResponse } from "@/types/user";
 import SetCurUserProfileSignal from "../partials/SetCurUserProfileSignal";
+import PostsOfUser from "./partials/PostsOfUser";
 
 type PageProps = {
   params: { userId: string };
@@ -95,7 +96,9 @@ const Page = async ({ params }: PageProps) => {
             {/* About */}
 
             {/* posts */}
-            <div className="mt-4 w-[680px] h-32 flex flex-col border border-b rounded-2xl p-4 bg-card"></div>
+            <div className="mt-4 w-[680px] h-auto flex flex-col ">
+              <PostsOfUser userId={userId} />
+            </div>
             {/* posts */}
           </div>
         </div>
