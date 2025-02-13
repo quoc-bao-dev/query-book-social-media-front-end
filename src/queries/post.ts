@@ -32,6 +32,7 @@ export const usePostQuery = () => {
     });
 };
 
+
 // create post
 const postCreatePost = async (payload: {
     content: string;
