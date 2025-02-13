@@ -95,7 +95,7 @@ const PostComment = ({ postId }: { postId: string }) => {
             </AvatarFallback>
           </Avatar>
         </div>
-        <div className="ml-3 w-[90%] flex gap-2 justify-center items-center">
+        <div className="ml-3 w-full flex gap-2 justify-center items-center">
           <input
             ref={inputRef}
             type="text"
@@ -103,7 +103,7 @@ const PostComment = ({ postId }: { postId: string }) => {
             placeholder="Write a comment"
           />
 
-          <div onClick={handleUploadImage}>
+          <div onClick={handleUploadImage} className="px-1">
             <MediaIcon className="fill-gray-700" />
           </div>
           <div onClick={handleComment}>

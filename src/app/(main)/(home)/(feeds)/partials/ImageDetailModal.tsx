@@ -1,15 +1,15 @@
 "use client";
 
 import Modal from "@/components/common/Modal";
+import ChevronLeftIcon from "@/components/icons/ChevronLeftIcon";
 import ChevronRightIcon from "@/components/icons/ChevronRightIcon";
+import DeleteIcon from "@/components/icons/DeleteIcon";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import {
   sListImageDetail,
   useListImageDetail,
 } from "../signal/listImageDetail";
-import ChevronLeftIcon from "@/components/icons/ChevronLeftIcon";
-import DeleteIcon from "@/components/icons/DeleteIcon";
 
 const ImageDetailModal = () => {
   const { isShow, listImages, curIndex } = sListImageDetail.use();
@@ -29,7 +29,7 @@ const ImageDetailModal = () => {
 
   return (
     <Modal isOpen={isShow} onClose={closeModal}>
-      <div className="flex">
+      <div className="flex z-50">
         <div className="bg-card w-[1000px]">
           <div className="flex w-full relative justify-center items-center h-[580px] pt-3">
             <div className="absolute left-5" onClick={prevImage}>

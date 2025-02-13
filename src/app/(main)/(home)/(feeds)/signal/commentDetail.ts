@@ -1,16 +1,43 @@
+import { PostResponse } from "@/types/post";
 import { signify } from "react-signify";
 
 type CommentDetail = {
     isOpen: boolean,
     listComments: any[],
-    curPost: any
+    curPost: Pick<
+        PostResponse,
+        | "id"
+        | "author"
+        | "content"
+        | "hashTags"
+        | "mediaUrls"
+        | "createdAt"
+        | "likesCount"
+        | "likes"
+        | "comments"
+        | "commentsCount">
 }
 
 
 export const sCommentDetail = signify<CommentDetail>({
     isOpen: false,
     listComments: [],
-    curPost: null
+    curPost: {
+        id: "",
+        author: {
+            name: "",
+            email: "",
+            fullName: ""
+        },
+        content: "",
+        hashTags: [],
+        mediaUrls: [],
+        createdAt: "",
+        likesCount: 0,
+        likes: [],
+        comments: [],
+        commentsCount: 0,
+    },
 });
 
 export const useCommentDetail = () => ({
