@@ -1,6 +1,6 @@
 const PostSkeleton: React.FC = () => {
     return (
-        <div className="bg-white shadow-md rounded-xl p-4 animate-pulse">
+        <div className="bg-card shadow-md rounded-xl p-4 animate-pulse">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
