@@ -6,8 +6,10 @@ import Rss from "@/components/icons/Rss";
 import Camera from "@/components/icons/Camera";
 import UserPlus from "@/components/icons/User-plus";
 import { sCurUserProfileSignal } from "../signal/curUserProfileSignal";
+import { useAuth } from "@/store/authSignal";
 
 const CoverPage = () => {
+  const { user: userMeuserMe } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
   const { user } = sCurUserProfileSignal.use();
 
@@ -19,7 +21,7 @@ const CoverPage = () => {
             <h1 className="text-4xl font-semibold text-white ">
               {user?.fullName}
             </h1>
-            {user?.jobTitle?.title}
+            <h3 className="text-gray-500">{user?.jobTitle?.title}</h3>
             <p className="font-semibold text-base text-neutral-900"></p>
             <div className="flex gap-1 mt-2 ">
               <div className="size-8 rounded-full bg-gray-500">
@@ -86,12 +88,14 @@ const CoverPage = () => {
             className="relative flex flex-col items-center space-x-2 cursor-pointer pb-2"
             onClick={() => setActiveTab("add-friend")}
           >
-            <div className="flex items-center space-x-2">
-              <UserPlus className="fill-primary-500" />
-              <span className="text-base font-bold text-neutral-800">
-                Thêm bạn bè
-              </span>
-            </div>
+            {user?.id != userMeuserMe?.id && (
+              <div className="flex items-center space-x-2">
+                <UserPlus className="fill-primary-500" />
+                <span className="text-base font-bold text-neutral-800">
+                  Thêm bạn bè
+                </span>
+              </div>
+            )}
             {activeTab === "add-friend" && (
               <div className="absolute rounded-2xl bottom-0 left-0 w-full h-[2px] bg-primary-500"></div>
             )}
