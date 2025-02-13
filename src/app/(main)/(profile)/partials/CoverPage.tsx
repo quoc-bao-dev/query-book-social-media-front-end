@@ -2,17 +2,15 @@
 
 import Camera from "@/components/icons/Camera";
 import CreditCard from "@/components/icons/CreditCard";
+import DocumentText from "@/components/icons/Document-text";
 import Rss from "@/components/icons/Rss";
 import UserPlus from "@/components/icons/User-plus";
 import { useAuth } from "@/store/authSignal";
-import { useState } from "react";
-import { sCurUserProfileSignal } from "../signal/curUserProfileSignal";
 import Link from "next/link";
-import DocumentText from "@/components/icons/Document-text";
+import { sCurUserProfileSignal } from "../signal/curUserProfileSignal";
 
 const CoverPage = () => {
-  const { user: userMeuserMe } = useAuth();
-  const [setActiveTab] = useState("profile");
+  const { user: userMe } = useAuth();
   const { user } = sCurUserProfileSignal.use();
 
   return (
@@ -69,7 +67,7 @@ const CoverPage = () => {
         </div>
       </div>
 
-      <div className="bg-card flex justify-end items-center ">
+      <div className="bg-card  flex justify-end items-center ">
         <div className="flex justify-center space-x-2 relative">
           <Link href="/me/profile" className="block">
             <div className="relative flex flex-col items-center py-3 px-3 group cursor-pointer">
@@ -79,7 +77,6 @@ const CoverPage = () => {
                   Hồ sơ
                 </span>
               </div>
-
               {/* Thêm border-bottom khi hover mà không thay đổi kích thước */}
               <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 opacity-0 group-hover:opacity-100 transition-all transform group-hover:scale-x-100 rounded-md"></div>
             </div>
@@ -98,7 +95,7 @@ const CoverPage = () => {
             </div>
           </Link>
 
-          {user?.id != userMeuserMe?.id && (
+          {user?.id != userMe?.id && (
             <div className="relative flex flex-col items-center cursor-pointer py-3 px-3">
               <div className="flex items-center space-x-2">
                 <UserPlus className="fill-primary-500" />
