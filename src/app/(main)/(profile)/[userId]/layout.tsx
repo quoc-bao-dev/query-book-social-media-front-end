@@ -2,7 +2,7 @@
 import { PropsWithChildren } from "react";
 
 const layout = ({ children }: PropsWithChildren) => {
-  return <div className="flex justify-between gap-4">{children}</div>;
+  return <div className="">{children}</div>;
 };
 
 export default layout;
