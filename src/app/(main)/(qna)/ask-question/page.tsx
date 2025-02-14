@@ -1,13 +1,13 @@
 import React from "react";
-import MainContentQnA from "./partials/MainContentQnA";
+import MainContentAskQuestion from "./partials/MainContentAskQuestion";
 
 export const metadata = {
-  title: "Q&A Page",
+  title: "Ask Question Page ",
   description: "Frequently asked questions about our products and services.",
   keywords: ["questions", "faq", "help"],
 };
 const page = () => {
-  return <MainContentQnA />;
+  return <MainContentAskQuestion />;
 };
 
 export default page;
