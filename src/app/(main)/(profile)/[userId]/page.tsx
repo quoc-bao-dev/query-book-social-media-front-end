@@ -27,7 +27,6 @@ const Page = async ({ params }: PageProps) => {
       {/* About */}
       <div className="w-80 flex-col">
         <SetCurUserProfileSignal user={user} />
-
         {/* FollowFollow */}
         <div className="mt-4 h-24 rounded-[16px] overflow-hidden relative border-b border flex justify-around items-center px-6 bg-card">
           <div className="text-center">

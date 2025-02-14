@@ -12,9 +12,10 @@ import { sCurUserProfileSignal } from "../signal/curUserProfileSignal";
 const CoverPage = () => {
   const { user: userMe } = useAuth();
   const { user } = sCurUserProfileSignal.use();
+  const targetLink = user?.id === userMe?.id ? "/me" : `/me/${user?.id}`;
 
   return (
-    <div className="relative rounded-2xl overflow-hidden">
+    <div className="relative rounded-b-2xl overflow-hidden">
       <div className="bg-[url('/images/bia2.jpg')] object-cover bg-center h-[250px] relative bg-gray-500">
         <div className="absolute bottom-0 pl-[calc(16px+180px)] w-[calc(100%-16px+180px)]">
           <div className="pl-3 py-4">
@@ -54,14 +55,20 @@ const CoverPage = () => {
           {/* Avatar */}
           <div className="absolute translate-y-[-80%] size-[170px] rounded-full bg-slate-400 overflow-hidden">
             <img
-              src={"/images/facebook.png"}
+              src={"/images/avt.jpg"}
               alt="Avatar"
               className="w-full h-full object-cover rounded-full shadow-lg"
             />
-
-            <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 h-1/5 rounded-b-full cursor-pointer">
-              <Camera className="w-6 h-6 text-white mb-1" />
-            </div>
+            {user?.id === userMe?.id ? (
+              <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 h-1/5 rounded-b-full cursor-pointer">
+                <Camera className="w-6 h-6 text-white mb-1" />
+              </div>
+            ) : (
+              <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 h-1/5 rounded-b-full cursor-pointer">
+                <span className="text-white text-xs">Xem ảnh</span>{" "}
+                {/* Hoặc cái gì đó khác */}
+              </div>
+            )}
           </div>
           {/* Avatar */}
         </div>
@@ -82,7 +89,7 @@ const CoverPage = () => {
             </div>
           </Link>
 
-          <Link href="/me" className="block">
+          <Link href={targetLink} className="block">
             <div className="relative flex flex-col items-center py-3 px-3 group cursor-pointer">
               <div className="flex items-center space-x-2">
                 <DocumentText className="fill-primary-500" />

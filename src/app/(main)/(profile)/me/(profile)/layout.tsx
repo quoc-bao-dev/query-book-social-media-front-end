@@ -7,10 +7,10 @@ import Maill from "@/components/icons/Maill";
 import UserCircle from "@/components/icons/User-circle";
 import { PropsWithChildren } from "react";
 import SetCurUserProfileSignal from "../../partials/SetCurUserProfileSignal";
-import { useAuth } from "@/store/authSignal";
+import { sCurUserProfileSignal } from "../../signal/curUserProfileSignal";
 
 const layout = ({ children }: PropsWithChildren) => {
-  const { user } = useAuth();
+  const { user } = sCurUserProfileSignal.use();
   return (
     <div className="flex justify-between gap-4">
       {/* About */}
