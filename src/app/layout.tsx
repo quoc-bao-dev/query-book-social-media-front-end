@@ -4,17 +4,13 @@ import { ModeToggle } from '@/components/ModeToggle';
 import type { Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Public_Sans } from 'next/font/google';
 import './globals.css';
 
-const geistSans = Geist({
-    variable: '--font-geist-sans',
+const publicSans = Public_Sans({
+    variable: '--font-public-sans',
     subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin'],
+    weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 });
 
 export const metadata: Metadata = {
@@ -34,13 +30,11 @@ export default async function RootLayout({
     const messages = await getMessages();
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
+            <body className={`${publicSans.className} antialiased font-public-sans`}>
                 <NextIntlClientProvider messages={messages}>
                     <ClientOnly>
                         <AppProvider>
-                            {children}
+                            <div className="font-public-sans">{children}</div>
                             <div className="fixed top-[50%] translate-y-[-50%] z-[100]">
                                 <ModeToggle />
                             </div>

@@ -1,27 +1,14 @@
+"use client";
 import GlobeAlt from "@/components/icons/Globe-alt";
 import Inbox from "@/components/icons/Inbox";
 import MapPin from "@/components/icons/Map-pin";
 import Phone from "@/components/icons/Phone";
-import { config } from "@/config";
-import httpClient from "@/httpClient/httpClient";
-import { HttpResponse } from "@/types/common";
-import { UserProfileResponse } from "@/types/user";
-import SetCurUserProfileSignal from "../partials/SetCurUserProfileSignal";
-import PostsOfUser from "./partials/PostsOfUser";
+import { PropsWithChildren } from "react";
+import { useAuth } from "@/store/authSignal";
+import SetCurUserProfileSignal from "../../partials/SetCurUserProfileSignal";
 
-type PageProps = {
-  params: { userId: string };
-};
-
-const Page = async ({ params }: PageProps) => {
-  const { userId } = await params;
-
-  const user = (
-    await httpClient.get<HttpResponse<UserProfileResponse>>(
-      `${config.BASE_URL}/users/profile/${userId}`
-    )
-  ).data;
-
+const layout = ({ children }: PropsWithChildren) => {
+  const { user } = useAuth();
   return (
     <div className="flex justify-between gap-4">
       {/* About */}
@@ -87,13 +74,10 @@ const Page = async ({ params }: PageProps) => {
         {/**/}
       </div>
       {/* About */}
-      {/* posts */}
-      <div className="mt-4 w-[680px] h-auto flex flex-col ">
-        <PostsOfUser userId={userId} />
-      </div>
-      {/* posts */}
+
+      {children}
     </div>
   );
 };
 
-export default Page;
+export default layout;
