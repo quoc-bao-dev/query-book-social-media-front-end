@@ -117,18 +117,22 @@ const posts = [
 ];
 
 const MainContentMyQuestion = () => {
-  const [searchTerm] = useState("");
   const [showMore, setShowMore] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
   const param = useSearchParams();
   const mode = param.get("mode");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredPosts = posts.filter((post) =>
+    post.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const toggleShowMore = () => {
     setShowMore(!showMore);
   };
   const toggleMenu = () => {
-    setShowMenu(!showMenu); // Thay đổi trạng thái menu
+    setShowMenu(!showMenu);
   };
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -146,8 +150,9 @@ const MainContentMyQuestion = () => {
         </div>
         <input
           type="text"
-          placeholder="Search by author or tag..."
+          placeholder="Search by title..."
           value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-10 px-4 py-2 placeholder-neutral-500 placeholder:opacity-70 border border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
         />
       </div>
@@ -160,95 +165,104 @@ const MainContentMyQuestion = () => {
       </div>
 
       {/* Render bài viết */}
-      {posts.slice(0, showMore ? posts.length : 4).map((post, index) => (
-        <div
-          key={index}
-          className="rounded-lg shadow-lg p-4 mb-6 border border-border bg-card"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between mt-3 ">
-            <div className="flex items-center space-x-2">
-              <img
-                src={post.authorImage}
-                alt="user"
-                className="w-10 h-10 rounded-full"
-              />
-              <h4 className="font-semibold text-neutral-900">{post.author}</h4>
-              <p className="text-sm text-neutral-500">{post.timeAgo}</p>
-            </div>
-
-            {/* Biểu tượng dấu 3 chấm */}
-            <button onClick={toggleMenu} className="relative">
-              <EllipsisVerticalIcon className="h-6 w-6 text-gray-500" />
-              {/* Menu khi click */}
-              {showMenu && (
-                <div className="absolute right-0 top-0 mt-7 w-52 p-2 bg-background shadow-lg rounded-md border">
-                  <ul className="space-y-2">
-                    <li className="flex items-center py-2 px-4 text-gray-700 hover:bg-gray-100 cursor-pointer">
-                      <PencilSquareIcon className="w-5 h-5 text-gray-700 mr-2" />
-                      Edit
-                    </li>
-                    <li className="flex items-center py-2 px-4 text-gray-700 hover:bg-gray-100 cursor-pointer">
-                      <TrashIcon className="w-5 h-5 text-gray-700 mr-2" />
-                      Delete
-                    </li>
-                    <li className="flex items-center py-2 px-4 text-gray-700 hover:bg-gray-100 cursor-pointer">
-                      <FlagIcon className="w-5 h-5 text-gray-700 mr-2" />
-                      Report
-                    </li>
-                  </ul>
+      {filteredPosts.length > 0 ? (
+        filteredPosts
+          .slice(0, showMore ? filteredPosts.length : 4)
+          .map((post, index) => (
+            <div
+              key={index}
+              className="rounded-lg shadow-lg p-4 mb-6 border border-border bg-card"
+            >
+              <div className="flex items-center justify-between mt-3 ">
+                <div className="flex items-center space-x-2">
+                  <img
+                    src={post.authorImage}
+                    alt="user"
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <h4 className="font-semibold text-neutral-900">
+                    {post.author}
+                  </h4>
+                  <p className="text-sm text-neutral-500">{post.timeAgo}</p>
                 </div>
+
+                {/*dấu 3 chấm */}
+                <button onClick={toggleMenu} className="relative">
+                  <EllipsisVerticalIcon className="h-6 w-6 text-gray-500" />
+                  {/* Menu khi click */}
+                  {showMenu && (
+                    <div className="absolute right-0 top-0 mt-7 w-52 p-2 bg-background shadow-lg rounded-md border">
+                      <ul className="space-y-2">
+                        <li className="flex items-center py-2 px-4 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                          <PencilSquareIcon className="w-5 h-5 text-gray-700 mr-2" />
+                          Edit
+                        </li>
+                        <li className="flex items-center py-2 px-4 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                          <TrashIcon className="w-5 h-5 text-gray-700 mr-2" />
+                          Delete
+                        </li>
+                        <li className="flex items-center py-2 px-4 text-gray-700 hover:bg-gray-100 cursor-pointer">
+                          <FlagIcon className="w-5 h-5 text-gray-700 mr-2" />
+                          Report
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </button>
+              </div>
+
+              {/* Title */}
+              <h2 className="mt-2 text-3xl font-semibold text-neutral-900">
+                {post.title}
+              </h2>
+
+              {/* Content */}
+              <p className="mt-2 text-lg text-neutral-600">{post.content}</p>
+
+              {/* Image */}
+              {post.imageUrl && (
+                <img
+                  src={post.imageUrl}
+                  alt="Post Image"
+                  className="w-full h-[500px] object-cover mx-auto mt-4 rounded-lg"
+                />
               )}
-            </button>
-          </div>
 
-          {/* Title */}
-          <h2 className="mt-2 text-3xl font-semibold text-neutral-900">
-            {post.title}
-          </h2>
+              {/* Actions */}
+              <div className="mt-2 flex items-center gap-2 text-accent-foreground">
+                <HeartIcon className="w-5 h-5 fill-red-500 text-red-500" />
+                <span>{post.likes}</span>
+                <ChatBubbleOvalLeftIcon className="w-5 h-5 text-accent-foreground" />
+                <span>{post.comments}</span>
+                <ShareIcon className="w-5 h-5 text-accent-foreground" />
+                <span>Share</span>
+                <BookmarkIcon className="w-5 h-5 fill-accent-foreground text-accent-foreground" />
+                <span>Save</span>
+              </div>
 
-          {/* Content */}
-          <p className="mt-2 text-lg text-neutral-600">{post.content}</p>
-
-          {/* Image */}
-          {post.imageUrl && (
-            <img
-              src={post.imageUrl}
-              alt="Post Image"
-              className="w-full h-[500px] object-cover mx-auto mt-4 rounded-lg"
-            />
-          )}
-
-          {/* Actions */}
-          <div className="mt-2 flex items-center gap-2 text-accent-foreground">
-            <HeartIcon className="w-5 h-5 fill-red-500 text-red-500" />
-            <span>{post.likes}</span>
-            <ChatBubbleOvalLeftIcon className="w-5 h-5 text-accent-foreground" />
-            <span>{post.comments}</span>
-            <ShareIcon className="w-5 h-5 text-accent-foreground" />
-            <span>Share</span>
-            <BookmarkIcon className="w-5 h-5 fill-accent-foreground text-accent-foreground" />
-            <span>Save</span>
-          </div>
-
-          {/* Reply Section */}
-          <div className="mt-4 flex items-center gap-3">
-            <img
-              src={post.authorImage}
-              alt="user"
-              className="w-10 h-10 rounded-full"
-            />
-            <input
-              type="text"
-              placeholder="Write a reply..."
-              className="w-[50%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <button className="  rounded-lg">
-              <SendIcon />
-            </button>
-          </div>
-        </div>
-      ))}
+              {/* Reply Section */}
+              <div className="mt-4 flex items-center gap-3">
+                <img
+                  src={post.authorImage}
+                  alt="user"
+                  className="w-10 h-10 rounded-full"
+                />
+                <input
+                  type="text"
+                  placeholder="Write a reply..."
+                  className="w-[50%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <button className="  rounded-lg">
+                  <SendIcon />
+                </button>
+              </div>
+            </div>
+          ))
+      ) : (
+        <p className="text-center text-gray-500">
+          Không tìm thấy bài viết nào.
+        </p>
+      )}
 
       {/* Button View More */}
       <div className="flex justify-center mt-6">

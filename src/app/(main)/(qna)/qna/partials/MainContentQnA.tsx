@@ -91,6 +91,17 @@ const questions = [
     avatar:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2z-KXBX_nvo8AIGsXqeQKPC-W3R8aJuysbQ&s",
   },
+  {
+    id: 9,
+    votes: 2,
+    title:
+      "Does anyone have a Next.js file? Could you please share it with me?",
+    author: "quocbao.49",
+    time: "3 giờ trước",
+    tags: ["#kekekeke", "#ok"],
+    avatar:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2z-KXBX_nvo8AIGsXqeQKPC-W3R8aJuysbQ&s",
+  },
 ];
 
 const MainContentQnA = () => {

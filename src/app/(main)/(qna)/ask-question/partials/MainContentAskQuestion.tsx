@@ -27,7 +27,7 @@ export default function MainContentAskQuestion() {
           </label>
           <input
             type="text"
-            className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full p-3  border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             placeholder="Write a title..."
           />
         </div>

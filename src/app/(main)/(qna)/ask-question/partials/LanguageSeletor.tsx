@@ -126,6 +126,7 @@ const LanguageSeletor = ({
                     const selected = monacoLanguages.find(
                       (lang) => curLang && curLang === lang.display
                     );
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
                     setCurlanguage(selected?.value!);
 
                     setIsOpenPopover(false);
