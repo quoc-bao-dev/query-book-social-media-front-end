@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import CreditCard from "@/components/icons/CreditCard";
-import Rss from "@/components/icons/Rss";
 import Camera from "@/components/icons/Camera";
+import CreditCard from "@/components/icons/CreditCard";
+import DocumentText from "@/components/icons/Document-text";
+import Rss from "@/components/icons/Rss";
 import UserPlus from "@/components/icons/User-plus";
+import { useAuth } from "@/store/authSignal";
+import Link from "next/link";
 import { sCurUserProfileSignal } from "../signal/curUserProfileSignal";
 
 const CoverPage = () => {
-  const [activeTab, setActiveTab] = useState("profile");
+  const { user: userMe } = useAuth();
   const { user } = sCurUserProfileSignal.use();
 
   return (
@@ -19,7 +21,7 @@ const CoverPage = () => {
             <h1 className="text-4xl font-semibold text-white ">
               {user?.fullName}
             </h1>
-            {user?.jobTitle?.title}
+            <h3 className="text-gray-500">{user?.jobTitle?.title}</h3>
             <p className="font-semibold text-base text-neutral-900"></p>
             <div className="flex gap-1 mt-2 ">
               <div className="size-8 rounded-full bg-gray-500">
@@ -65,51 +67,54 @@ const CoverPage = () => {
         </div>
       </div>
 
-      <div className="py-3 bg-card px-4 flex justify-end items-center">
-        <div className="flex justify-center space-x-6 relative">
-          <div
-            className="relative flex flex-col items-center space-x-2 cursor-pointer pb-2"
-            onClick={() => setActiveTab("profile")}
-          >
-            <div className="flex items-center space-x-2">
-              <CreditCard className="fill-primary-500" />
-              <span className="text-base font-bold text-neutral-800">
-                Hồ sơ
-              </span>
+      <div className="bg-card  flex justify-end items-center ">
+        <div className="flex justify-center space-x-2 relative">
+          <Link href="/me/profile" className="block">
+            <div className="relative flex flex-col items-center py-3 px-3 group cursor-pointer">
+              <div className="flex items-center space-x-2">
+                <CreditCard className="fill-primary-500" />
+                <span className="text-base font-bold text-neutral-800 ">
+                  Hồ sơ
+                </span>
+              </div>
+              {/* Thêm border-bottom khi hover mà không thay đổi kích thước */}
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 opacity-0 group-hover:opacity-100 transition-all transform group-hover:scale-x-100 rounded-md"></div>
             </div>
-            {activeTab === "profile" && (
-              <div className="absolute rounded-2xl bottom-0 left-0 w-full h-[2px] bg-primary-500"></div>
-            )}
-          </div>
+          </Link>
 
-          <div
-            className="relative flex flex-col items-center space-x-2 cursor-pointer pb-2"
-            onClick={() => setActiveTab("add-friend")}
-          >
-            <div className="flex items-center space-x-2">
-              <UserPlus className="fill-primary-500" />
-              <span className="text-base font-bold text-neutral-800">
-                Thêm bạn bè
-              </span>
+          <Link href="/me" className="block">
+            <div className="relative flex flex-col items-center py-3 px-3 group cursor-pointer">
+              <div className="flex items-center space-x-2">
+                <DocumentText className="fill-primary-500" />
+                <span className="text-base font-bold text-neutral-800">
+                  Bài viết
+                </span>
+              </div>
+              {/* Thêm border-bottom khi hover mà không thay đổi kích thước */}
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 opacity-0 group-hover:opacity-100 transition-all transform group-hover:scale-x-100 rounded-md"></div>
             </div>
-            {activeTab === "add-friend" && (
-              <div className="absolute rounded-2xl bottom-0 left-0 w-full h-[2px] bg-primary-500"></div>
-            )}
-          </div>
+          </Link>
 
-          <div
-            className="relative flex flex-col items-center space-x-2 cursor-pointer pb-2"
-            onClick={() => setActiveTab("follow")}
-          >
+          {user?.id != userMe?.id && (
+            <div className="relative flex flex-col items-center cursor-pointer py-3 px-3">
+              <div className="flex items-center space-x-2">
+                <UserPlus className="fill-primary-500" />
+                <span className="text-base font-bold text-neutral-800">
+                  Thêm bạn bè
+                </span>
+              </div>
+            </div>
+          )}
+
+          <div className="relative flex flex-col items-center py-3 px-3 group cursor-pointer">
             <div className="flex items-center space-x-2">
               <Rss className="fill-primary-500" />
               <span className="text-base font-bold text-neutral-800">
                 Theo dõi
               </span>
             </div>
-            {activeTab === "follow" && (
-              <div className="absolute rounded-2xl bottom-0 left-0 w-full h-[2px] bg-primary-500"></div>
-            )}
+            {/* Thêm border-bottom khi hover mà không thay đổi kích thước */}
+            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 opacity-0 group-hover:opacity-100 transition-all transform group-hover:scale-x-100 rounded-md"></div>
           </div>
         </div>
       </div>

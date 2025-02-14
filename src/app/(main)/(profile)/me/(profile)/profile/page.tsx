@@ -24,6 +24,7 @@ const page = () => {
                 <Briefcase className="fill-primary-500" />
                 <span className="text-base font-semibold text-neutral-800">
                   Làm việc tại{" "}
+                  <span className="font-bold text-neutral-950">Công ty</span> -{" "}
                   <span className="font-bold text-neutral-950">FPT</span>
                 </span>
               </div>
@@ -36,7 +37,7 @@ const page = () => {
                 <Pen className="text-neutral-800" />
               </button>
             </div>
-
+            {/* Header */}
             {/* Form chỉnh sửa */}
             <div className="my-3">
               <div className="relative">
@@ -59,6 +60,7 @@ const page = () => {
                 </button>
               </div>
             </div>
+            {/* Form chỉnh sửa */}
           </div>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center space-x-3">
@@ -128,8 +130,7 @@ const page = () => {
             <div className="flex items-center space-x-3">
               <Briefcase className="fill-primary-500" />
               <span className="text-base font-semibold text-neutral-800">
-                Làm việc tại{" "}
-                <span className="font-bold text-neutral-950">FPT</span>
+                Họ tên <span className="font-bold text-neutral-950">FPT</span>
               </span>
             </div>
             <div className="flex items-center space-x-3 mr-4">
@@ -207,3 +208,6 @@ const page = () => {
 };
 
 export default page;
+function useState(arg0: boolean): [any, any] {
+  throw new Error("Function not implemented.");
+}

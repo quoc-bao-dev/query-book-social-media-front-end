@@ -6,12 +6,16 @@ import IdentifyIcon from "@/components/icons/IdentifyIcon";
 import Maill from "@/components/icons/Maill";
 import UserCircle from "@/components/icons/User-circle";
 import { PropsWithChildren } from "react";
+import SetCurUserProfileSignal from "../../partials/SetCurUserProfileSignal";
+import { useAuth } from "@/store/authSignal";
 
 const layout = ({ children }: PropsWithChildren) => {
+  const { user } = useAuth();
   return (
     <div className="flex justify-between gap-4">
       {/* About */}
       <div className="w-80 flex-col">
+        <SetCurUserProfileSignal user={user} />
         <div className="rounded-[16px] overflow-hidden relative border-b border mt-4 bg-card">
           <div className="pl-4 mt-6 block ">
             <span className="text-xl text-neutral-900 font-semibold">
