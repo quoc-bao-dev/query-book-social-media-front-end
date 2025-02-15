@@ -5,17 +5,21 @@ import Document from "@/components/icons/Document";
 import IdentifyIcon from "@/components/icons/IdentifyIcon";
 import Maill from "@/components/icons/Maill";
 import UserCircle from "@/components/icons/User-circle";
+import Link from "next/link";
 import { PropsWithChildren } from "react";
 import SetCurUserProfileSignal from "../../partials/SetCurUserProfileSignal";
-import { useAuth } from "@/store/authSignal";
+import { sCurUserProfileSignal } from "../../signal/curUserProfileSignal";
 
 const layout = ({ children }: PropsWithChildren) => {
-  const { user } = useAuth();
+  const { user } = sCurUserProfileSignal.use(); // Lấy dữ liệu user
+  const profile = `/me/profile`; // Đường dẫn đến trang profile
+  const personal = `/me/personal`; // Đường dẫn đến trang personal
+
   return (
     <div className="flex justify-between gap-4">
-      {/* About */}
+      {/* About - Phần chứa các liên kết điều hướng */}
       <div className="w-80 flex-col">
-        <SetCurUserProfileSignal user={user} />
+        <SetCurUserProfileSignal user={user} /> {/* Cập nhật thông tin user */}
         <div className="rounded-[16px] overflow-hidden relative border-b border mt-4 bg-card">
           <div className="pl-4 mt-6 block ">
             <span className="text-xl text-neutral-900 font-semibold">
@@ -23,18 +27,26 @@ const layout = ({ children }: PropsWithChildren) => {
             </span>
           </div>
           <div className="mt-4 mb-4 ">
-            <div className="h-10 w-72 flex items-center  pl-2 space-x-2.5 mx-auto my-auto hover:bg-primary-100/50 rounded-md text-primary-500 bg-primary-100/50">
-              <IdentifyIcon />
-              <span className="hidden lg:block font-semibold text-sm ">
-                Tổng quan
-              </span>
-            </div>
-            <div className="h-10 w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto hover:bg-primary-100/50 hover:text-primary-500 rounded-md text-neutral-800 ">
-              <UserCircle />
-              <span className="hidden lg:block font-semibold text-sm ">
-                Thông tin cá nhân
-              </span>
-            </div>
+            {/* Các liên kết điều hướng */}
+            <Link href={profile} className="block">
+              <div className="h-10 w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto rounded-md text-neutral-800 hover:bg-primary-100/50 hover:text-primary-500 active:bg-primary-200 active:text-primary-700 focus:outline-none">
+                <IdentifyIcon />
+                <span className="hidden lg:block font-semibold text-sm ">
+                  Tổng quan
+                </span>
+              </div>
+            </Link>
+
+            <Link href={personal} className="block">
+              <div className="h-10 w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto hover:bg-primary-100/50 hover:text-primary-500 rounded-md text-neutral-800 ">
+                <UserCircle />
+                <span className="hidden lg:block font-semibold text-sm ">
+                  Thông tin cá nhân
+                </span>
+              </div>
+            </Link>
+
+            {/* Các mục khác */}
             <div className="h-10 w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto hover:bg-primary-100/50 hover:text-primary-500 rounded-md text-neutral-800 ">
               <Academic />
               <span className="hidden lg:block font-semibold text-sm ">
@@ -56,10 +68,9 @@ const layout = ({ children }: PropsWithChildren) => {
           </div>
         </div>
       </div>
-      {/* About */}
+      {/* Content - Phần giao diện con được render tại đây */}
       {children}
     </div>
   );
 };
-
 export default layout;

@@ -9,6 +9,8 @@ import { useFriendRequestQuery } from '@/queries/friend';
 import { useEffect } from 'react';
 import { signify } from 'react-signify';
 import FriendRequestRow from './FriendRequestRow';
+import { sSocket } from '@/provider/SocketProvider';
+import { swal } from '@/utils/swal';
 
 type UserDrawerType = {
     isShow: boolean;
@@ -21,11 +23,13 @@ export const useNotifyDrawer = () => ({
 });
 
 const NotifyDrawer = () => {
-    const { data: friendRequests } = useFriendRequestQuery();
+    const { data: friendRequests, refetch } = useFriendRequestQuery();
 
     const { isShow } = sNotifyDrawer.use();
 
     const { close } = useNotifyDrawer();
+
+    const { socket } = sSocket.use();
 
     const toggleDrawer = () => {
         close();
@@ -34,10 +38,48 @@ const NotifyDrawer = () => {
     const lsFriendsRequest = friendRequests?.data.data;
 
     useEffect(() => {
+        if (socket) {
+            socket.on('receive_friend_request', (data) => {
+                swal.fire({
+                    toast: true,
+                    position: 'top-end', // Vị trí góc phải trên
+                    icon: 'success',
+                    title: `${data?.firstName} ${data?.lastName} sent you a friend request!`,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInRight',
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutLeft',
+                    },
+                });
+                refetch();
+            });
+
+            socket.on('accept_friend_request', (data) => {
+                swal.fire({
+                    toast: true,
+                    position: 'top-end', // Vị trí góc phải trên
+                    icon: 'success',
+                    title: `${data?.firstName} ${data?.lastName} accepted your friend request!`,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInRight',
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutLeft',
+                    },
+                });
+            });
+        }
         return () => {
             sNotifyDrawer.reset();
         };
-    }, []);
+    }, [socket]);
     return (
         <>
             <Drawer isOpen={isShow} onOpenChange={toggleDrawer}>

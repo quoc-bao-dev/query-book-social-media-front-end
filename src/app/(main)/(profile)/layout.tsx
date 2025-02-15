@@ -3,7 +3,7 @@ import CoverPage from "./partials/CoverPage";
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
-    <div className="mx-auto max-[1028px] mt-3">
+    <div className="mx-auto max-[1028px]">
       <div className="min-h-screen">
         {/* main contain */}
         <div className="flex justify-center">

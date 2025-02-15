@@ -36,35 +36,37 @@ const layout = ({ children }: PropsWithChildren) => {
 
         {/**/}
         <div className="rounded-[16px] overflow-hidden relative border-b border mt-4 h-80 bg-card ">
-          <div className="pl-4 mt-6 block ">
+          <div className="px-4 mt-6 block ">
             <span className="text-xl text-neutral-900 font-semibold">
               Giới thiệu
             </span>
           </div>
-          <span className="text-sm text-neutral-800 pl-4 block mt-4">
-            Tôi là một lập trình viên front-end tại FPT Software, tôi có 3 năm
-            kinh nghiệm trong việc phát triển ứng dụng.
-          </span>
-          <div className="flex items-center mt-4 pl-4 space-x-3 group relative">
+          <div className="px-4 block mt-2">
+            <span className="text-sm text-neutral-900 ">
+              Tôi là một lập trình viên front-end tại FPT Software, tôi có 3 năm
+              kinh nghiệm trong việc phát triển ứng dụng.
+            </span>
+          </div>
+          <div className="flex items-center mt-4 px-4 space-x-3 group relative">
             <MapPin />
             <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
               Binh Tan, Ho Chi Minh City
             </span>
           </div>
 
-          <div className="flex items-center mt-4 pl-4 space-x-3 group relative">
+          <div className="flex items-center mt-4 px-4 space-x-3 group relative">
             <Inbox />
             <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
               jaydondev@gmail.com
             </span>
           </div>
-          <div className="flex items-center mt-4 pl-4 space-x-3 group relative">
+          <div className="flex items-center mt-4 px-4 space-x-3 group relative">
             <Phone />
             <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
               0919 616 224
             </span>
           </div>
-          <div className="flex items-center mt-4 pl-4 space-x-3 group relative">
+          <div className="flex items-center mt-4 px-4 space-x-3 group relative">
             <GlobeAlt />
             <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
               jaydon.dev
