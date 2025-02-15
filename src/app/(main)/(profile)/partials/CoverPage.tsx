@@ -12,7 +12,9 @@ import { sCurUserProfileSignal } from "../signal/curUserProfileSignal";
 const CoverPage = () => {
   const { user: userMe } = useAuth();
   const { user } = sCurUserProfileSignal.use();
-  const targetLink = user?.id === userMe?.id ? "/me" : `/me/${user?.id}`;
+  const isMe = user?.id === userMe?.id;
+  const targetLink = isMe ? "/me" : `/${user?.id}`;
+  const profileLink = isMe ? "/me/profile" : `/${user?.id}/profile`;
 
   return (
     <div className="relative rounded-b-2xl overflow-hidden">
@@ -53,12 +55,19 @@ const CoverPage = () => {
       <div className="px-4">
         <div className="relative">
           {/* Avatar */}
-          <div className="absolute translate-y-[-80%] size-[170px] rounded-full bg-slate-400 overflow-hidden">
-            <img
-              src={"/images/avt.jpg"}
-              alt="Avatar"
-              className="w-full h-full object-cover rounded-full shadow-lg"
-            />
+          <div className="absolute translate-y-[-80%] size-[170px] rounded-full bg-muted overflow-hidden">
+            {user?.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt="Avatar"
+                className="w-full h-full object-cover rounded-full shadow-lg"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center rounded-full shadow-lg text-neutral-900 font-bold text-4xl">
+                {user?.firstName?.charAt(0).toUpperCase()}
+              </div>
+            )}
+
             {user?.id === userMe?.id ? (
               <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-300 h-1/5 rounded-b-full cursor-pointer">
                 <Camera className="w-6 h-6 text-white mb-1" />
@@ -76,7 +85,7 @@ const CoverPage = () => {
 
       <div className="bg-card  flex justify-end items-center ">
         <div className="flex justify-center space-x-2 relative">
-          <Link href="/me/profile" className="block">
+          <Link href={profileLink} className="block">
             <div className="relative flex flex-col items-center py-3 px-3 group cursor-pointer">
               <div className="flex items-center space-x-2">
                 <CreditCard className="fill-primary-500" />
@@ -113,16 +122,18 @@ const CoverPage = () => {
             </div>
           )}
 
-          <div className="relative flex flex-col items-center py-3 px-3 group cursor-pointer">
-            <div className="flex items-center space-x-2">
-              <Rss className="fill-primary-500" />
-              <span className="text-base font-bold text-neutral-800">
-                Theo dõi
-              </span>
+          {user?.id != userMe?.id && (
+            <div className="relative flex flex-col items-center py-3 px-3 group cursor-pointer">
+              <div className="flex items-center space-x-2">
+                <Rss className="fill-primary-500" />
+                <span className="text-base font-bold text-neutral-800">
+                  Theo dõi
+                </span>
+              </div>
+              {/* Thêm border-bottom khi hover mà không thay đổi kích thước */}
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 opacity-0 group-hover:opacity-100 transition-all transform group-hover:scale-x-100 rounded-md"></div>
             </div>
-            {/* Thêm border-bottom khi hover mà không thay đổi kích thước */}
-            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-primary-500 opacity-0 group-hover:opacity-100 transition-all transform group-hover:scale-x-100 rounded-md"></div>
-          </div>
+          )}
         </div>
       </div>
     </div>
