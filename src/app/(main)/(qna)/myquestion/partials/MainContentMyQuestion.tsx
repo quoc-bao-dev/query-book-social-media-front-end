@@ -1,119 +1,120 @@
 /* eslint-disable @next/next/no-img-element */
 
-"use client";
-import React, { useEffect, useState } from "react";
+'use client';
+import React, { useEffect, useState } from 'react';
 import {
-  ChatBubbleOvalLeftIcon,
-  HeartIcon,
-  ShareIcon,
-  BookmarkIcon,
-  MagnifyingGlassIcon,
-  ArrowDownIcon,
-  EllipsisVerticalIcon,
-  PencilSquareIcon,
-  TrashIcon,
-  FlagIcon,
-} from "@heroicons/react/24/outline";
+    ChatBubbleOvalLeftIcon,
+    HeartIcon,
+    ShareIcon,
+    BookmarkIcon,
+    MagnifyingGlassIcon,
+    ArrowDownIcon,
+    EllipsisVerticalIcon,
+    PencilSquareIcon,
+    TrashIcon,
+    FlagIcon,
+} from '@heroicons/react/24/outline';
 // import AskQuestionModal from "../../partials/AskQuestionModal";
-import SendIcon from "@/components/icons/SendIcon";
-import AskQuestionButton from "../../partials/AskQuestionButton";
-import { useSearchParams } from "next/navigation";
-import MainContentAskQuestion from "../../ask-question/partials/MainContentAskQuestion";
+import SendIcon from '@/components/icons/SendIcon';
+import AskQuestionButton from '../../partials/AskQuestionButton';
+import { useSearchParams } from 'next/navigation';
+import MainContentAskQuestion from '../../ask-question/partials/MainContentAskQuestion';
+import { useGetMyQuestion } from '@/queries/question';
 
 const posts = [
-  {
-    author: "jcole.lamar",
-    timeAgo: "10h ago",
-    title: "How to learn TypeScript?",
-    content:
-      "I’m a web developer who has been working with JavaScript for quite a while...",
-    imageUrl:
-      "https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg",
-    authorImage:
-      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-    comments: 200,
-    likes: 2300,
-  },
-  {
-    author: "jcole.lamar",
-    timeAgo: "10h ago",
-    title: "How to use if...else in JavaScript?",
-    content:
-      "I’m currently learning JavaScript, and I’ve been working with conditional statements...",
-    imageUrl:
-      "https://vietnampfa.com/wp-content/uploads/2024/10/meme-meo-cuoi-6r0oJnQ.webp",
-    authorImage:
-      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-    comments: 150,
-    likes: 1800,
-  },
-  {
-    author: "jcole.lamar",
-    timeAgo: "10h ago",
-    title: "How to learn TypeScript?",
-    content:
-      "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
-    imageUrl:
-      "https://gcs.tripi.vn/public-tripi/tripi-feed/img/477714EJG/anh-mo-ta.png",
-    authorImage:
-      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-    comments: 300,
-    likes: 2100,
-  },
-  {
-    author: "jcole.lamar",
-    timeAgo: "10h ago",
-    title: "How to learn TypeScript?",
-    content:
-      "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
-    imageUrl:
-      "https://topdev.vn/blog/wp-content/uploads/2019/06/vs-code-theme-Night-Owl.png",
-    authorImage:
-      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-    comments: 300,
-    likes: 2100,
-  },
+    {
+        author: 'jcole.lamar',
+        timeAgo: '10h ago',
+        title: 'How to learn TypeScript?',
+        content:
+            'I’m a web developer who has been working with JavaScript for quite a while...',
+        imageUrl:
+            'https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg',
+        authorImage:
+            'https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg',
+        comments: 200,
+        likes: 2300,
+    },
+    {
+        author: 'jcole.lamar',
+        timeAgo: '10h ago',
+        title: 'How to use if...else in JavaScript?',
+        content:
+            'I’m currently learning JavaScript, and I’ve been working with conditional statements...',
+        imageUrl:
+            'https://vietnampfa.com/wp-content/uploads/2024/10/meme-meo-cuoi-6r0oJnQ.webp',
+        authorImage:
+            'https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg',
+        comments: 150,
+        likes: 1800,
+    },
+    {
+        author: 'jcole.lamar',
+        timeAgo: '10h ago',
+        title: 'How to learn TypeScript?',
+        content:
+            'Cyber Security is a rapidly growing field, and it can seem daunting for beginners...',
+        imageUrl:
+            'https://gcs.tripi.vn/public-tripi/tripi-feed/img/477714EJG/anh-mo-ta.png',
+        authorImage:
+            'https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg',
+        comments: 300,
+        likes: 2100,
+    },
+    {
+        author: 'jcole.lamar',
+        timeAgo: '10h ago',
+        title: 'How to learn TypeScript?',
+        content:
+            'Cyber Security is a rapidly growing field, and it can seem daunting for beginners...',
+        imageUrl:
+            'https://topdev.vn/blog/wp-content/uploads/2019/06/vs-code-theme-Night-Owl.png',
+        authorImage:
+            'https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg',
+        comments: 300,
+        likes: 2100,
+    },
 
-  {
-    author: "jcole.lamar",
-    timeAgo: "10h ago",
-    title: "How to learn TypeScript?",
-    content:
-      "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
-    imageUrl:
-      "https://gcs.tripi.vn/public-tripi/tripi-feed/img/477714EJG/anh-mo-ta.png",
-    authorImage:
-      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-    comments: 300,
-    likes: 2100,
-  },
-  {
-    author: "jcole.lamar",
-    timeAgo: "10h ago",
-    title: "How to learn TypeScript?",
-    content:
-      "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
-    imageUrl:
-      "https://carre.edu.vn/wp-content/uploads/2024/12/anh-meme-hai-huoc-che-e1735373827733.webp",
-    authorImage:
-      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-    comments: 300,
-    likes: 2100,
-  },
-  {
-    author: "jcole.lamar",
-    timeAgo: "10h ago",
-    title: "How to learn TypeScript?",
-    content:
-      "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
-    imageUrl:
-      "https://cdn.caohockinhte.edu.vn/wp-content/uploads/2024/08/hinh-tau-hai-bua-1.jpg",
-    authorImage:
-      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-    comments: 300,
-    likes: 2100,
-  },
-  // Add more posts as needed...
+    {
+        author: 'jcole.lamar',
+        timeAgo: '10h ago',
+        title: 'How to learn TypeScript?',
+        content:
+            'Cyber Security is a rapidly growing field, and it can seem daunting for beginners...',
+        imageUrl:
+            'https://gcs.tripi.vn/public-tripi/tripi-feed/img/477714EJG/anh-mo-ta.png',
+        authorImage:
+            'https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg',
+        comments: 300,
+        likes: 2100,
+    },
+    {
+        author: 'jcole.lamar',
+        timeAgo: '10h ago',
+        title: 'How to learn TypeScript?',
+        content:
+            'Cyber Security is a rapidly growing field, and it can seem daunting for beginners...',
+        imageUrl:
+            'https://carre.edu.vn/wp-content/uploads/2024/12/anh-meme-hai-huoc-che-e1735373827733.webp',
+        authorImage:
+            'https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg',
+        comments: 300,
+        likes: 2100,
+    },
+    {
+        author: 'jcole.lamar',
+        timeAgo: '10h ago',
+        title: 'How to learn TypeScript?',
+        content:
+            'Cyber Security is a rapidly growing field, and it can seem daunting for beginners...',
+        imageUrl:
+            'https://cdn.caohockinhte.edu.vn/wp-content/uploads/2024/08/hinh-tau-hai-bua-1.jpg',
+        authorImage:
+            'https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg',
+        comments: 300,
+        likes: 2100,
+    },
+    // Add more posts as needed...
 ];
 
 const MainContentMyQuestion = () => {
@@ -160,9 +161,26 @@ const MainContentMyQuestion = () => {
         {/* Button Back */}
         <div></div>
 
-        {/* Button Ask a Question */}
-        <AskQuestionButton />
-      </div>
+    if (mode === 'ask') {
+        return <MainContentAskQuestion />;
+    }
+    return (
+        <div className="mx-auto p-4 bg-background max-h-full pt-[65px]">
+            {/* Thanh tìm kiếm */}
+            <div className="mb-6 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <MagnifyingGlassIcon className="h-5 w-5 text-[#00A76F]" />
+                </div>
+                <input
+                    type="text"
+                    placeholder="Search by author or tag..."
+                    value={searchTerm}
+                    className="w-full pl-10 px-4 py-2 placeholder-neutral-500 placeholder:opacity-70 border border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+            </div>
+            <div className="flex justify-between items-center mb-4">
+                {/* Button Back */}
+                <div></div>
 
       {/* Render bài viết */}
       {filteredPosts.length > 0 ? (
