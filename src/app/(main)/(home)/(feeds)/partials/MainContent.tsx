@@ -214,11 +214,9 @@ const MainContent = () => {
 
                 {/* Post */}
                 <div className="flex gap-5 flex-col">
-                    {posts.length}
                     {posts.map((item, index) => (
                         <Post key={index} post={item} mode="onPage" />
                     ))}
-                    {posts.length}
                 </div>
                 {/* Post */}
 
