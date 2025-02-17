@@ -9,9 +9,11 @@ import { Controller, useForm } from "react-hook-form";
 import { QuestionSchema, questionSchema } from "../schema/questionSchema";
 import LanguageSeletor from "./LanguageSeletor";
 import { useCreateQuestionMutation } from "@/queries/question";
+import HashTagInput from "./HashTagInput";
 
 export default function MainContentAskQuestion() {
   const [selectedLanguage, setSelectedLanguage] = useState("typescript");
+  // const [hashtag, setHashtag] = useState("#");
 
   const { mutateAsync } = useCreateQuestionMutation();
 
@@ -24,10 +26,15 @@ export default function MainContentAskQuestion() {
   } = useForm<QuestionSchema>({
     resolver: zodResolver(questionSchema),
   });
+  // const handleChange = (e) => {
+  //   let value = e.target.value;
+  //   if (!value.startsWith("#")) {
+  //     value = "#" + value.replace(/^#*/, ""); // Luôn giữ dấu #
+  //   }
+  //   setHashtag(value);
+  // };
 
   const onSubmit = async (data: QuestionSchema) => {
-    console.log("[data]: ", data);
-
     const payload = {
       topic: data.topic,
       title: data.title,
@@ -36,9 +43,11 @@ export default function MainContentAskQuestion() {
         fileType: selectedLanguage,
         code: data.code,
       },
+      hashtags: data.hashtags,
     };
 
     await mutateAsync(payload);
+    console.log(payload);
   };
 
   return (
@@ -57,17 +66,21 @@ export default function MainContentAskQuestion() {
           <label className="block text-neutral-900 font-medium mb-2">
             Topic
           </label>
-          <input
-            {...register("topic")}
-            type="text"
+          <select
+            {...register("topic", { required: "Vui lòng chọn một topic" })}
             className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Write a title..."
             defaultValue="67aec593090fde960dd8f81c"
-          />
+          >
+            <option value="">Select a topic...</option>
+            <option value="67aec593090fde960dd8f81c">Topic A</option>
+            <option value="78bfc6824311dc87a19e34fd">Topic B</option>
+            <option value="89dcd7935522ed98b20f45fe">Topic C</option>
+          </select>
           {errors.topic && (
             <p className="text-red-500">{errors.topic.message}</p>
           )}
         </div>
+
         <div>
           <label className="block text-neutral-900 font-medium mb-2">
             Title
@@ -122,16 +135,15 @@ export default function MainContentAskQuestion() {
         </div>
         <div>
           <label className="block text-neutral-900 font-medium mb-2">
-            Hagtag
+            Hashtag
           </label>
-          <input
-            {...register("hashtag")}
-            type="text"
-            className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Start by #...(ex: #cyber, #code,...)"
+          <Controller
+            control={control}
+            name="hashtags"
+            render={({ field }) => <HashTagInput onChange={field.onChange} />}
           />
-          {errors.hashtag && (
-            <p className="text-red-500">{errors.hashtag.message}</p>
+          {errors.hashtags && (
+            <p className="text-red-500">{errors.hashtags.message}</p>
           )}
         </div>
 

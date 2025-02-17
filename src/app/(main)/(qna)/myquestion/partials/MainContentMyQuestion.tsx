@@ -15,14 +15,15 @@ import {
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 // import AskQuestionModal from "../../partials/AskQuestionModal";
+import SetCurUserProfileSignal from "@/app/(main)/(profile)/partials/SetCurUserProfileSignal";
 import SendIcon from "@/components/icons/SendIcon";
+import { useGetMyQuestion } from "@/queries/question";
+import { useAuth } from "@/store/authSignal";
+import MonacoEditor from "@monaco-editor/react";
 import { useSearchParams } from "next/navigation";
 import MainContentAskQuestion from "../../ask-question/partials/MainContentAskQuestion";
 import AskQuestionButton from "../../partials/AskQuestionButton";
-import { useGetMyQuestion } from "@/queries/question";
-import { useAuth } from "@/store/authSignal";
-import SetCurUserProfileSignal from "@/app/(main)/(profile)/partials/SetCurUserProfileSignal";
-
+import { formatDistanceToNow } from "date-fns";
 // const posts = [
 //   {
 //     author: "jcole.lamar",
@@ -146,6 +147,8 @@ const MainContentMyQuestion = () => {
   if (mode === "ask") {
     return <MainContentAskQuestion />;
   }
+  console.log("HHHHHHHHHHHHHHHHHHHHH", filteredPosts);
+
   return (
     <div className="mx-auto p-4 bg-background max-h-full pt-[65px]">
       <SetCurUserProfileSignal user={user} />
@@ -172,6 +175,7 @@ const MainContentMyQuestion = () => {
       ))} */}
       {filteredPosts.length > 0 ? (
         filteredPosts
+          .reverse()
           .slice(0, showMore ? filteredPosts.length : 4)
           .map((post) => (
             <div
@@ -187,9 +191,12 @@ const MainContentMyQuestion = () => {
                   />
 
                   <h4 className="font-semibold text-neutral-900">
-                    {user?.fullName}
+                    {user?.handle}
                   </h4>
-                  <p className="text-sm text-neutral-500">{post.timeAgo}</p>
+                  <p className="text-sm text-neutral-500">
+                    {post?.createdAt &&
+                      formatDistanceToNow(post?.createdAt, { addSuffix: true })}
+                  </p>
                 </div>
 
                 {/*dấu 3 chấm */}
@@ -225,6 +232,18 @@ const MainContentMyQuestion = () => {
               {/* Content */}
               <p className="mt-2 text-lg text-neutral-600">{post.question}</p>
 
+              {/* code  */}
+              {/* Chỉ hiển thị MonacoEditor nếu có code */}
+              {post.code.code && (
+                <MonacoEditor
+                  className="h-[300px]"
+                  value={post.code.code}
+                  theme="vs-dark"
+                  language={post.code.fileType}
+                  options={{ readOnly: true, domReadOnly: true }}
+                />
+              )}
+
               {/* Image */}
               {post.imageUrl && (
                 <img
@@ -233,6 +252,15 @@ const MainContentMyQuestion = () => {
                   className="w-full h-[500px] object-cover mx-auto mt-4 rounded-lg"
                 />
               )}
+
+              {post?.hashtags.map((item) => (
+                <span
+                  key={post._id}
+                  className="text-xs bg-[#4B5563] text-[#F8FAFC] px-2 py-1 mr-1 rounded-md"
+                >
+                  #{item.name}
+                </span>
+              ))}
 
               {/* Actions */}
               <div className="mt-2 flex items-center gap-2 text-accent-foreground">

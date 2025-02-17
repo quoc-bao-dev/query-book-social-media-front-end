@@ -1,5 +1,6 @@
 import axiosClient from '@/httpClient';
 import { HttpResponse } from '@/types/common';
+import { QuestionResponse } from '@/types/question';
 import { swal } from '@/utils/swal';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -20,7 +21,7 @@ export const useCreateQuestionMutation = () => {
 
 const getMyQuestion = () =>
     axiosClient
-        .get<HttpResponse<any[]>>('/questions/my-question')
+        .get<HttpResponse<QuestionResponse[]>>('/questions/my-question')
         .then((response) => response.data.data);
 
 export const useGetMyQuestion = () => {
