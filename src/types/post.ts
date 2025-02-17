@@ -44,6 +44,16 @@ type Comment = {
     createdAt: string;
     updatedAt: string;
 }
+
+
+
+export type Feed = {
+    id: string;
+    image: string;
+    name: string;
+};
+
+
 export type PostsQueryData = {
     pages: {
         data: {

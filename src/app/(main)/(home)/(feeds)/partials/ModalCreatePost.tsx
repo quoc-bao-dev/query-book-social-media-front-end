@@ -171,7 +171,6 @@ const ModalCreatePost = () => {
                             Public
                           </SelectItem>
                           <SelectItem value="friend">Friends</SelectItem>
-
                           <SelectItem value="private">Private</SelectItem>
                         </SelectGroup>
                       </SelectContent>
