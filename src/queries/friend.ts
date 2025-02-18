@@ -14,6 +14,7 @@ export const useFriendsQuery = () =>
         queryFn: getFriends,
     });
 
+
 // get list friend request
 const getFriendRequest = () =>
     axiosClient.get<HttpResponse<UserRequestResponse[]>>('/friends/requests');

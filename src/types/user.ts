@@ -42,6 +42,7 @@ export type UserProfileResponse = {
 };
 
 type Friend = {
+    id: string;
     fullName: string;
     handle: string;
     avatar?: Avatar;
