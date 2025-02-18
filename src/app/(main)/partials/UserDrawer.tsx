@@ -1,5 +1,6 @@
 'use client';
 
+import Drawer from '@/components/common/Drawer';
 import SidebarRow from '@/components/common/SidebarRow';
 import ArrowStartLeftIcon from '@/components/icons/ArrowStartLeftIcon';
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon';
@@ -8,12 +9,11 @@ import LockIcon from '@/components/icons/LockIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useLogout } from '@/hooks/useLogout';
 import { useAuth } from '@/store/authSignal';
-import { media } from '@/utils/mediaUtils';
+import { getFirstCharacter } from '@/utils/nameUtilts';
 import { useEffect, useState } from 'react';
 import { signify } from 'react-signify';
-import Drawer from '@/components/common/Drawer';
-import { useLogout } from '@/hooks/useLogout';
 
 type UserDrawer = {
     isShow: boolean;
@@ -52,7 +52,9 @@ const UserDrawer = () => {
                         <div className="w-[100px] aspect-square">
                             <Avatar className="w-full h-full object-cover">
                                 <AvatarImage src={user?.avatarUrl} />
-                                <AvatarFallback>QB</AvatarFallback>
+                                <AvatarFallback>
+                                    {getFirstCharacter(user?.fullName ?? '')}
+                                </AvatarFallback>
                             </Avatar>
                         </div>
                     </div>
