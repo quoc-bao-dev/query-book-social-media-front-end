@@ -10,7 +10,7 @@ const FollowButton = ({ userId }: { userId: string }) => {
   return (
     <button
       onClick={handleFollow}
-      className="relative flex flex-col items-center py-3 px-3 group cursor-pointer"
+      className="relative flex flex-col items-center p-2 px-4 bg-gray-50 rounded-lg w-fit h-fit"
     >
       <div className="flex items-center space-x-2">
         <Rss className="fill-primary-500" />

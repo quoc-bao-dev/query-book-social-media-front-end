@@ -10,6 +10,7 @@ const Layout = ({ children }: PropsWithChildren) => {
           <div>
             {/* cover page */}
             <CoverPage />
+
             {/* cover page */}
             {children}
           </div>
