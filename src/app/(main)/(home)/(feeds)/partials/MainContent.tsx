@@ -7,35 +7,14 @@ import { PostResponse, PostsQueryData } from "@/types/post";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
+import Feeds from "./Feeds";
 import Post from "./Post";
 import PostCreate from "./PostCreate";
 import PostSkeleton from "./PostSkeleton";
-import Feeds from "./Feeds";
-
-const feeds = [
-  {
-    image: "cristianoRonaldo.png",
-    name: "Cristiano Ronaldo",
-  },
-  {
-    image: "kaka.png",
-    name: "Kaka",
-  },
-  {
-    image: "ronaldo.png",
-    name: "Roanldo Delima",
-  },
-  {
-    image: "ronaldo.png",
-    name: "Roanldo Delima",
-  },
-];
 
 const MainContent = () => {
   const [isFetched, setIsFetched] = useState(false); // Kiểm soát trạng thái gọi API
-
   const queryClient = useQueryClient();
-
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
     usePostQuery(); // Đảm bảo `hasNextPage` từ server
 
@@ -100,9 +79,8 @@ const MainContent = () => {
       <main className="mx-auto pb-[75px] w-full">
         {/* Feed */}
         <div className="w-[calc(100vw-32px)] md:w-full mx-auto">
-          <ScrollArea className="w-full rounded-xl overflow-hidden">
-            <Feeds feed={feeds} />
-
+          <ScrollArea className="w-full overflow-hidden">
+            <Feeds />
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>

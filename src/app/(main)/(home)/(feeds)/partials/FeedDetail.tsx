@@ -23,8 +23,6 @@ const FeedDetail = () => {
   //   setCurIndex(Math.abs(curIndex - 1) % listImages.length);
   // };
 
-  console.log(listImages[curIndex], "listImages[curIndex]");
-
   return (
     <Modal isOpen={isShow} onClose={closeModal}>
       <div className="flex z-20">

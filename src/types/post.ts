@@ -16,6 +16,14 @@ export type PostResponse = {
     updatedAt: string;
 };
 
+export type StoryResponse = {
+    id: string;
+    media: string;
+    author: Author;
+    createdAt: string;
+    updatedAt: string;
+}
+
 type Like = {
     id: string;
     name: string;

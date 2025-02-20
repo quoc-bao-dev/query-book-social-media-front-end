@@ -1,9 +1,15 @@
-import React from 'react'
+import axiosClient from "@/httpClient";
+import { HttpResponse } from "@/types/common";
+import { StoryResponse } from "@/types/post";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
 
-const story = () => {
-    return (
-        <div>story </div>
-    )
-}
 
-export default story
+const getStory = () => axiosClient.get<HttpResponse<any[]>>('/stories');
+
+export const useStoryQuery = () => {
+    return useQuery({
+        queryFn: getStory,
+        queryKey: ['stories'],
+    })
+};
