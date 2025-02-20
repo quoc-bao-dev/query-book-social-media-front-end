@@ -129,6 +129,7 @@ const MainContentMyQuestion = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data } = useGetMyQuestion();
+
   const filteredPosts =
     data?.filter((post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -147,7 +148,6 @@ const MainContentMyQuestion = () => {
   if (mode === "ask") {
     return <MainContentAskQuestion />;
   }
-  console.log("HHHHHHHHHHHHHHHHHHHHH", filteredPosts);
 
   return (
     <div className="mx-auto p-4 bg-background max-h-full pt-[65px]">
@@ -256,7 +256,7 @@ const MainContentMyQuestion = () => {
               {post?.hashtags.map((item) => (
                 <span
                   key={post._id}
-                  className="text-xs bg-[#4B5563] text-[#F8FAFC] px-2 py-1 mr-1 rounded-md"
+                  className="text-xs bg-[#4B5563] text-[#F8FAFC] px-2 py-1 mr-1 rounded-md cursor-pointer"
                 >
                   #{item.name}
                 </span>
@@ -277,7 +277,7 @@ const MainContentMyQuestion = () => {
               {/* Reply Section */}
               <div className="mt-4 flex items-center gap-3">
                 <img
-                  src="http://localhost:3008/1739160152820-214983997-ech.jpg"
+                  src={user?.avatarUrl}
                   alt="user"
                   className="w-10 h-10 rounded-full"
                 />

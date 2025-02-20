@@ -1,9 +1,17 @@
 import axiosClient from '@/httpClient';
-import { HttpResponse } from '@/types/common';
+import { HttpResponse, HttpResponseWithPagination } from '@/types/common';
 import { QuestionResponse } from '@/types/question';
 import { swal } from '@/utils/swal';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+const  getAllQuestions = (limit: number, page: number, search:string) => axiosClient.get<HttpResponseWithPagination<QuestionResponse[]>>(`/questions/?limit=${limit}&page=${page}${search && `&s=${search}`}`).then((response) => response.data)
+
+export const useQuestionQuery  =  ({limit=10,page=1,search}:{limit:number; page:number, search: string}) => {
+    return useQuery ( {
+        queryKey: ['questions', {limit: limit, page: page, search: search}],
+        queryFn: () => getAllQuestions(limit,page,search),
+    })
+}
 const postCreateQuestion = (payload: any) =>
     axiosClient.post('/questions', payload);
 

@@ -1,8 +1,8 @@
-export type QuestionResponse = {
+  export type QuestionResponse = {
     code: Code;
     hashtags: Hashtag[];
     _id: string;
-    userId: string;
+    userId: UserId;
     topic: string;
     title: string;
     question: string;
@@ -10,6 +10,25 @@ export type QuestionResponse = {
     __v: number;
     createdAt?: string;
     updatedAt?: string;
+  }
+  
+  interface UserId {
+    _id: string;
+    firstName: string;  
+    lastName: string;
+    email: string;
+    avatar?: Avatar;
+    avatarUrl?: string;
+  }
+  
+  interface Avatar {
+    _id: string;
+    file: string;
+    sourceType: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
   }
   
   interface Hashtag {
