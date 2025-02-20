@@ -7,11 +7,6 @@ interface UploadsResponse {
     files: File[];
 }
 
-interface File {
-    filename: string;
-    path: string;
-}
-
 export const uploadImage = async (file: File) => {
     const formData = new FormData();
 

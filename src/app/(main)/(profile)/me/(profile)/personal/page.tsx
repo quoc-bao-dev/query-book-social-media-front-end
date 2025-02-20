@@ -29,31 +29,38 @@ const page = () => {
     <div className="">
       <SetCurUserProfileSignal user={user} />
       <div className="h-auto w-[680px] mt-4 border border-b rounded-2xl bg-card">
-        <div className="pt-4 pl-4 pb-4 space-y-5">
+        <div className="pt-4 px-4 pb-4 space-y-5">
+          <div className="flex items-center justify-between w-full">
+            <FloatInput
+              label="About"
+              value="Tart I love sugar plum I love oat cake. Sweet roll caramels I love jujubes. Topping cake wafer."
+            />
+          </div>
+          {/* Thông tin người dùng */}
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center space-x-3">
               <User className="fill-primary-500" />
               <span className="text-base font-semibold text-neutral-800">
-                Họ tên{" "}
+                Họ tên:{" "}
                 <span className="font-bold text-neutral-950">
-                  {" "}
                   {user?.fullName}
                 </span>
               </span>
             </div>
-            <div className="flex items-center space-x-3 mr-4">
-              <div className="w-9 h-9 bg-gray-200 flex items-center justify-center rounded-full">
-                <Pen className="text-neutral-800" />
-              </div>
-            </div>
+
+            {/* Nút chỉnh sửa */}
+            <button className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-200 hover:bg-gray-300 transition">
+              <Pen className="text-neutral-800" />
+            </button>
           </div>
+          {/* Thông tin người dùng */}
 
           <div className="flex items-center justify-between w-full">
             {/* Thông tin liên hệ */}
             <div className="flex items-center space-x-3">
               <Home className="fill-primary-500" />
               <span className="text-base font-bold text-neutral-800">
-                Thông tin liên hệ{" "}
+                Thông tin liên hệ:{" "}
                 <span className="font-bold text-neutral-950">
                   {user?.email}
                 </span>
@@ -61,10 +68,10 @@ const page = () => {
             </div>
 
             {/* Nút chỉnh sửa */}
-            <div className="flex items-center space-x-3 mr-4">
-              <div className="w-9 h-9 bg-gray-200 flex items-center justify-center rounded-full cursor-pointer">
+            <div className="flex items-center">
+              <button className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-200 hover:bg-gray-300 transition">
                 <Pen className="text-neutral-800" />
-              </div>
+              </button>
             </div>
           </div>
 
@@ -73,7 +80,7 @@ const page = () => {
             <div className="flex items-center space-x-3">
               <At className="fill-primary-500" />
               <span className="text-base font-bold text-neutral-800">
-                Tên người dùng{" "}
+                Tên người dùng:{" "}
                 <span className="font-bold text-neutral-950">
                   {user?.handle}
                 </span>{" "}
@@ -81,11 +88,14 @@ const page = () => {
             </div>
 
             {/* Nút chỉnh sửa */}
-            <div className="flex items-center space-x-3 mr-4">
-              <div className="w-9 h-9 bg-gray-200 flex items-center justify-center rounded-full cursor-pointer">
+            <div className="flex items-center">
+              <button className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-200 hover:bg-gray-300 transition">
                 <Pen className="text-neutral-800" />
-              </div>
+              </button>
             </div>
+          </div>
+          <div className="flex items-center justify-between w-full">
+            <h1>chào</h1>
           </div>
         </div>
       </div>
