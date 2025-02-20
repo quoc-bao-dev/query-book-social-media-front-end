@@ -16,7 +16,7 @@ const getPost = ({ pageParam = 1 }: { pageParam: number }) =>
     axiosClient.get<HttpResponse<PostResponse>>('/posts', {
         params: {
             page: pageParam,
-            limit: 10,
+            limit: 5,
         },
     });
 

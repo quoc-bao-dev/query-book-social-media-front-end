@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import useDebouncedCallback from "@/hooks/useDebounceCallback";
@@ -18,60 +18,50 @@ const MainContent = () => {
   const { data, fetchNextPage, isLoading, isFetching, hasNextPage } =
     usePostQuery(); // Đảm bảo `hasNextPage` từ server
 
-  const posts =
-    data?.pages.flatMap((page: AxiosResponse) => page.data.data) ||
-    ([] as PostResponse[]);
+    const posts =
+        data?.pages.flatMap((page: AxiosResponse) => page.data.data) ||
+        ([] as PostResponse[]);
 
-  const clearPost = useDebouncedCallback(() => {
-    if (posts.length > 50) {
-      queryClient.setQueryData(["posts"], (oldData: PostsQueryData) => {
-        if (!oldData) return oldData;
-        return {
-          pages: oldData.pages.slice(1), // Giữ lại bài mới
-          pageParams: oldData.pageParams.slice(1),
-        };
-      });
-    }
-  }, 500);
+    const clearPost = () => {
+        queryClient.setQueryData(['posts'], (oldData: PostsQueryData) => {
+            if (!oldData) return oldData;
 
-  // Hàm xử lý cuộn (debounce)
-  const handleScroll = useDebouncedCallback(() => {
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            // Tính tổng số bài viết hiện tại
+            const totalPosts = oldData.pages.reduce(
+                (acc, page) => acc + page.data.data.length,
+                0
+            );
 
-    if (!isFetched && scrollTop + clientHeight === scrollHeight) {
-      fetchNextPage();
-      clearPost();
-      setIsFetched(true);
-    }
+            // Nếu tổng số bài viết nhỏ hơn hoặc bằng 20, không cần xóa
+            if (totalPosts <= 20) return oldData;
 
-    // Kiểm tra nếu đã gần cuối trang
-    if (
-      scrollTop + clientHeight >= scrollHeight - 300 &&
-      scrollTop + clientHeight < scrollHeight &&
-      hasNextPage
-    ) {
-      // Xóa bài viết cũ (nếu cần)
-      clearPost();
+            // Tạo bản sao của các trang
+            const newPages = [...oldData.pages];
+            let postsToRemove = totalPosts - 20;
 
-      // Gọi API để tải thêm bài viết
-      fetchNextPage();
-      setIsFetched(false);
-    }
+            // Xóa các bài viết từ đầu cho đến khi chỉ còn 20 bài
+            while (postsToRemove > 0 && newPages.length > 0) {
+                const firstPage = newPages[0];
+                const postsInFirstPage = firstPage.data.data.length;
 
-    // Reset trạng thái khi cuộn ra khỏi vùng gần cuối
-    if (scrollTop + clientHeight < scrollHeight - 300) {
-      setIsFetched(false);
-    }
-  }, 200); // Tăng thời gian debounce để tránh spam
+                if (postsInFirstPage <= postsToRemove) {
+                    // Nếu số bài viết trong trang đầu tiên nhỏ hơn hoặc bằng số bài cần xóa
+                    postsToRemove -= postsInFirstPage;
+                    newPages.shift(); // Xóa trang đầu tiên
+                } else {
+                    // Nếu trang đầu tiên có nhiều bài viết hơn số cần xóa
+                    firstPage.data.data =
+                        firstPage.data.data.slice(postsToRemove);
+                    postsToRemove = 0;
+                }
+            }
 
-  useEffect(() => {
-    const onScroll = () => handleScroll();
-    window.addEventListener("scroll", onScroll);
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
+            return {
+                ...oldData,
+                pages: newPages,
+            };
+        });
     };
-  }, [handleScroll]);
 
   return (
     <>

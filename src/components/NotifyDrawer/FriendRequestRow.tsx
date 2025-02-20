@@ -1,13 +1,21 @@
 import { useAcceptRequestMutation } from '@/queries/friend';
 import { Button } from '../common/Button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { formatDistanceToNow } from 'date-fns';
+import { getFirstCharacter } from '@/utils/nameUtilts';
 
 type FriendRequestRowProps = {
     id: string;
     avatar: string;
     name: string;
+    createdAt: string;
 };
-const FriendRequestRow = ({ avatar, name, id }: FriendRequestRowProps) => {
+const FriendRequestRow = ({
+    avatar,
+    name,
+    id,
+    createdAt,
+}: FriendRequestRowProps) => {
     const { mutateAsync } = useAcceptRequestMutation();
     const accept = () => {
         mutateAsync(id);
@@ -17,7 +25,7 @@ const FriendRequestRow = ({ avatar, name, id }: FriendRequestRowProps) => {
             <div className="">
                 <Avatar>
                     <AvatarImage src={avatar} />
-                    <AvatarFallback>{name}</AvatarFallback>
+                    <AvatarFallback>{getFirstCharacter(name)}</AvatarFallback>
                 </Avatar>
             </div>
             <div className="">
@@ -25,7 +33,9 @@ const FriendRequestRow = ({ avatar, name, id }: FriendRequestRowProps) => {
                     <span className="font-semibold">{name} </span> has sent a
                     friend request
                 </p>
-                <p className="text-neutral-900/30">1h</p>
+                <p className="text-neutral-900/30">
+                    {formatDistanceToNow(createdAt, { addSuffix: true })}
+                </p>
                 <div className="pt-2 flex gap-3 ">
                     <Button size="sm" className="px-5" onClick={accept}>
                         Accept
