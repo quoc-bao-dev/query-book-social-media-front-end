@@ -1,4 +1,4 @@
-import Signal from "@/components/icons/Signal"; // Đảm bảo import icon Signal từ đúng đường dẫn
+import Rss from "@/components/icons/Rss";
 import { useFollowMutation } from "@/queries/follow";
 
 const FollowButton = ({ userId }: { userId: string }) => {
@@ -13,7 +13,7 @@ const FollowButton = ({ userId }: { userId: string }) => {
       className="relative flex flex-col items-center py-3 px-3 group cursor-pointer"
     >
       <div className="flex items-center space-x-2">
-        <Signal className="fill-primary-500" />
+        <Rss className="fill-primary-500" />
         <span className="text-base font-bold text-neutral-800">Theo dõi</span>
       </div>
     </button>
