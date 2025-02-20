@@ -5,7 +5,7 @@ import { UserProfileResponse } from '@/types/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const postFollow = (id: string) => axiosClient.post(`/follow/${id}`);
-export const useFollowMutation = ({mode = 'default',userId }: {mode?: 'default' | 'userPage', userId?: string}) => {
+export const useFollowMutation = ({mode,userId }: {mode?: 'default' | 'userPage', userId?: string} = {mode: 'default'}) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (userId: string) => postFollow(userId),

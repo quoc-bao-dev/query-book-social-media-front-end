@@ -167,22 +167,6 @@ const CoverPage = () => {
         setIsModalOpen={setIsCoveModalOpen}
         userMe={userMe}
       />
-      <div className="">
-        {" "}
-        <div className="rounded-lg bg-card mt-4">
-          <div className="">
-            <div className="flex justify-end relative">
-              <Link href={profileLink} className="block">
-                <ProfileButton />
-              </Link>
-
-              <Link href={targetLink} className="block">
-                <PostButton />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
