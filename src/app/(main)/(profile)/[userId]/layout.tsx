@@ -16,7 +16,7 @@ const layout = ({ children }: PropsWithChildren) => {
 
   return (
     <div className="">
-      <div className="rounded-lg bg-card mt-4">
+      {/* <div className="rounded-lg bg-card mt-4">
         <div className="">
           <div className="flex justify-end relative">
             <Link href={profileLink} className="block">
@@ -28,7 +28,7 @@ const layout = ({ children }: PropsWithChildren) => {
             </Link>
           </div>
         </div>
-      </div>
+      </div> */}
       {children}
     </div>
   );
