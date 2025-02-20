@@ -16,7 +16,11 @@ export const useFriendsQuery = () =>
 
 // get list friend request
 const getFriendRequest = () =>
-    axiosClient.get<HttpResponse<UserRequestResponse[]>>('/friends/requests');
+    axiosClient
+        .get<HttpResponse<UserRequestResponse[]>>('/friends/requests')
+        .then((data) => {
+            return data.data.data;
+        });
 
 export const useFriendRequestQuery = () =>
     useQuery({

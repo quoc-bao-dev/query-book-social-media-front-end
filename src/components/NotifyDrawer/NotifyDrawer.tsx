@@ -3,14 +3,15 @@
 import { Button } from '@/components/common/Button';
 import Drawer from '@/components/common/Drawer';
 import Cog6Tooth from '@/components/icons/Cog6Tooth';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { sSocket } from '@/provider/SocketProvider';
 import { useFriendRequestQuery } from '@/queries/friend';
+import { useNotificationQuery } from '@/queries/notification';
+import { swal } from '@/utils/swal';
 import { useEffect } from 'react';
 import { signify } from 'react-signify';
-import FriendRequestRow from './FriendRequestRow';
-import { sSocket } from '@/provider/SocketProvider';
-import { swal } from '@/utils/swal';
+import { useNotification } from '../Layout/Header';
+import NotifyRow from './NotifyRow';
 
 type UserDrawerType = {
     isShow: boolean;
@@ -23,7 +24,10 @@ export const useNotifyDrawer = () => ({
 });
 
 const NotifyDrawer = () => {
+    const { setNotifyCount } = useNotification();
     const { data: friendRequests, refetch } = useFriendRequestQuery();
+    const { data: notification, refetch: refetchNotification } =
+        useNotificationQuery();
 
     const { isShow } = sNotifyDrawer.use();
 
@@ -35,7 +39,17 @@ const NotifyDrawer = () => {
         close();
     };
 
-    const lsFriendsRequest = friendRequests?.data.data;
+    const lsNotification = [
+        ...(notification || []),
+        ...(friendRequests?.map((item) => ({
+            ...item,
+            type: 'friend_request',
+        })) || []),
+    ].sort((a, b) => {
+        return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+    });
 
     useEffect(() => {
         if (socket) {
@@ -75,11 +89,36 @@ const NotifyDrawer = () => {
                     },
                 });
             });
+
+            socket.on('receive_follow', (data) => {
+                swal.fire({
+                    toast: true,
+                    position: 'top-end', // Vị trí góc phải trên
+                    icon: 'success',
+                    title: `${data?.firstName} ${data?.lastName} followed you!`,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInRight',
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutLeft',
+                    },
+                });
+                refetchNotification();
+            });
         }
         return () => {
             sNotifyDrawer.reset();
         };
     }, [socket]);
+
+    useEffect(() => {
+        setNotifyCount(
+            (friendRequests?.length || 0) + (notification?.length || 0)
+        );
+    }, [friendRequests, notification, setNotifyCount]);
     return (
         <>
             <Drawer isOpen={isShow} onOpenChange={toggleDrawer}>
@@ -127,46 +166,9 @@ const NotifyDrawer = () => {
                     <ScrollArea className="flex-1 pt-4 ">
                         <div className="flex flex-col gap-3">
                             {/* row */}
-                            {lsFriendsRequest?.map((friend) => (
-                                <FriendRequestRow
-                                    key={friend.id}
-                                    id={friend.id}
-                                    avatar={friend.avatar}
-                                    name={friend.fullName}
-                                />
+                            {lsNotification?.map((notify) => (
+                                <NotifyRow key={notify._id} notify={notify} />
                             ))}
-                            {/* row */}
-
-                            {/* row */}
-                            <div className="py-4 px-3 flex gap-4 border-b border-gray-200">
-                                <div className="">
-                                    <Avatar>
-                                        <AvatarImage src="/images/that.png" />
-                                        <AvatarFallback>QB</AvatarFallback>
-                                    </Avatar>
-                                </div>
-                                <div className="">
-                                    <p className="">
-                                        <span className="font-semibold">
-                                            Quoc Bao
-                                        </span>
-                                        has sent a friend request
-                                    </p>
-                                    <p className="text-neutral-900/30">1h</p>
-                                    <div className="pt-2 flex gap-3 ">
-                                        <Button size="sm" className="px-5">
-                                            Accept
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            className="px-5 bg-primary-100/70"
-                                        >
-                                            Reject
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
                             {/* row */}
                         </div>
                         <ScrollBar orientation="vertical" />
