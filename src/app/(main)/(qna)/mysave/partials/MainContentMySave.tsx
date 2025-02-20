@@ -14,107 +14,104 @@ import {
   TrashIcon,
   FlagIcon,
 } from "@heroicons/react/24/outline";
-// import AskQuestionModal from "../../partials/AskQuestionModal";
 import SendIcon from "@/components/icons/SendIcon";
-import AskQuestionButton from "../../partials/AskQuestionButton";
+const posts = [
+  {
+    author: "snoopdog",
+    timeAgo: "10h ago",
+    title: "How to Learn Programming Effectively?",
+    content:
+      "Programming is one of the most promising and rewarding fields in today’s digital world. However, mastering it requires dedication, problem-solving skills, and continuous learning. Many beginners struggle with where to start, what to focus on, and how to stay motivated. Below are some important questions to consider when learning programming effectively.",
+    imageUrl: "",
+    authorImage:
+      "https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/snoop_dogg.png",
+    comments: 200,
+    likes: 2300,
+  },
+  {
+    author: "ice.cube",
+    timeAgo: "10h ago",
+    title: "What is the difference between compiled and interpreted languages?",
+    content:
+      "Compiled languages (e.g., C, C++) require the source code to be converted into machine code before execution, resulting in faster performance. Interpreted languages (e.g., Python, JavaScript) execute code line-by-line, making debugging easier but potentially slower.",
+    imageUrl:
+      "https://s3-sgn09.fptcloud.com/codelearnstorage/Media/Default/Users/Trg_5FPhu/blog1/blog1.jpg",
+    authorImage:
+      "https://upload.wikimedia.org/wikipedia/commons/2/2c/Ice-Cube_2014-01-09-Chicago-photoby-Adam-Bielawski.jpg",
+    comments: 150,
+    likes: 1800,
+  },
+  {
+    author: "travis.scott",
+    timeAgo: "12d ago",
+    title: "What is the difference between an array and a linked list?",
+    content:
+      "An array is a contiguous block of memory where elements are stored sequentially, allowing fast access by index. A linked list consists of nodes connected via pointers, enabling dynamic memory allocation but with slower access time compared to arrays.",
+    imageUrl:
+      "https://toidicodedao.com/wp-content/uploads/2020/07/screenshot-2020-07-23-at-4.53.48-pm.jpg",
+    authorImage:
+      "https://imageio.forbes.com/specials-images/imageserve/5ed670179e384f0007b7db8f/0x0.jpg?format=jpg&crop=2610,2609,x1032,y186,safe&height=416&width=416&fit=bounds",
+    comments: 300,
+    likes: 2100,
+  },
+  {
+    author: "jcole.lamar",
+    timeAgo: "10h ago",
+    title: "How to learn TypeScript?",
+    content:
+      "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
+    imageUrl:
+      "https://topdev.vn/blog/wp-content/uploads/2019/06/vs-code-theme-Night-Owl.png",
+    authorImage:
+      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
+    comments: 300,
+    likes: 2100,
+  },
+
+  {
+    author: "jcole.lamar",
+    timeAgo: "10h ago",
+    title: "How to learn TypeScript?",
+    content:
+      "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
+    imageUrl:
+      "https://gcs.tripi.vn/public-tripi/tripi-feed/img/477714EJG/anh-mo-ta.png",
+    authorImage:
+      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
+    comments: 300,
+    likes: 2100,
+  },
+  {
+    author: "jcole.lamar",
+    timeAgo: "10h ago",
+    title: "How to learn TypeScript?",
+    content:
+      "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
+    imageUrl:
+      "https://carre.edu.vn/wp-content/uploads/2024/12/anh-meme-hai-huoc-che-e1735373827733.webp",
+    authorImage:
+      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
+    comments: 300,
+    likes: 2100,
+  },
+  {
+    author: "jcole.lamar",
+    timeAgo: "10h ago",
+    title: "How to learn TypeScript?",
+    content:
+      "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
+    imageUrl:
+      "https://cdn.caohockinhte.edu.vn/wp-content/uploads/2024/08/hinh-tau-hai-bua-1.jpg",
+    authorImage:
+      "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
+    comments: 300,
+    likes: 2100,
+  },
+  // Add more posts as needed...
+];
 
 const MainContentMySave = () => {
   const [searchTerm] = useState("");
-  const posts = [
-    {
-      author: "snoopdog",
-      timeAgo: "10h ago",
-      title: "How to Learn Programming Effectively?",
-      content:
-        "Programming is one of the most promising and rewarding fields in today’s digital world. However, mastering it requires dedication, problem-solving skills, and continuous learning. Many beginners struggle with where to start, what to focus on, and how to stay motivated. Below are some important questions to consider when learning programming effectively.",
-      imageUrl: "",
-      authorImage:
-        "https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/snoop_dogg.png",
-      comments: 200,
-      likes: 2300,
-    },
-    {
-      author: "ice.cube",
-      timeAgo: "10h ago",
-      title:
-        "What is the difference between compiled and interpreted languages?",
-      content:
-        "Compiled languages (e.g., C, C++) require the source code to be converted into machine code before execution, resulting in faster performance. Interpreted languages (e.g., Python, JavaScript) execute code line-by-line, making debugging easier but potentially slower.",
-      imageUrl:
-        "https://s3-sgn09.fptcloud.com/codelearnstorage/Media/Default/Users/Trg_5FPhu/blog1/blog1.jpg",
-      authorImage:
-        "https://upload.wikimedia.org/wikipedia/commons/2/2c/Ice-Cube_2014-01-09-Chicago-photoby-Adam-Bielawski.jpg",
-      comments: 150,
-      likes: 1800,
-    },
-    {
-      author: "travis.scott",
-      timeAgo: "12d ago",
-      title: "What is the difference between an array and a linked list?",
-      content:
-        "An array is a contiguous block of memory where elements are stored sequentially, allowing fast access by index. A linked list consists of nodes connected via pointers, enabling dynamic memory allocation but with slower access time compared to arrays.",
-      imageUrl:
-        "https://toidicodedao.com/wp-content/uploads/2020/07/screenshot-2020-07-23-at-4.53.48-pm.jpg",
-      authorImage:
-        "https://imageio.forbes.com/specials-images/imageserve/5ed670179e384f0007b7db8f/0x0.jpg?format=jpg&crop=2610,2609,x1032,y186,safe&height=416&width=416&fit=bounds",
-      comments: 300,
-      likes: 2100,
-    },
-    {
-      author: "jcole.lamar",
-      timeAgo: "10h ago",
-      title: "How to learn TypeScript?",
-      content:
-        "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
-      imageUrl:
-        "https://topdev.vn/blog/wp-content/uploads/2019/06/vs-code-theme-Night-Owl.png",
-      authorImage:
-        "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-      comments: 300,
-      likes: 2100,
-    },
-
-    {
-      author: "jcole.lamar",
-      timeAgo: "10h ago",
-      title: "How to learn TypeScript?",
-      content:
-        "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
-      imageUrl:
-        "https://gcs.tripi.vn/public-tripi/tripi-feed/img/477714EJG/anh-mo-ta.png",
-      authorImage:
-        "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-      comments: 300,
-      likes: 2100,
-    },
-    {
-      author: "jcole.lamar",
-      timeAgo: "10h ago",
-      title: "How to learn TypeScript?",
-      content:
-        "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
-      imageUrl:
-        "https://carre.edu.vn/wp-content/uploads/2024/12/anh-meme-hai-huoc-che-e1735373827733.webp",
-      authorImage:
-        "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-      comments: 300,
-      likes: 2100,
-    },
-    {
-      author: "jcole.lamar",
-      timeAgo: "10h ago",
-      title: "How to learn TypeScript?",
-      content:
-        "Cyber Security is a rapidly growing field, and it can seem daunting for beginners...",
-      imageUrl:
-        "https://cdn.caohockinhte.edu.vn/wp-content/uploads/2024/08/hinh-tau-hai-bua-1.jpg",
-      authorImage:
-        "https://hips.hearstapps.com/hmg-prod/images/j_cole_photo_by_isaac_brekken_wireimage_getty_503069628.jpg",
-      comments: 300,
-      likes: 2100,
-    },
-    // Add more posts as needed...
-  ];
 
   const [showMore, setShowMore] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -146,9 +143,6 @@ const MainContentMySave = () => {
       <div className="flex justify-between items-center mb-4">
         {/* Button Back */}
         <div></div>
-
-        {/* Button Ask a Question */}
-        <AskQuestionButton />
       </div>
 
       {/* Render bài viết */}

@@ -4,6 +4,17 @@ export type HttpResponse<T = unknown> = {
     data: T;
 };
 
+export type HttpResponseWithPagination<T = unknown> = HttpResponse<T> & {
+    pagination: {
+        page: number;
+        limit: number;
+        totalPage: number;
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+        total: number;
+    }
+}
+
 export type AxiosClientRes<T = unknown> = HttpResponse<T>;
 
 export type Media = {
