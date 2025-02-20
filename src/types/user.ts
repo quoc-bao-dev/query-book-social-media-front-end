@@ -109,4 +109,5 @@ export type UserRequestResponse = {
     email: string;
     avatar: string;
     handle: string;
+    createdAt: string;
 };

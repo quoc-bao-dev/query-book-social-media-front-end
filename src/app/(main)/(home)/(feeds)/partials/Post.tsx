@@ -97,6 +97,7 @@ const Post = ({ post, mode = "onPage" }: PostProps) => {
         <div className="relative px-1">
           <PostImage lsImage={post.mediaUrls} />
         </div>
+
         <div className="grid grid-cols-2 px-4 border-b-[1px]">
           <div className="flex py-4 items-center">
             <div onClick={handleLike}>
