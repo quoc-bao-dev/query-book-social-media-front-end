@@ -7,7 +7,7 @@ import ImageDetailModal from "./(home)/(feeds)/partials/ImageDetailModal";
 import ModalCreatePost from "./(home)/(feeds)/partials/ModalCreatePost";
 import UserDrawer from "./partials/UserDrawer";
 import ModalCommentDetail from "./(home)/(feeds)/partials/ModalCommentDetail";
-import FeedDetail from "./(home)/(feeds)/partials/FeedDetail";
+import AppLoading from "@/components/Layout/AppLoading";
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
@@ -27,7 +27,7 @@ const Layout = ({ children }: PropsWithChildren) => {
       <UserDrawer />
       <ImageDetailModal />
       <ModalCommentDetail />
-      <FeedDetail />
+      <AppLoading />
     </UserProvider>
   );
 };
