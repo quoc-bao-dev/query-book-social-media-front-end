@@ -1,43 +1,59 @@
 "use client";
 
 import PlusIcon from "@/components/icons/PlusIcon";
+import { useUpdateUserProfileMutation } from "@/queries/user";
+import { uploadImage } from "@/utils/uploadUtils";
+import { useState } from "react";
 // Định nghĩa kiểu cho props
 interface AvatarModalProps {
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  userMe: { avatarUrl?: string } | null;
+  userMe: { coverPageUrl?: string } | null;
 }
 const CoverModal = ({
   isModalOpen,
   setIsModalOpen,
   userMe,
 }: AvatarModalProps) => {
+  const [curImage, setCurImage] = useState<File | null>(null);
+
+  const avtImageCovePage = curImage
+    ? URL.createObjectURL(curImage)
+    : userMe?.coverPageUrl;
+
+  const { mutateAsync } = useUpdateUserProfileMutation();
+
+  const handleUploadCovePage = async () => {
+    const image = await uploadImage(curImage!);
+    const payload = {
+      coverPage: {
+        type: "image",
+        sourceType: "file",
+        fileName: image,
+      },
+    };
+
+    await mutateAsync(payload);
+  };
+
   if (!isModalOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-card p-4 rounded-lg shadow-2xl w-[700px] h-auto">
         {/* Tiêu đề */}
-        <p className="text-center text-xl pb-4 font-semibold">Thay ảnh bìa</p>
+        <p className="text-center text-xl pb-4 font-semibold">
+          Thay ảnh bìa (1028x250)
+        </p>
+
         {/* Khu vực hiển thị ảnh */}
         <div className="flex flex-col items-center mb-5">
-          <div className="relative">
-            {userMe?.avatarUrl ? (
-              <img
-                src={userMe.avatarUrl}
-                alt="Avatar"
-                className="w-auto object-cover rounded-full shadow-lg"
-              />
-            ) : (
-              <div className="w-48 h-48 flex items-center justify-center rounded-full shadow-lg text-neutral-900 font-bold text-4xl">
-                <img
-                  src="/images/git.png"
-                  alt="Avatar"
-                  className="w-48 h-48 object-cover rounded-full shadow-lg"
-                  style={{ imageRendering: "auto" }}
-                />
-              </div>
-            )}
+          <div className="relative ">
+            <img
+              src={avtImageCovePage}
+              alt="Avatar"
+              className="object-cover rounded-md w-[500px] h-[300px]"
+            />
           </div>
 
           {/* Nút tải ảnh lên */}
@@ -58,6 +74,7 @@ const CoverModal = ({
           type="file"
           accept="image/*"
           className="hidden"
+          onChange={(e) => setCurImage(e.target.files![0])}
         />
 
         {/* Nút hành động */}
@@ -68,7 +85,10 @@ const CoverModal = ({
           >
             Hủy
           </button>
-          <button className="h-10 px-5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition">
+          <button
+            onClick={handleUploadCovePage}
+            className="h-10 px-5 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition"
+          >
             Lưu
           </button>
         </div>

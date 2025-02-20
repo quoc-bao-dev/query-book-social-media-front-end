@@ -23,11 +23,12 @@ const AvatarModal = ({
 
   const handleUpload = async () => {
     const image = await uploadImage(curImage!);
-    console.log("[image] ", image);
     const payload = {
-      type: "image",
-      sourceType: "file",
-      file: image,
+      avatar: {
+        type: "image",
+        sourceType: "file",
+        fileName: image,
+      },
     };
 
     await mutateAsync(payload);
@@ -45,13 +46,7 @@ const AvatarModal = ({
         {/* Khu vực hiển thị ảnh */}
         <div className="flex flex-col items-center mb-5">
           <div className="relative">
-            {userMe?.avatarUrl ? (
-              <img
-                src={userMe.avatarUrl}
-                alt="Avatar"
-                className="w-48 h-48 object-cover rounded-full"
-              />
-            ) : (
+            {
               <div className="w-48 h-48 flex items-center justify-center rounded-full shadow-lg text-neutral-900 font-bold text-4xl">
                 <img
                   src={avtImage}
@@ -60,7 +55,7 @@ const AvatarModal = ({
                   style={{ imageRendering: "auto" }}
                 />
               </div>
-            )}
+            }
           </div>
 
           {/* Nút tải ảnh lên */}

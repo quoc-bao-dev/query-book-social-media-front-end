@@ -44,29 +44,21 @@ const CoverPage = () => {
   return (
     <div className="relative rounded-b-2xl overflow-hidden ">
       {/* cover photo */}
-      <div className="bg-[url('/images/bia2.jpg')] object-cover bg-center h-[250px] relative bg-gray-500 group">
-        {/* Nút thay đổi ảnh bìa (chỉ hiển thị khi là chủ sở hữu) */}
-        {user?.id === userMe?.id && (
-          <div className="absolute inset-0">
-            <div className="bg-black/40 absolute bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-tl-xl">
-              <button
-                onClick={handleOpenModals}
-                className="text-white px-4 py-2 flex items-center gap-2 transition z-10"
-              >
-                <Camera className="w-5 h-5" />
-                <span className="text-sm">Thay ảnh bìa</span>
-              </button>
-            </div>
-          </div>
-        )}
-
+      <div
+        className="object-cover relative bg-gray-500 group h-[250px]"
+        style={{
+          backgroundImage: `url(${user?.coverPageUrl || "/images/bia2.jpg"})`,
+        }}
+      >
         {/* Phần thông tin người dùng */}
         <div className="absolute bottom-0 pl-[calc(16px+180px)] w-[calc(100%-16px+180px)]">
           <div className="pl-3 py-4">
             <h1 className="text-4xl font-semibold text-white">
               {user?.fullName}
             </h1>
-            <h3 className="text-gray-500">{user?.jobTitle?.title}</h3>
+            <h3 className="text-white/80 font-semibold">
+              {user?.jobTitle?.title || "Chưa có"}
+            </h3>
             <p className="font-semibold text-base text-neutral-900"></p>
             <div className="flex gap-1 mt-2">
               <div className="size-8 rounded-full bg-gray-500">
@@ -93,6 +85,20 @@ const CoverPage = () => {
             </div>
           </div>
         </div>
+        {/* Nút thay đổi ảnh bìa (chỉ hiển thị khi là chủ sở hữu) */}
+        {user?.id === userMe?.id && (
+          <div className="absolute inset-0">
+            <div className="bg-black/40 absolute bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-tl-xl">
+              <button
+                onClick={handleOpenModals}
+                className="text-white px-4 py-2 flex items-center gap-2 transition z-10"
+              >
+                <Camera className="w-5 h-5" />
+                <span className="text-sm">Thay ảnh bìa</span>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* cover photo */}
@@ -100,7 +106,7 @@ const CoverPage = () => {
       {/* Avatar */}
       <div className="px-4">
         <div className="relative">
-          <div className="absolute translate-y-[-80%] size-[170px] rounded-full bg-muted overflow-hidden">
+          <div className="absolute translate-y-[-80%] size-[170px] rounded-full bg-muted overflow-hidden p-1">
             {user?.avatarUrl ? (
               <img
                 src={user.avatarUrl}
@@ -131,14 +137,6 @@ const CoverPage = () => {
 
       <div className="bg-card  flex justify-end items-center ">
         <div className="flex justify-center space-x-2 relative">
-          <Link href={profileLink} className="block">
-            <ProfileButton />
-          </Link>
-
-          <Link href={targetLink} className="block">
-            <PostButton />
-          </Link>
-
           {user?.id !== userMe?.id && (
             <>
               {!isFriend ? (
@@ -149,7 +147,12 @@ const CoverPage = () => {
             </>
           )}
 
-          {user?.id != userMe?.id && <FollowButton />}
+          {user?.id != userMe?.id && user?.id && (
+            <FollowButton userId={user.id} />
+          )}
+          {user?.followers.some((_user) => _user.id === userMe?.id) && (
+            <p>da follow</p>
+          )}
         </div>
       </div>
       {/* Modal của AvatarModal */}
@@ -164,6 +167,22 @@ const CoverPage = () => {
         setIsModalOpen={setIsCoveModalOpen}
         userMe={userMe}
       />
+      <div className="">
+        {" "}
+        <div className="rounded-lg bg-card mt-4">
+          <div className="">
+            <div className="flex justify-end relative">
+              <Link href={profileLink} className="block">
+                <ProfileButton />
+              </Link>
+
+              <Link href={targetLink} className="block">
+                <PostButton />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
