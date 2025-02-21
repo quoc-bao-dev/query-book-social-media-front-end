@@ -2,6 +2,7 @@
 
 import { config } from '@/config';
 import axiosClient from '@/httpClient';
+import { useMessageSocket } from '@/provider/SocketProvider';
 import { useCreateRoomChatMutation, useRoomsChatQuery } from '@/queries/chat';
 import { useSearchUserQuery } from '@/queries/search';
 import { useAuth } from '@/store/authSignal';
@@ -10,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { sChat, useChatSignal } from '../signal/chatSignal';
 import ChatSearchRow from './ChatSearchRow';
 import ChatUserRow from './ChatUserRow';
+import { useSearchParams } from 'next/navigation';
 
 type RoomRow = {
     id: string;
@@ -24,37 +26,47 @@ const ChatSideBarLeft = () => {
     const { setCurUser, setCurMembers, setCurMemberInfo, setCurRoomId } =
         useChatSignal();
 
+    const roomId = useSearchParams().get('roomId');
+    console.log('[roomId]', roomId);
+
     const user = useAuth().user;
 
     const { curUser } = sChat.use();
 
     const { data } = useSearchUserQuery(keyword);
 
-    const { data: roomsChat } = useRoomsChatQuery(user?.id || '');
+    const { data: roomsChat, refetch } = useRoomsChatQuery(user?.id || '');
 
     const { mutateAsync } = useCreateRoomChatMutation();
 
+    const { socket } = useMessageSocket();
+
     const lsUser = data?.data.data;
 
-    const lsRoomChat = roomsChat?.map((item) => {
-        const userRoom = item.members.find(
-            (member: UserProfileResponse) => member.id !== user?.id
-        );
-        return {
-            id: item._id,
-            member: userRoom,
-            members: item.members,
-            name: item.isGroup ? item.name : userRoom?.fullName,
-            avatar: item.isGroup ? item.groupAvatar : userRoom?.avatarUrl,
-            lastMessage:
-                item.messages[item.messages.length - 1]?.content ??
-                'Chat with you',
-        };
-    });
+    const lsRoomChat = roomsChat
+        ?.filter((item) =>
+            item.members.find(
+                (member: UserProfileResponse) => member.id !== user?.id
+            )
+        )
+        .map((item) => {
+            const userRoom = item.members.find(
+                (member: UserProfileResponse) => member.id !== user?.id
+            );
+            return {
+                id: item._id,
+                member: userRoom,
+                members: item.members,
+                name: item.isGroup ? item.name : userRoom?.fullName,
+                avatar: item.isGroup ? item.groupAvatar : userRoom?.avatarUrl,
+                lastMessage: item?.lastMessage
+                    ? item?.lastMessage[0]?.content || 'Message...'
+                    : 'Message...',
+                updatedAt: item?.updatedAt,
+            };
+        });
 
     const selectRoomChat = (room: RoomRow) => () => {
-        console.log('[select room] ', room);
-
         setCurUser(room.member);
         setCurMembers(room.members);
         setCurRoomId(room.id);
@@ -68,9 +80,6 @@ const ChatSideBarLeft = () => {
             })
             .then((response) => response.data);
 
-        console.log('[get userId] ', user?.id);
-        console.log('[get friendId] ', friendId);
-
         if (!roomChat) {
             mutateAsync({
                 friendId,
@@ -81,13 +90,30 @@ const ChatSideBarLeft = () => {
     };
 
     useEffect(() => {
-        if (lsRoomChat && lsRoomChat.length > 0 && !curUser) {
-            setCurUser(lsRoomChat[0].member!);
-            setCurMembers(lsRoomChat[0].members);
-            setCurRoomId(lsRoomChat[0].id);
-            setCurMemberInfo(lsRoomChat[0].members);
+        if (socket) {
+            socket.on('receive_message', () => {
+                refetch();
+            });
         }
-    }, [lsRoomChat]);
+        return () => {
+            socket?.off('receive_message');
+            socket?.disconnect();
+        };
+    }, [socket]);
+    useEffect(() => {
+        if (lsRoomChat && lsRoomChat.length > 0) {
+            console.log('[lsRoomChat]', lsRoomChat);
+
+            const indexRoom = lsRoomChat?.findIndex(
+                (room) => room.id === roomId
+            );
+            const index = indexRoom > -1 ? indexRoom : 0;
+            setCurUser(lsRoomChat[index].member!);
+            setCurMembers(lsRoomChat[index].members);
+            setCurRoomId(lsRoomChat[index].id);
+            setCurMemberInfo(lsRoomChat[index].members);
+        }
+    }, [lsRoomChat, roomId]);
     return (
         <div className="w-[286px] lg:w-[350px] h-[calc(100vh-var(--header-height))] sticky top-0 bg-card flex flex-col">
             <h1 className="text-xl font-semibold text-neutral-800 px-4 pt-4">
@@ -115,11 +141,13 @@ const ChatSideBarLeft = () => {
                 {lsRoomChat?.map((room) => (
                     <ChatUserRow
                         key={room.id}
-                        onClick={selectRoomChat(room as RoomRow)}
+                        id={room.id}
+                        onClick={() => {}}
                         avatar={room.avatar ?? ''}
                         name={room.name ?? 'User name'}
                         lastMessage={room.lastMessage}
                         selected={room.member?.id === curUser?.id}
+                        updatedAt={room.updatedAt}
                     />
                 ))}
 
