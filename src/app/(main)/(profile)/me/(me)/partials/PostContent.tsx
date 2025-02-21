@@ -8,7 +8,11 @@ const PostContent = () => {
   if (!user) {
     return null;
   }
-  return <PostsOfUser userId={user.id} />;
+  return (
+    <div className="space-y-4">
+      <PostsOfUser userId={user.id} />
+    </div>
+  );
 };
 
 export default PostContent;

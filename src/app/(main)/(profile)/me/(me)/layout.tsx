@@ -10,15 +10,15 @@ import SetCurUserProfileSignal from "../../partials/SetCurUserProfileSignal";
 const layout = ({ children }: PropsWithChildren) => {
   const { user } = useAuth();
   return (
-    <div className="flex justify-between gap-4">
+    <div className="block md:flex md:justify-between md:gap-4">
       {/* About */}
-      <div className="w-80 flex-col">
+      <div className="flex-col w-full space-y-4 ">
         <SetCurUserProfileSignal user={user} />
 
         {/* FollowFollow */}
-        <div className="mt-4 h-24 rounded-[16px] overflow-hidden relative border-b border flex justify-around items-center px-6 bg-card">
+        <div className=" h-24 rounded-2xl overflow-hidden relative border-b border flex justify-around items-center p-4 bg-card gap-2">
           <div className="text-center">
-            <span className="block text-3xl font-bold text-neutral-900">
+            <span className="block text-3xl font-bold text-neutral-900 justify-center">
               {user?.followerCount}
             </span>
             <span className="text-sm text-neutral-900">Người theo dõi</span>
@@ -35,8 +35,8 @@ const layout = ({ children }: PropsWithChildren) => {
         {/* Follow */}
 
         {/**/}
-        <div className="rounded-[16px] overflow-hidden relative border-b border mt-4 h-80 bg-card ">
-          <div className="px-4 mt-6 block ">
+        <div className="rounded-2xl overflow-hidden relative border-b border p-4 pt-4 h-auto bg-card ">
+          <div className="px-4 block ">
             <span className="text-xl text-neutral-900 font-semibold">
               Giới thiệu
             </span>
