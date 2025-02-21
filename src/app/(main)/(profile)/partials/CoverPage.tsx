@@ -179,16 +179,16 @@ const CoverPage = () => {
         </div>
 
         {/* Phan cua dien thoai */}
-        <div className="bg-black md:hidden flex items-center justify-center w-full">
+        <div className="bg-card md:hidden flex items-center justify-center w-full">
           <div className="flex flex-col items-center justify-center text-center w-full pt-10">
             {/* Tên của user */}
             <div className="">
-              <div className="text-white">
+              <div className="text-neutral-900">
                 <h1 className="text-3xl font-semibold">{user?.fullName}</h1>
               </div>
 
               <div className="pt-2">
-                <h3 className="text-white/80 font-semibold">
+                <h3 className="text-neutral-800 font-semibold">
                   {user?.jobTitle?.title || "Chưa có"}
                 </h3>
               </div>
