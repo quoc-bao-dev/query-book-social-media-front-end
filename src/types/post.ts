@@ -16,6 +16,14 @@ export type PostResponse = {
     updatedAt: string;
 };
 
+export type StoryResponse = {
+    id: string;
+    media: string;
+    author: Author;
+    createdAt: string;
+    updatedAt: string;
+}
+
 type Like = {
     id: string;
     name: string;
@@ -44,6 +52,16 @@ type Comment = {
     createdAt: string;
     updatedAt: string;
 }
+
+
+
+export type Feed = {
+    id: string;
+    image: string;
+    name: string;
+};
+
+
 export type PostsQueryData = {
     pages: {
         data: {

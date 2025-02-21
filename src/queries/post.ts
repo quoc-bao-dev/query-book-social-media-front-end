@@ -10,6 +10,8 @@ import {
 } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 
+
+
 const getPost = ({ pageParam = 1 }: { pageParam: number }) =>
     axiosClient.get<HttpResponse<PostResponse>>('/posts', {
         params: {

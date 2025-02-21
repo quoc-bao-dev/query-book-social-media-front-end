@@ -27,17 +27,17 @@ const page = () => {
     <div className="">
       <SetCurUserProfileSignal user={user} />
       <div className="h-auto w-[680px] mt-4 border border-b rounded-2xl bg-card">
-        <div className="pt-2 pl-4 pr-4 pb-4 space-y-5">
+        <div className="pt-2 pl-4 pr-4 pb-4 space-y-3">
           <div className="flex flex-col w-full">
             {/* Header */}
             <div className="flex items-center justify-between w-full">
-              {/* Thông tin công ty */}
               <div className="flex items-center space-x-3">
                 <Briefcase className="fill-primary-500" />
                 <span className="text-base font-semibold text-neutral-800 ">
-                  Làm việc tại{" "}
-                  <span className="font-bold text-neutral-950">Công ty</span> -{" "}
-                  <span className="font-bold text-neutral-950">FPT</span>
+                  Công việc{" "}
+                  <span className="font-bold text-neutral-950">
+                    {user?.jobTitle.title ?? "Chưa có công việc"}
+                  </span>
                 </span>
               </div>
 

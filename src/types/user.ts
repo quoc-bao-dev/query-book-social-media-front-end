@@ -25,6 +25,8 @@ export type UserProfileResponse = {
     email: string;
     avatar: Avatar;
     avatarUrl: string;
+    coverPage: string;
+    coverPageUrl: string;
     jobTitle: JobTitle;
     socials: Social[];
     links: Link[];
@@ -42,6 +44,7 @@ export type UserProfileResponse = {
 };
 
 type Friend = {
+    id: string;
     fullName: string;
     handle: string;
     avatar?: Avatar;

@@ -11,10 +11,10 @@ const PostCreate = () => {
   };
 
   return (
-    <div className="py-3 ">
+    <div className="py-3">
       <div
         onClick={showModal}
-        className="w-full gap-5 border rounded-xl px-4 py-4 bg-card"
+        className="w-full gap-5 border rounded-xl p-4 bg-card"
       >
         <div
           onClick={showModal}
@@ -22,7 +22,7 @@ const PostCreate = () => {
         >
           Bạn đang nghĩ gì?
         </div>
-        <div className="flex justify-between items-center py-2">
+        <div className="flex justify-between items-center pt-2">
           <div className="flex gap-4">
             <div className="flex gap-2">
               <div className="">
