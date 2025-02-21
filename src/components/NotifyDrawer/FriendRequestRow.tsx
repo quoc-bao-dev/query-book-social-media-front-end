@@ -21,7 +21,7 @@ const FriendRequestRow = ({
         mutateAsync(id);
     };
     return (
-        <div className="py-4 px-3 flex gap-4 border-b border-gray-200">
+        <div className="py-4 px-3 flex gap-4 border-b border-gray-200 hover:bg-neutral-100/70">
             <div className="">
                 <Avatar>
                     <AvatarImage src={avatar} />
