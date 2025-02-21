@@ -12,7 +12,7 @@ const layout = ({ children }: PropsWithChildren) => {
   return (
     <div className="block md:flex md:justify-between md:gap-4">
       {/* About */}
-      <div className="flex-col w-full space-y-4 ">
+      <div className="flex-col md:w-[440] space-y-4 ">
         <SetCurUserProfileSignal user={user} />
 
         {/* FollowFollow */}
