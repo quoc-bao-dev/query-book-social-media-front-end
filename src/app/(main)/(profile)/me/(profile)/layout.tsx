@@ -27,17 +27,7 @@ const layout = ({ children }: PropsWithChildren) => {
             </span>
           </div>
           <div className="mt-4 mb-4 ">
-            {/* Các liên kết điều hướng */}
             <Link href={profile} className="block">
-              <div className="h-10 w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto rounded-md text-neutral-800 hover:bg-primary-100/50 hover:text-primary-500 active:bg-primary-200 active:text-primary-700 focus:outline-none">
-                <IdentifyIcon />
-                <span className="hidden lg:block font-semibold text-sm ">
-                  Tổng quan
-                </span>
-              </div>
-            </Link>
-
-            <Link href={personal} className="block">
               <div className="h-10 w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto hover:bg-primary-100/50 hover:text-primary-500 rounded-md text-neutral-800 ">
                 <UserCircle />
                 <span className="hidden lg:block font-semibold text-sm ">

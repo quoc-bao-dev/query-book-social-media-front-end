@@ -49,7 +49,7 @@ export const useUpdateUserProfileMutation = () => {
             const user  =  await getMe()
             authActions.setUser(user)
             swal.fire( {
-                title: 'upload avatar success!',
+                title: 'Cập nhật thành công!',
                 icon: 'success'
             })
         }
