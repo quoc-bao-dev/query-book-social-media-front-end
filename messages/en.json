@@ -1,29 +1,30 @@
 {
-    "HomePage": {
-        "title": "Hello world!"
-    },
-    "LocaleSwitcher": {
-        "vi": "Vietnamese",
-        "en": "English",
-        "label": "Language"
-    },
-    "Sidebar": {
-        "feed": "Feed",
-        "profile": "Profile",
-        "friend": "Friend",
-        "chat": "Chat",
-        "hosting": "Hosting",
-        "about": "About Query Book",
-        "privacy": "Privacy",
-        "support": "Support",
-        "updateTitle": "Update to Pro",
-        "updateDescription": "Get access to the premium features by upgrading to pro",
-        "update": "Update",
-        "follow": "Follow",
-        "friendSuggest": "Friend Suggest",
-        "jobs": "Jobs",
-        "resource": "Resource",
-        "request": "Request",
-        "remove": "Remove"
-    }
+  "HomePage": {
+    "title": "Hello world!"
+  },
+  "LocaleSwitcher": {
+    "vi": "Vietnamese",
+    "en": "English",
+    "label": "Language"
+  },
+  "Sidebar": {
+    "feed": "Feed",
+    "profile": "Profile",
+    "friend": "Friend",
+    "chat": "Chat",
+    "hosting": "Hosting",
+    "tool": "Tools",
+    "about": "About Query Book",
+    "privacy": "Privacy",
+    "support": "Support",
+    "updateTitle": "Update to Pro",
+    "updateDescription": "Get access to the premium features by upgrading to pro",
+    "update": "Update",
+    "follow": "Follow",
+    "friendSuggest": "Friend Suggest",
+    "jobs": "Jobs",
+    "resource": "Resource",
+    "request": "Request",
+    "remove": "Remove"
+  }
 }

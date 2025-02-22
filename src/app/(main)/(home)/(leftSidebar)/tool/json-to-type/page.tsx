@@ -1,8 +1,11 @@
+import JsonToType from './partials/JsonToType';
 
 const Page = () => {
-    return (
-        <div>Page</div>
-    )
-}
+  return (
+    <div>
+      <JsonToType />
+    </div>
+  );
+};
 
-export default Page
+export default Page;
