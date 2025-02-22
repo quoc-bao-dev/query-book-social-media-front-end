@@ -1,6 +1,7 @@
 import axiosClient from '@/httpClient';
 import { HttpResponse, HttpResponseWithPagination } from '@/types/common';
-import { QuestionResponse, SaveQuestionResponse } from '@/types/question';
+import { QuestionResponse } from '@/types/question';
+import { SaveQuestionResponse } from '@/types/saveQuestion';
 import { swal } from '@/utils/swal';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
