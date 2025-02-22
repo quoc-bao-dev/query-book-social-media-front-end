@@ -176,6 +176,22 @@ const CoverPage = () => {
             </div>
           </div>
           {/* User info */}
+          {/* Change cover photo */}
+          {user?.id === userMe?.id && (
+            <div className="absolute inset-0">
+              <div className="bg-black/40 absolute bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-tl-xl">
+                <button
+                  onClick={handleOpenModalCoveFage}
+                  className="text-white px-4 py-2 flex items-center gap-2 transition z-10"
+                  aria-label="Thay ảnh bìa"
+                >
+                  <Camera className="w-5 h-5" />
+                  <span className="text-sm">Thay ảnh bìa</span>
+                </button>
+              </div>
+            </div>
+          )}
+          {/* Change cover photo */}
         </div>
 
         {/* Phan cua dien thoai */}
@@ -242,23 +258,6 @@ const CoverPage = () => {
           </div>
         </div>
         {/* Phan cua dien thoai */}
-
-        {/* Change cover photo */}
-        {user?.id === userMe?.id && (
-          <div className="absolute inset-0">
-            <div className="bg-black/40 absolute bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-tl-xl">
-              <button
-                onClick={handleOpenModalCoveFage}
-                className="text-white px-4 py-2 flex items-center gap-2 transition z-10"
-                aria-label="Thay ảnh bìa"
-              >
-                <Camera className="w-5 h-5" />
-                <span className="text-sm">Thay ảnh bìa</span>
-              </button>
-            </div>
-          </div>
-        )}
-        {/* Change cover photo */}
       </div>
       {/* covepage-bg */}
 
