@@ -7,13 +7,24 @@ export type RoomChatResponse = {
     isGroup: boolean;
     groupAvatar: string;
     messages: Message[];
+    lastMessage: LastMessage;
+    seenBy: string[];
+    createdAt: string;
+    updatedAt: string;
 };
 
-
 export type Message = {
-  _id: string;
-  senderId: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
+    _id: string;
+    senderId: string;
+    content: string;
+    images: string[];
+    createdAt: string;
+    updatedAt: string;
+};
+
+type LastMessage = {
+    _id: string;
+    senderId: string;
+    content: string;
+    createdAt: string;
+}[];

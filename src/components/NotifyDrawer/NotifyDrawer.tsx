@@ -110,6 +110,7 @@ const NotifyDrawer = () => {
             });
         }
         return () => {
+            socket?.disconnect();
             sNotifyDrawer.reset();
         };
     }, [socket]);

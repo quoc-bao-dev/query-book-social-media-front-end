@@ -4,7 +4,7 @@ import axios from 'axios';
 
 interface UploadsResponse {
     message: string;
-    files: File[];
+    files: { filename: string, path: string }[];
 }
 
 export const uploadImage = async (file: File) => {
@@ -14,7 +14,7 @@ export const uploadImage = async (file: File) => {
 
     try {
         const response = await axiosClient.post<{ fileName: string }>(
-            `${config.IMAGE_SERVER_URL}/upload`,
+            `${ config.IMAGE_SERVER_URL }/upload`,
             formData,
             {
                 headers: {
@@ -46,7 +46,7 @@ export const uploadImages = async (files: File[]) => {
 
     try {
         const response = await axiosClient.post<UploadsResponse>(
-            `${config.IMAGE_SERVER_URL}/uploads`,
+            `${ config.IMAGE_SERVER_URL }/uploads`,
             formData,
             {
                 headers: {

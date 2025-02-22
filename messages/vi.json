@@ -1,29 +1,30 @@
 {
-    "HomePage": {
-        "title": "Xin Chao Quoc Bao!"
-    },
-    "LocaleSwitcher": {
-        "vi": "Vietnamese",
-        "en": "English",
-        "label": "Ngôn ngữ"
-    },
-    "Sidebar": {
-        "feed": "Bảng tin",
-        "profile": "Hồ sơ",
-        "friend": "Bạn bè",
-        "chat": "Trò chuyện",
-        "hosting": "Lưu trữ",
-        "about": "Về Query Book",
-        "privacy": "Quyền riêng tư",
-        "support": "Hỗ trợ",
-        "updateTitle": "Nâng cấp lên Pro",
-        "updateDescription": "Truy cập các tính năng cao cấp bằng cách nâng cấp lên Pro",
-        "update": "Nâng cấp",
-        "follow": "Theo dõi",
-        "friendSuggest": "Gợi ý bạn bè",
-        "jobs": "Việc làm",
-        "resource": "Tài nguyên",
-        "request": "Yêu cầu",
-        "remove": "Gỡ bỏ"
-    }
+  "HomePage": {
+    "title": "Xin Chao Quoc Bao!"
+  },
+  "LocaleSwitcher": {
+    "vi": "Vietnamese",
+    "en": "English",
+    "label": "Ngôn ngữ"
+  },
+  "Sidebar": {
+    "feed": "Bảng tin",
+    "profile": "Hồ sơ",
+    "friend": "Bạn bè",
+    "chat": "Trò chuyện",
+    "hosting": "Lưu trữ",
+    "tool": "Công cụ",
+    "about": "Về Query Book",
+    "privacy": "Quyền riêng tư",
+    "support": "Hỗ trợ",
+    "updateTitle": "Nâng cấp lên Pro",
+    "updateDescription": "Truy cập các tính năng cao cấp bằng cách nâng cấp lên Pro",
+    "update": "Nâng cấp",
+    "follow": "Theo dõi",
+    "friendSuggest": "Gợi ý bạn bè",
+    "jobs": "Việc làm",
+    "resource": "Tài nguyên",
+    "request": "Yêu cầu",
+    "remove": "Gỡ bỏ"
+  }
 }
