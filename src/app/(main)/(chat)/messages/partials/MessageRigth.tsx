@@ -18,13 +18,13 @@ const MessageRight = ({ avatar, content, name, images }: MessageLeftProps) => {
             </p>
           )}
           {images && images.length > 0 && (
-            <div className='grid grid-cols-3 gap-2 justify-items-end grid-flow-col ml-auto'>
+            <div className='flex justify-end gap-2 justify-items-end grid-flow-col ml-auto'>
               {images.map((img) => (
-                <div
-                  key={img}
-                  className='w-full  aspect-square rounded-lg bg-card'
-                >
-                  <img className=' aspect-square rounded-lg' src={img} />
+                <div key={img} className='aspect-square rounded-lg bg-card'>
+                  <img
+                    className='size-[100px] object-cover aspect-square rounded-lg'
+                    src={img}
+                  />
                 </div>
               ))}
             </div>

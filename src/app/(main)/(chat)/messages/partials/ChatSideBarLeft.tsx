@@ -35,7 +35,11 @@ const ChatSideBarLeft = () => {
 
   const { data } = useSearchUserQuery(keyword);
 
-  const { data: roomsChat, refetch } = useRoomsChatQuery(user?.id || '');
+  const {
+    data: roomsChat,
+    refetch,
+    isLoading: isRoomsLoading,
+  } = useRoomsChatQuery(user?.id || '');
 
   const { mutateAsync } = useCreateRoomChatMutation();
 
@@ -82,7 +86,7 @@ const ChatSideBarLeft = () => {
       .then((response) => response.data);
 
     if (!roomChat) {
-      mutateAsync({
+      await mutateAsync({
         friendId,
         friendName,
         user: user!,
@@ -139,6 +143,7 @@ const ChatSideBarLeft = () => {
 
       {/* user rows */}
       <div className='relative py-2 flex flex-col gap-2 flex-1 mb-[56px] md:mb-0 scrollbar-custom '>
+        {isRoomsLoading && <p>Loading</p>}
         {lsRoomChat?.map((room) => {
           const isSeen = room.seenBy.find((id) => id === user?.id);
 
