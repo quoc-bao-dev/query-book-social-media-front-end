@@ -19,16 +19,18 @@ export default function SidebarQnA() {
               "flex items-center gap-3 px-4 py-3 rounded-md cursor-pointer transition-all",
               {
                 "text-primary-500 bg-primary-100/80 font-bold":
-                  pathname === "/qna",
+                  pathname.startsWith("/qna"),
                 "text-gray-700 font-semibold hover:bg-gray-200":
-                  pathname !== "/qna",
+                  !pathname.startsWith("/qna"),
               }
             )}
           >
             <Home
               size={22}
               className={`${
-                pathname === "/qna" ? "text-primary-500 " : "text-gray-700"
+                pathname.startsWith("/qna")
+                  ? "text-primary-500 "
+                  : "text-gray-700"
               }`}
             />
             Q&A

@@ -1,8 +1,9 @@
 import axiosClient from '@/httpClient';
 import { HttpResponse, HttpResponseWithPagination } from '@/types/common';
 import { QuestionResponse } from '@/types/question';
+import { SaveQuestionResponse } from '@/types/saveQuestion';
 import { swal } from '@/utils/swal';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const  getAllQuestions = (limit: number, page: number, search:string) => axiosClient.get<HttpResponseWithPagination<QuestionResponse[]>>(`/questions/?limit=${limit}&page=${page}${search && `&s=${search}`}`).then((response) => response.data)
 
@@ -39,4 +40,27 @@ export const useGetMyQuestion = () => {
     });
 };
 
+
+const getMySaveQuestion = () =>axiosClient.get<HttpResponse<SaveQuestionResponse[]>>('/questions/save/').then((response) =>response.data.data) 
+
+export const useGetMySaveQuestionQuery = () => {
+    return useQuery({
+        queryKey: ['my-save-question'],
+        queryFn: getMySaveQuestion,
+    });
+}
+
+
+const postSaveQuestion = (questionId: string) => axiosClient.post(`/questions/save` ,{questionId});
+
+export const useSaveQuestionMutation =  () => {
+    const queryClient  = useQueryClient()
+    return useMutation({
+        mutationFn: postSaveQuestion,
+        onSuccess: () => {
+            // update query
+            queryClient.invalidateQueries({ queryKey: ['my-save-question'] })
+        },
+    })
+}
 

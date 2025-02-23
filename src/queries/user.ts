@@ -6,52 +6,56 @@ import { swal } from '@/utils/swal';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 type UserSuggestParams = {
-    limit?: number;
-    page?: number;
-    suggestMode?: 'follow_suggest' | 'friend_suggest';
+  limit?: number;
+  page?: number;
+  suggestMode?: 'follow_suggest' | 'friend_suggest';
 };
 
-const getMe = ()=> axiosClient.get<HttpResponse<UserProfileResponse>>('/users/me').then(res => res.data.data)
+const getMe = () =>
+  axiosClient
+    .get<HttpResponse<UserProfileResponse>>('/users/me')
+    .then((res) => res.data.data);
 
-const getUserSuggestion = ({
-    limit = 5,
-    page = 1,
-    suggestMode = 'friend_suggest',
+export const getUserSuggestion = ({
+  limit = 5,
+  page = 1,
+  suggestMode = 'friend_suggest',
 }: UserSuggestParams) =>
-    axiosClient.get<HttpResponse<UserSuggestResponse[]>>(
-        `/users/suggest/?filterMode=${suggestMode}`,
-        {
-            params: {
-                limit,
-                page,
-            },
-        }
-    );
+  axiosClient
+    .get<HttpResponse<UserSuggestResponse[]>>(
+      `/users/suggest/?filterMode=${suggestMode}`,
+      {
+        params: {
+          limit,
+          page,
+        },
+      },
+    )
+    .then((res) => res.data.data);
 
 export const useUserSuggestionQuery = ({
-    limit = 3,
-    page = 1,
-    suggestMode,
+  limit = 3,
+  page = 1,
+  suggestMode,
 }: UserSuggestParams) =>
-    useQuery({
-        queryKey: [suggestMode],
-        queryFn: () => getUserSuggestion({ limit, page, suggestMode }),
-    });
+  useQuery({
+    queryKey: [suggestMode],
+    queryFn: () => getUserSuggestion({ limit, page, suggestMode }),
+  });
 
-
-const patchUpdateUserProfile = (payload:any) =>  axiosClient.patch('/users/profile' , payload)
+const patchUpdateUserProfile = (payload: any) =>
+  axiosClient.patch('/users/profile', payload);
 
 export const useUpdateUserProfileMutation = () => {
-    return useMutation({
-        mutationFn: patchUpdateUserProfile,
-        onSuccess: async () => {
-
-            const user  =  await getMe()
-            authActions.setUser(user)
-            swal.fire( {
-                title: 'upload avatar success!',
-                icon: 'success'
-            })
-        }
-    })
-}
+  return useMutation({
+    mutationFn: patchUpdateUserProfile,
+    onSuccess: async () => {
+      const user = await getMe();
+      authActions.setUser(user);
+      swal.fire({
+        title: 'Cập nhật thành công!',
+        icon: 'success',
+      });
+    },
+  });
+};

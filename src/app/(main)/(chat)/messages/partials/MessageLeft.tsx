@@ -21,13 +21,13 @@ const MessageLeft = ({ avatar, content, name, images }: Props) => {
           </p>
         )}
         {images && images.length > 0 && (
-          <div className='w-full grid grid-cols-3 gap-2'>
+          <div className='flex gap-2'>
             {images.map((img) => (
-              <div
-                key={img}
-                className='w-full  aspect-square rounded-lg bg-card'
-              >
-                <img className=' aspect-square rounded-lg' src={img} />
+              <div key={img} className='aspect-square rounded-lg bg-card'>
+                <img
+                  className='size-[100px] object-cover aspect-square rounded-lg'
+                  src={img}
+                />
               </div>
             ))}
           </div>
