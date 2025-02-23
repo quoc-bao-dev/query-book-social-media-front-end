@@ -1,18 +1,16 @@
-import { PropsWithChildren } from "react";
-import CoverPage from "./partials/CoverPage";
+import { PropsWithChildren } from 'react';
+import CoverPage from './partials/CoverPage';
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
-    <div className="mx-auto md:w-[1024px]">
-      <div className="min-h-screen">
+    <div className='mx-auto md:w-[1024px]'>
+      <div className='min-h-screen'>
         {/* main contain */}
-        <div className="flex justify-center">
-          <div className="">
-            {/* cover page */}
-            <CoverPage />
-            {/* cover page */}
-            {children}
-          </div>
+        <div className=''>
+          {/* cover page */}
+          <CoverPage />
+          {/* cover page */}
+          {children}
         </div>
       </div>
     </div>

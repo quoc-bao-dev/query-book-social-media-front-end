@@ -26,7 +26,9 @@ export type UserProfileResponse = {
     avatar: Avatar;
     avatarUrl: string;
     coverPage: string;
+    bio:string;
     coverPageUrl: string;
+    professional:string;
     jobTitle: JobTitle;
     socials: Social[];
     links: Link[];
