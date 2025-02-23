@@ -270,12 +270,12 @@ const CoverPage = () => {
 
       {/* Hoso - Baiviet */}
       <div className='bg-card flex justify-end items-center border-t border-gray-200 rounded-b-2xl'>
-        <div className='flex justify-center space-x-2 relative'>
-          <Link href={profileLink} className='block' prefetch>
-            <ProfileButton />
-          </Link>
+        <div className='flex justify-center space-x-2 relative pr-4'>
           <Link href={targetLink} className='block' prefetch>
             <PostButton />
+          </Link>
+          <Link href={profileLink} className='block' prefetch>
+            <ProfileButton />
           </Link>
         </div>
       </div>

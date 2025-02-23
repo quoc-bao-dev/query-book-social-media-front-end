@@ -36,12 +36,12 @@ const layout = ({ children }: PropsWithChildren) => {
 
         {/**/}
         <div className='rounded-2xl overflow-hidden relative border-b border p-4 pt-4 h-auto bg-card '>
-          <div className='px-4 block '>
+          <div className='px-2 block '>
             <span className='text-xl text-neutral-900 font-semibold'>
               Giới thiệu
             </span>
           </div>
-          <div className='px-4 block mt-2 w-[276px]'>
+          <div className='px-4 block mt-2 md:w-[276px]'>
             <span className='block text-sm text-neutral-900 break-word'>
               {user?.bio || (
                 <span className='flex justify-center items-center text-neutral-400 italic opacity-50'>

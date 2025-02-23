@@ -89,7 +89,7 @@ const Page = () => {
   return (
     <div className=''>
       <SetCurUserProfileSignal user={user} />
-      <div className='h-fit w-[698px] mt-4 border border-b rounded-2xl bg-card'>
+      <div className='h-fit md:w-[698px] mt-4 border border-b rounded-2xl bg-card'>
         <div className='px-4 pt-4 space-y-5'>
           <div className='flex items-center justify-between w-full'>
             {/* Trạng thái xem */}
