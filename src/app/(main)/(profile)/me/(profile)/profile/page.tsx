@@ -90,7 +90,7 @@ const Page = () => {
     <div className=''>
       <SetCurUserProfileSignal user={user} />
       <div className='h-fit md:w-[698px] mt-4 border border-b rounded-2xl bg-card'>
-        <div className='px-4 pt-4 space-y-5'>
+        <div className='px-4 pt-4'>
           <div className='flex items-center justify-between w-full'>
             {/* Trạng thái xem */}
             {!isEditingBio && (
@@ -141,7 +141,8 @@ const Page = () => {
             )}
           </div>
         </div>
-        <div className='pt-4 px-4 space-y-5'>
+
+        <div className='pt-4 px-4'>
           {/* Thông tin người dùng */}
           <div className='flex items-center justify-between w-full'>
             <div className='flex items-center space-x-3'>
@@ -165,7 +166,7 @@ const Page = () => {
           <div className='flex'>
             {/* Form chỉnh sửa */}
             {isEditing && (
-              <div className='w-full flex space-x-4  pb-4'>
+              <div className='w-full flex space-x-4 pt-4'>
                 {/* Trường Họ */}
                 <div className='w-1/2'>
                   <div className='relative'>
@@ -215,7 +216,7 @@ const Page = () => {
           )}
         </div>
 
-        <div className='px-4 pb-4 space-y-5'>
+        <div className='px-4 py-4'>
           {/* Phần hiển thị thông tin và nút chỉnh sửa */}
           <div className='flex items-center justify-between w-full'>
             {/* Thông tin liên hệ */}
@@ -242,7 +243,7 @@ const Page = () => {
 
           {/* Form chỉnh sửa */}
           {isEditingHandle && (
-            <div className='w-2/4 flex items-center justify-between'>
+            <div className='w-2/4 flex items-center pt-4 justify-between'>
               {/* Trường Họ */}
               <div className='flex-1 mr-4'>
                 <div className='relative'>

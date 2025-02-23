@@ -15,6 +15,7 @@ import AvatarModal from '../me/(me)/partials/AvatarModal';
 import CoverModal from '../me/(me)/partials/CoverModal';
 import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 import AvatarModalUser from './AvatarModalUser';
+import Friended from '../[userId]/partials/Friended';
 
 const CoverPage = () => {
   const { user: userMe } = useAuth();
@@ -62,6 +63,7 @@ const CoverPage = () => {
 
   const targetLink = isMe ? '/me' : `/${user?.id || ''}`;
   const profileLink = isMe ? '/me/profile' : `/${user?.id || ''}/profile`;
+  const friendedLink = isMe ? '/me/friended' : `/${user?.id || ''}/friended`;
   const isFriend =
     userMe?.friends?.some((friend) => friend?.id === user?.id) ?? false;
 
@@ -276,6 +278,9 @@ const CoverPage = () => {
           </Link>
           <Link href={profileLink} className='block' prefetch>
             <ProfileButton />
+          </Link>
+          <Link href={friendedLink} className='block' prefetch>
+            <Friended />
           </Link>
         </div>
       </div>
