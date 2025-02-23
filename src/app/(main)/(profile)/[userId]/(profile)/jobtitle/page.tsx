@@ -17,7 +17,7 @@ const page = () => {
               <span className='text-base font-semibold text-neutral-800'>
                 Công việc:{' '}
                 <span className='font-bold text-neutral-950'>
-                  {user?.professional || 'chưa có '}
+                  {user?.professional || 'chưa có'}
                 </span>
               </span>
             </div>

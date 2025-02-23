@@ -42,8 +42,8 @@ const Page = () => {
   return (
     <div className=''>
       <SetCurUserProfileSignal user={user} />
-      <div className='h-auto md:w-[680px] mt-4 border border-b rounded-2xl bg-card'>
-        <div className='pt-4 px-4 pb-4 space-y-5'>
+      <div className='md:w-[698px] h-fit mt-4 border border-b rounded-2xl bg-card'>
+        <div className='py-4 px-4 space-y-5'>
           {/* Thông tin người dùng */}
           <div className='flex items-center justify-between w-full'>
             <div className='flex items-center space-x-3'>
@@ -51,7 +51,7 @@ const Page = () => {
               <span className='text-base font-semibold text-neutral-800'>
                 Công việc:{' '}
                 <span className='font-bold text-neutral-950'>
-                  {user?.professional}
+                  {user?.professional || 'chưa có'}
                 </span>
               </span>
             </div>

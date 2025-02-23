@@ -59,7 +59,7 @@ const layout = ({ children }: PropsWithChildren) => {
               >
                 <Academic />
                 <span className='lg:block font-semibold text-sm '>
-                  Công việc học vấn
+                  Công việc
                 </span>
               </div>
             </Link>
