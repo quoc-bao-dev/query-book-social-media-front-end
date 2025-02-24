@@ -53,8 +53,8 @@ export default function Welcome() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{
         ease: 'easeInOut',
         duration: 0.6,
@@ -65,7 +65,7 @@ export default function Welcome() {
     >
       {/* Background Animation */}
       <motion.div
-        className='absolute inset-0 bg-gradient-to-r from-secondary-200 dark:from-secondary-300 via-info-100 to-primary-50'
+        className='absolute inset-0 bg-gradient-to-r from-secondary-100 dark:from-secondary-300 via-info-50 to-primary-50'
         animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
         transition={{ repeat: Infinity, duration: 8, ease: 'linear' }}
         style={{ backgroundSize: '300% 300%' }}

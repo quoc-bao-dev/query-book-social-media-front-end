@@ -3,10 +3,12 @@
 import { Button } from '@/components/common/Button';
 import FloatInput from '@/components/common/FloatInput';
 import PasswordInput from '@/components/common/PasswordInput';
+import LoadingIcon from '@/components/icons/LoadingIcon';
 import axiosClient from '@/httpClient';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -85,7 +87,17 @@ function FormLogin() {
           )}
         </div>
         <div className='py-2'>
-          <p className='my-2 text-right'>Forgot password?</p>
+          {/* <p
+            className='my-2 text-right cursor-pointer'
+            onClick={() =>
+              sModalConfirmResetPass.set((n) => (n.value.isOpen = true))
+            }
+          >
+            Forgot password?
+          </p> */}
+          <Link href='/forgot-password'>
+            <p className='my-2 text-right cursor-pointer'>Forgot password?</p>
+          </Link>
           <PasswordInput
             {...register('password')}
             defaultValue={'password1234'}
@@ -116,7 +128,8 @@ function FormLogin() {
             disabled={isSubmitting || isShowActive}
             className=' w-full h-[50px]'
           >
-            Sign in
+            {isSubmitting && <LoadingIcon />}
+            {isSubmitting ? <p>Authenticating...</p> : <p>Sign in</p>}
           </Button>
         </div>
         <div className='flex items-center justify-center w-full my-4'>
