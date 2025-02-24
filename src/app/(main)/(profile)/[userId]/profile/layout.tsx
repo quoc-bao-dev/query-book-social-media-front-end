@@ -90,9 +90,10 @@ const Layout = async ({ params }: PageProps) => {
               <div className="flex items-center space-x-3">
                 <Briefcase className="fill-primary-500" />
                 <span className="text-base font-semibold text-neutral-800">
-                  Làm việc tại{" "}
-                  <span className="font-bold text-neutral-950">Công ty</span> -{" "}
-                  <span className="font-bold text-neutral-950">FPT</span>
+                  Vị trí công việc{" "}
+                  <span className="font-bold text-neutral-950">
+                    {user.jobTitle.title}
+                  </span>{" "}
                 </span>
               </div>
 
@@ -129,21 +130,53 @@ const Layout = async ({ params }: PageProps) => {
             </div>
             {/* Form chỉnh sửa */}
           </div>
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center space-x-3">
-              <Home className="fill-primary-500" />
-              <span className="text-base font-bold text-neutral-800">
-                Sống tại{" "}
-                <span className="font-bold text-neutral-950">
-                  Thành phố Hồ Chí Minh
+
+          <div className="flex flex-col w-full">
+            {/* Header */}
+            <div className="flex items-center justify-between w-full">
+              {/* Thông tin công ty */}
+              <div className="flex items-center space-x-3">
+                <Home className="fill-primary-500" />
+                <span className="text-base font-semibold text-neutral-800">
+                  Sống tại{" "}
+                  <span className="font-bold text-neutral-950">
+                    {user.jobTitle.title}
+                  </span>{" "}
                 </span>
-              </span>
-            </div>
-            <div className="flex items-center space-x-3 mr-4">
-              <div className="w-9 h-9 bg-gray-200 flex items-center justify-center rounded-full">
+              </div>
+
+              {/* Nút chỉnh sửa */}
+              <button
+                className="w-9 h-9 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer"
+                aria-label="Chỉnh sửa"
+              >
                 <Pen className="text-neutral-800" />
+              </button>
+            </div>
+            {/* Header */}
+            {/* Form chỉnh sửa */}
+            <div className="my-3">
+              <div className="relative">
+                <FloatInput label="Công ty" />
+              </div>
+
+              {/* Nút xác nhận và hủy */}
+              <div className="mt-3 flex justify-end space-x-2">
+                <button
+                  className="w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer"
+                  aria-label="Hủy"
+                >
+                  <Xmark className="text-red-500" />
+                </button>
+                <button
+                  className="w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer"
+                  aria-label="Xác nhận"
+                >
+                  <Check className="text-primary-500" />
+                </button>
               </div>
             </div>
+            {/* Form chỉnh sửa */}
           </div>
 
           <div className="flex items-center justify-between w-full">

@@ -9,7 +9,7 @@ const PostsOfUser = ({ userId }: PostsOfUserProps) => {
   const { data } = usePostOfUserQuery(userId);
 
   return (
-    <div className="flex gap-4 flex-col">
+    <div className="">
       {data?.map((item) => (
         <Post key={item.id} post={item} mode="onPage" />
       ))}

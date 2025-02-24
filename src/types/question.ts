@@ -44,3 +44,26 @@
     fileType: string;
     code?: string;
   }
+
+
+  export interface SaveQuestionResponse {
+    _id: string;
+    userId: UserId;
+    __v: number;
+    questionId: QuestionId;
+  }
+  
+  interface QuestionId {
+    userId: UserId;
+    code?: Code;
+    hashtags?: Hashtag[];
+    _id?: string;
+    topic?: string;
+    title?: string;
+    question?: string;
+    vote?: any[];
+    __v?: number;
+    createdAt?: string;
+  }
+
+ 
