@@ -20,9 +20,9 @@ import {
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import axiosClient from '@/httpClient';
 import { cn } from '@/lib/utils';
+import { useFollowMutation } from '@/queries/follow';
 import { useJobTitleQuery } from '@/queries/jobTitle';
 import { getUserSuggestion } from '@/queries/user';
-import { useAuth } from '@/store/authSignal';
 import { UserSuggestResponse } from '@/types/user';
 import { uploadImage } from '@/utils/uploadUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -35,6 +35,7 @@ import {
   formUserOnboarding,
   FormUserOnboardingSchema,
 } from '../schema/formUserOnboarding';
+import { sFollowIdSignal } from '../signal/followIdSginal';
 import FollowItem from './FollowItem';
 
 const FormOnboarding = ({ step = 1 }: { step: number }) => {
@@ -43,7 +44,7 @@ const FormOnboarding = ({ step = 1 }: { step: number }) => {
 
   const { data } = useJobTitleQuery();
 
-  const { user } = useAuth();
+  const { mutateAsync } = useFollowMutation();
 
   const router = useRouter();
 
@@ -56,6 +57,10 @@ const FormOnboarding = ({ step = 1 }: { step: number }) => {
       });
       setFollowSuggest(res);
     })();
+
+    return () => {
+      sFollowIdSignal.reset();
+    };
   }, []);
 
   const {
@@ -103,8 +108,7 @@ const FormOnboarding = ({ step = 1 }: { step: number }) => {
   const curJobTitle = watch('jobTitle');
 
   const handleFollow = (id: string) => {
-    console.log(id);
-    console.log(user?.id);
+    mutateAsync(id);
   };
 
   const onSubmit: SubmitHandler<FormUserOnboardingSchema> = async (data) => {
@@ -284,7 +288,7 @@ const FormOnboarding = ({ step = 1 }: { step: number }) => {
                 avatar={follow.avatarUrl}
                 title={follow.professional}
                 id={follow.id}
-                onFollow={() => {}}
+                onFollow={handleFollow}
               />
             ))}
           </div>

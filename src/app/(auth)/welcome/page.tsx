@@ -1,11 +1,9 @@
-import { Button } from '@/components/common/Button';
 import InfoIcon from '@/components/icons/InfoIcon';
 import JobIcon from '@/components/icons/JobIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import Link from 'next/link';
 import FormOnboarding from './partials/FormOnboarding';
 import ProcessItem from './partials/ProcessItem';
 import Welcome from './partials/Welcome';
@@ -24,7 +22,7 @@ const Page = async ({ searchParams }: PageProps) => {
   const step = Number(stepProp);
   return (
     <>
-      <div className='h-screen '>
+      <div className='h-screen'>
         <div className='mx-auto relative h-full'>
           {!stepProp && <Welcome />}
 

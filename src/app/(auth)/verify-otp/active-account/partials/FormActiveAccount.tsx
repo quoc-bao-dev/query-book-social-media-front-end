@@ -1,5 +1,6 @@
 'use client';
 
+import { sSignUp } from '@/app/(auth)/welcome/signal/signupSignal';
 import {
     InputOTP,
     InputOTPGroup,
@@ -23,11 +24,15 @@ const FormActiveAccount = () => {
         setIsComplete(true);
 
         try {
-            await axiosClient.post(
+            const res = await axiosClient.post(
                 '/api/auth/active-account',
                 { otp: data },
-                { baseURL: '' }
+                { baseURL: '' },
             );
+
+            const { userId } = res.data;
+
+            sSignUp.set(userId);
 
             setMessage('');
 
@@ -55,34 +60,34 @@ const FormActiveAccount = () => {
                     <InputOTPGroup>
                         <InputOTPSlot
                             index={0}
-                            className="w-[50px] h-[50px] text-2xl font-medium"
+                            className='w-[50px] h-[50px] text-2xl font-medium'
                         />
                         <InputOTPSlot
                             index={1}
-                            className="w-[50px] h-[50px] text-2xl font-medium"
+                            className='w-[50px] h-[50px] text-2xl font-medium'
                         />
                         <InputOTPSlot
                             index={2}
-                            className="w-[50px] h-[50px] text-2xl font-medium"
+                            className='w-[50px] h-[50px] text-2xl font-medium'
                         />
                         <InputOTPSlot
                             index={3}
-                            className="w-[50px] h-[50px] text-2xl font-medium"
+                            className='w-[50px] h-[50px] text-2xl font-medium'
                         />
                         <InputOTPSlot
                             index={4}
-                            className="w-[50px] h-[50px] text-2xl font-medium"
+                            className='w-[50px] h-[50px] text-2xl font-medium'
                         />
                         <InputOTPSlot
                             index={5}
-                            className="w-[50px] h-[50px] text-2xl font-medium"
+                            className='w-[50px] h-[50px] text-2xl font-medium'
                         />
                     </InputOTPGroup>
                 </InputOTP>
             </form>
 
             {message && (
-                <div className=" text-red-500 text-sm mt-2">
+                <div className=' text-red-500 text-sm mt-2'>
                     <p>{message}</p>
                 </div>
             )}
