@@ -56,9 +56,9 @@ const postSaveQuestion = (questionId: string) => axiosClient.post(`/questions/sa
 export const useSaveQuestionMutation =  () => {
     const queryClient  = useQueryClient()
     return useMutation({
+            // update query
         mutationFn: postSaveQuestion,
         onSuccess: () => {
-            // update query
             queryClient.invalidateQueries({ queryKey: ['my-save-question'] })
         },
     })

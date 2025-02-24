@@ -18,6 +18,8 @@ const PostsMySave = ({ post }: PostProps) => {
   const { user } = useAuth();
   console.log(
     'Post component rendering:',
+    post.questionId.userId.firstName,
+    post.questionId.userId.avatarUrl,
     post.userId.firstName,
     post.questionId.title,
   );
@@ -40,11 +42,11 @@ const PostsMySave = ({ post }: PostProps) => {
       <div className='flex items-center justify-between mt-3'>
         <div className='flex items-center space-x-2'>
           <img
-            src={user?.avatarUrl}
+            src={post.questionId.userId.avatarUrl}
             alt='user'
             className='w-10 h-10 rounded-full'
           />
-          <p className='font-semibold'>{user?.fullName}</p>
+          <p className='font-semibold'>{post.questionId.userId.firstName}</p>
           <p className='text-2xl text-neutral-500'>•</p>
           <p className='text-sm text-neutral-500'>
             {post.questionId.createdAt &&
