@@ -3,7 +3,7 @@
 import Avatar from '@/components/common/Avatar';
 import { Button } from '@/components/common/Button';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { sFollowIdSignal } from '../signal/followIdSginal';
 type FollowItemProps = {
   avatar?: string;
   name: string;
@@ -13,12 +13,12 @@ type FollowItemProps = {
 };
 
 const FollowItem = ({ avatar, name, title, id, onFollow }: FollowItemProps) => {
-  const [isFollowing, setIsFollowing] = useState(false);
+  const followIds = sFollowIdSignal.use();
+  const isFollowing = followIds.includes(id);
   const handleFollow = () => {
+    if (!id) return;
     if (isFollowing) return;
-    console.log(isFollowing);
-
-    setIsFollowing(true);
+    sFollowIdSignal.set((n) => n.value.push(id));
     onFollow(id);
   };
   return (
