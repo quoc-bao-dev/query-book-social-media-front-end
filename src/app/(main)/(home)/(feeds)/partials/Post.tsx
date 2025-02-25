@@ -16,6 +16,9 @@ import { useCommentDetail } from '../signal/commentDetail';
 import { useListImageDetail } from '../signal/listImageDetail';
 import PostComment from './PostComment';
 import PostImage from './PostImage';
+import WorldIcon from '@/components/icons/WorldIcon';
+import LockIcon from '@/components/icons/LockIcon';
+import UsersIcon from '@/components/icons/UsersIcon';
 
 // FIXME: fix interface of post
 
@@ -32,13 +35,14 @@ export interface PostProps {
     | 'likes'
     | 'comments'
     | 'commentsCount'
+    | 'status'
   >;
   mode: 'onPage' | 'onModal';
 }
 
 const Post = ({ post, mode = 'onPage' }: PostProps) => {
   const { user } = useAuth();
-  const { mutateAsync: likePost } = useLikeMutation(post.id);
+  const { mutateAsync: likePost } = useLikeMutation();
   const { showModal, setImages, setCurIndex } = useListImageDetail();
   const { setCurPost, open } = useCommentDetail();
 
@@ -80,7 +84,15 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
             </div>
 
             <div className='text-left w-full px-4'>
-              <div className=''>{post.author.fullName}</div>
+              <div className='flex gap-1 items-center'>
+                <div className=''>{post.author.fullName}</div>
+                <div className='text-gray-600 text-sm flex gap-1 items-center'>
+                  {post.status === 'public' && <WorldIcon className='size-4' />}
+                  {post.status === 'friend' && <UsersIcon className='size-4' />}
+                  {post.status === 'private' && <LockIcon className='size-4' />}
+                  <p className='font-medium'>{post.status.toLowerCase()}</p>
+                </div>
+              </div>
               <div className='text-gray-600'>{distance}</div>
             </div>
 
