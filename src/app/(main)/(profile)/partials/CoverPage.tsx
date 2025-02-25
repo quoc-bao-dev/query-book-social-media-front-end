@@ -23,7 +23,7 @@ const CoverPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const maxFriendsToShow = 3;
+  const maxFriendsToShow = 4;
   const friends = user?.friends || [];
   const displayedFriends = friends.slice(0, maxFriendsToShow);
 

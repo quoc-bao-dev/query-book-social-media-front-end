@@ -1,10 +1,7 @@
 'use client';
-import Link from 'next/link';
-import { PropsWithChildren } from 'react';
-import ProfileButton from './partials/ProfileButton';
-import PostButton from './partials/PostButton';
-import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 import { useAuth } from '@/store/authSignal';
+import { PropsWithChildren } from 'react';
+import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 
 const layout = ({ children }: PropsWithChildren) => {
   const { user } = sCurUserProfileSignal.use();
