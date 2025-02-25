@@ -49,6 +49,7 @@ const UserFollowSuggestRow = ({
           size='sm'
           variant={isFollowing ? 'lighten' : 'primary'}
           onClick={handleFollow}
+          disabled={isFollowing}
         >
           {!isFollowing ? t('follow') : t('following')}
         </Button>
