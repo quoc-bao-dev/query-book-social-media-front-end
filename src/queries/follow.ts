@@ -5,20 +5,25 @@ import { UserProfileResponse } from '@/types/user';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const postFollow = (id: string) => axiosClient.post(`/follow/${id}`);
-export const useFollowMutation = ({mode,userId }: {mode?: 'default' | 'userPage', userId?: string} = {mode: 'default'}) => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (userId: string) => postFollow(userId),
-        onSuccess: async () => {
-            queryClient.invalidateQueries({ queryKey: ['follow_suggest'] });
-            if (mode === 'userPage') {
-                const user = (
-                    await axiosClient.get<HttpResponse<UserProfileResponse>>(
-                        `/users/profile/${userId}`
-                    )
-                ).data.data;
-                sCurUserProfileSignal.set({ user });
-            }
-        },
-    });
+export const useFollowMutation = (
+  { mode, userId }: { mode?: 'default' | 'userPage'; userId?: string } = {
+    mode: 'default',
+  },
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => postFollow(userId),
+    onSuccess: async () => {
+      if (mode === 'userPage') {
+        queryClient.invalidateQueries({ queryKey: ['follow_suggest'] });
+
+        const user = (
+          await axiosClient.get<HttpResponse<UserProfileResponse>>(
+            `/users/profile/${userId}`,
+          )
+        ).data.data;
+        sCurUserProfileSignal.set({ user });
+      }
+    },
+  });
 };
