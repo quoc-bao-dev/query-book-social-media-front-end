@@ -10,6 +10,9 @@ import { ImageIcon } from 'lucide-react';
 import { SaveQuestionResponse } from '@/types/saveQuestion';
 import DropdownMenu from '../../partials/DropdownMenu';
 import { useAuth } from '@/store/authSignal';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getFirstCharacter } from '@/utils/nameUtilts';
+
 interface PostProps {
   post: SaveQuestionResponse;
 }
@@ -41,12 +44,15 @@ const PostsMySave = ({ post }: PostProps) => {
       {/* Header */}
       <div className='flex items-center justify-between mt-3'>
         <div className='flex items-center space-x-2'>
-          <img
-            src={post.questionId.userId.avatarUrl}
-            alt='user'
-            className='w-10 h-10 rounded-full'
-          />
-          <p className='font-semibold'>{post.questionId.userId.firstName}</p>
+          <Avatar className='w-10 h-10 rounded-full'>
+            <AvatarImage src={post.questionId.userId.avatarUrl} />
+            <AvatarFallback>
+              {getFirstCharacter(post.questionId.userId.firstName!)}
+            </AvatarFallback>
+          </Avatar>
+          <p className='font-semibold'>
+            {post.questionId.userId.firstName} {post.questionId.userId.lastName}
+          </p>
           <p className='text-2xl text-neutral-500'>•</p>
           <p className='text-sm text-neutral-500'>
             {post.questionId.createdAt &&

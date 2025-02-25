@@ -64,9 +64,9 @@ const PostsMyQuestion = ({
       </div>
 
       {/* Title */}
-      <h2 className='mt-2 text-3xl font-semibold text-neutral-900'>
+      <p className='mt-2 text-3xl font-semibold text-neutral-900'>
         {post.title}
-      </h2>
+      </p>
 
       {/* Content */}
       <p className='mt-2 text-lg text-neutral-600'>{post.question}</p>
