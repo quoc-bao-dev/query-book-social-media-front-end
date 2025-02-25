@@ -4,7 +4,7 @@ import CommentIcon from '@/components/icons/CommentIcon';
 import EllipsisVerticalIcon from '@/components/icons/EllipsisVerticalIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useLikeMutation } from '@/queries/like';
 import { useAuth } from '@/store/authSignal';
@@ -16,6 +16,7 @@ import { useCommentDetail } from '../signal/commentDetail';
 import { useListImageDetail } from '../signal/listImageDetail';
 import PostComment from './PostComment';
 import PostImage from './PostImage';
+import Avatar from '@/components/common/Avatar';
 
 // FIXME: fix interface of post
 
@@ -71,12 +72,17 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
         <div className='px-4 pb-4'>
           <div className='flex justify-between'>
             <div className=''>
-              <Avatar>
+              <Avatar
+                src={post.author?.avatarUrl}
+                fallBack={post.author.fullName}
+                className=''
+              ></Avatar>
+              {/* <Avatar>
                 <AvatarImage src={post.author?.avatarUrl} />
                 <AvatarFallback>
                   {getFirstCharacter(post.author.fullName)}
                 </AvatarFallback>
-              </Avatar>
+              </Avatar> */}
             </div>
 
             <div className='text-left w-full px-4'>
