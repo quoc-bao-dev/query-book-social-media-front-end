@@ -51,7 +51,7 @@ const SidebarRight = () => {
       </div>
       {/* Follow */}
 
-      {/* Jobs */}
+      {/* Friends */}
       <div className='pt-6'>
         <div className='pb-1 font-semibold'>
           <p>{t('friendSuggest')}</p>
@@ -67,7 +67,8 @@ const SidebarRight = () => {
           </div>
         )}
       </div>
-      {/* Jobs */}
+      {/* Friends */}
+
       {/* Jobs */}
       <div className='pt-6'>
         <div className='pb-1 font-semibold'>
