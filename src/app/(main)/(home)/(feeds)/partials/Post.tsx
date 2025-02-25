@@ -4,7 +4,6 @@ import CommentIcon from '@/components/icons/CommentIcon';
 import EllipsisVerticalIcon from '@/components/icons/EllipsisVerticalIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
-// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useLikeMutation } from '@/queries/like';
 import { useAuth } from '@/store/authSignal';
@@ -65,7 +64,6 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
     open();
     setCurPost(post);
   };
-
   return (
     <>
       <div className='w-full gap-5 border rounded-xl py-4 bg-card'>
@@ -74,15 +72,9 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
             <div className=''>
               <Avatar
                 src={post.author?.avatarUrl}
-                fallBack={post.author.fullName}
+                fallBack={post.author?.fullName}
                 className=''
               ></Avatar>
-              {/* <Avatar>
-                <AvatarImage src={post.author?.avatarUrl} />
-                <AvatarFallback>
-                  {getFirstCharacter(post.author.fullName)}
-                </AvatarFallback>
-              </Avatar> */}
             </div>
 
             <div className='text-left w-full px-4'>
@@ -132,20 +124,21 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
                   {post.likes
                     .sort((a) => (a.id !== user?.id ? 1 : -1))
                     .map((like, index) => (
-                      <Avatar
-                        key={like.id}
-                        className={cn('w-[25px] h-[25px] object-cover', {
-                          '-ml-3': index > 0,
-                          'rounded-[50%] z-30': index === 0,
-                        })}
-                      >
-                        <AvatarImage src={like.avatarUrl} />
-                        <AvatarFallback>
-                          <p className='text-xs'>
-                            {getFirstCharacter(like.name)}
-                          </p>
-                        </AvatarFallback>
-                      </Avatar>
+                      // <Avatar
+                      //   key={like.id}
+                      //   className={cn('w-[25px] h-[25px] object-cover', {
+                      //     '-ml-3': index > 0,
+                      //     'rounded-[50%] z-30': index === 0,
+                      //   })}
+                      // >
+                      //   <AvatarImage src={like.avatarUrl} />
+                      //   <AvatarFallback>
+                      //     <p className='text-xs'>
+                      //       {getFirstCharacter(like.name)}
+                      //     </p>
+                      //   </AvatarFallback>
+                      // </Avatar>
+                      <p key={index}>{like.name}</p>
                     ))}
                 </div>
               </Tooltip>
@@ -168,12 +161,11 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
               <div className='flex'>
                 {/* user comment */}
                 <div className='flex justify-center'>
-                  <Avatar className='w-[40px] h-[40px] rounded-[50%]'>
-                    <AvatarImage src={_comment.avatarUrl} />
-                    <AvatarFallback>
-                      {getFirstCharacter(_comment.fullName ?? '')}
-                    </AvatarFallback>
-                  </Avatar>
+                  <Avatar
+                    className='w-[40px] h-[40px] rounded-[50%]'
+                    src={_comment.avatarUrl}
+                    fallBack={_comment.fullName}
+                  />
                 </div>
                 {/* user comment */}
                 {/* show comment */}
