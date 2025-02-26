@@ -1,14 +1,14 @@
 import React from 'react';
 
-const ChevronRightIcon = ({ className }: { className?: string }) => {
+const ChevronRightIcon2 = ({ className }: { className?: string }) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       fill='none'
       viewBox='0 0 24 24'
-      strokeWidth={1.5}
+      strokeWidth={3}
       stroke='black'
-      className={`size-6 ${className}`}
+      className={`size-6 drop-shadow-md ${className}`}
     >
       <path
         strokeLinecap='round'
@@ -19,4 +19,4 @@ const ChevronRightIcon = ({ className }: { className?: string }) => {
   );
 };
 
-export default ChevronRightIcon;
+export default ChevronRightIcon2;

@@ -25,7 +25,10 @@ const MainContentMySave = () => {
 
       {/* Render bài viết */}
       {Array.isArray(data) && data.length > 0 ? (
-        data.map((item: any) => <PostsMySave key={item._id} post={item} />)
+        data
+          .slice()
+          .reverse()
+          .map((item: any) => <PostsMySave key={item._id} post={item} />)
       ) : (
         <p className='text-center text-gray-500'>No saved questions found.</p>
       )}

@@ -17,6 +17,7 @@ import { useCommentDetail } from '../signal/commentDetail';
 import { useListImageDetail } from '../signal/listImageDetail';
 import PostComment from './PostComment';
 import PostImage from './PostImage';
+import { cn } from '@/lib/utils';
 
 // FIXME: fix interface of post
 
@@ -134,21 +135,15 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
                   {post.likes
                     .sort((a) => (a.id !== user?.id ? 1 : -1))
                     .map((like, index) => (
-                      // <Avatar
-                      //   key={like.id}
-                      //   className={cn('w-[25px] h-[25px] object-cover', {
-                      //     '-ml-3': index > 0,
-                      //     'rounded-[50%] z-30': index === 0,
-                      //   })}
-                      // >
-                      //   <AvatarImage src={like.avatarUrl} />
-                      //   <AvatarFallback>
-                      //     <p className='text-xs'>
-                      //       {getFirstCharacter(like.name)}
-                      //     </p>
-                      //   </AvatarFallback>
-                      // </Avatar>
-                      <p key={index}>{like.name}</p>
+                      <Avatar
+                        key={like.id}
+                        src={like.avatarUrl}
+                        className={cn('w-[25px] h-[25px] object-cover', {
+                          '-ml-3': index > 0,
+                          'rounded-[50%] z-30': index === 0,
+                        })}
+                        fallBack={like.name}
+                      />
                     ))}
                 </div>
               </Tooltip>

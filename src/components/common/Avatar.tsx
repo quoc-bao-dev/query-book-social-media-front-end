@@ -9,7 +9,7 @@ type Props = {
 const Avatar = ({ src, className, fallBack }: Props) => {
   return (
     <AvatarUI className={`object-cover ${className}`}>
-      <AvatarImage src={src} />
+      <AvatarImage className='object-cover' src={src} />
       {fallBack && (
         <AvatarFallback>{getFirstCharacter(fallBack)}</AvatarFallback>
       )}
