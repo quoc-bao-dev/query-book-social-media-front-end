@@ -7,8 +7,5 @@
       "TSC_COMPILE_ON_ERROR": "true"
     }
   },
-  "routes": [
-    // { "src": "/(.*)/", "dest": "/$1" },
-    // { "src": "/(.*)", "dest": "/$1" }
-  ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
