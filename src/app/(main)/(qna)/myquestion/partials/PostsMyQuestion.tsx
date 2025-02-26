@@ -36,7 +36,6 @@ const PostsMyQuestion = ({
 }) => {
   const [showMenu, setShowMenu] = useState(false);
   const toggleMenu = () => setShowMenu(!showMenu);
-
   return (
     <div className='rounded-lg shadow-lg p-4 mb-6 border border-border bg-card'>
       {/* User Info */}
@@ -65,9 +64,9 @@ const PostsMyQuestion = ({
       </div>
 
       {/* Title */}
-      <h2 className='mt-2 text-3xl font-semibold text-neutral-900'>
+      <p className='mt-2 text-3xl font-semibold text-neutral-900'>
         {post.title}
-      </h2>
+      </p>
 
       {/* Content */}
       <p className='mt-2 text-lg text-neutral-600'>{post.question}</p>
@@ -83,15 +82,17 @@ const PostsMyQuestion = ({
       ))}
 
       {/* Code Editor */}
-      {post.code?.code && (
-        <MonacoEditor
-          className='h-[300px] pt-[10px]'
-          value={post.code.code}
-          theme='vs-dark'
-          language={post.code.fileType}
-          options={{ readOnly: true, domReadOnly: true }}
-        />
-      )}
+      {post.code?.code &&
+        post.code.code.trim().replace(/\/\/.*|\/\*[\s\S]*?\*\//g, '').length >
+          0 && (
+          <MonacoEditor
+            className='h-[300px] pt-[10px]'
+            value={post.code.code}
+            theme='vs-dark'
+            language={post.code.fileType}
+            options={{ readOnly: true, domReadOnly: true }}
+          />
+        )}
 
       {/* Image */}
       {post.imageUrl && (
@@ -115,7 +116,7 @@ const PostsMyQuestion = ({
         <input
           type='text'
           placeholder='Write a reply...'
-          className='w-[50%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+          className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
         />
         <div className='flex items-center gap-1'>
           <button className='p-2 rounded-lg hover:text-primary-600'>

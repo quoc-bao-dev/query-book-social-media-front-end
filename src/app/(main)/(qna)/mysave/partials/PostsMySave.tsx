@@ -9,13 +9,20 @@ import CodeIcon from '@/components/icons/CodeIcon';
 import { ImageIcon } from 'lucide-react';
 import { SaveQuestionResponse } from '@/types/saveQuestion';
 import DropdownMenu from '../../partials/DropdownMenu';
+import { useAuth } from '@/store/authSignal';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getFirstCharacter } from '@/utils/nameUtilts';
+
 interface PostProps {
   post: SaveQuestionResponse;
 }
 
 const PostsMySave = ({ post }: PostProps) => {
+  const { user } = useAuth();
   console.log(
     'Post component rendering:',
+    post.questionId.userId.firstName,
+    post.questionId.userId.avatarUrl,
     post.userId.firstName,
     post.questionId.title,
   );
@@ -37,13 +44,14 @@ const PostsMySave = ({ post }: PostProps) => {
       {/* Header */}
       <div className='flex items-center justify-between mt-3'>
         <div className='flex items-center space-x-2'>
-          <img
-            src={post.userId.avatarUrl}
-            alt='user'
-            className='w-10 h-10 rounded-full'
-          />
+          <Avatar className='w-10 h-10 rounded-full'>
+            <AvatarImage src={post.questionId.userId.avatarUrl} />
+            <AvatarFallback>
+              {getFirstCharacter(post.questionId.userId.firstName!)}
+            </AvatarFallback>
+          </Avatar>
           <p className='font-semibold'>
-            {post.userId.firstName} {post.userId.lastName}
+            {post.questionId.userId.firstName} {post.questionId.userId.lastName}
           </p>
           <p className='text-2xl text-neutral-500'>•</p>
           <p className='text-sm text-neutral-500'>
@@ -96,14 +104,14 @@ const PostsMySave = ({ post }: PostProps) => {
       {/* Reply Section */}
       <div className='mt-4 flex items-center gap-3'>
         <img
-          src={post.userId.avatarUrl}
+          src={user?.avatarUrl}
           alt='user'
           className='w-10 h-10 rounded-full'
         />
         <input
           type='text'
           placeholder='Write a reply...'
-          className='w-[50%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+          className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
         />
         <div className='flex items-center gap-1'>
           <button className='p-2 rounded-lg hover:text-primary-600'>
