@@ -1,22 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import SendIcon from '@/components/icons/SendIcon';
-import { formatDistanceToNow } from 'date-fns';
-import QuestionSection from './partials/QuestionSection';
-import { QuestionResponse } from '@/types/question';
-import { useAnswerMutation, useAnswerQuery } from '@/queries/answer';
-import { useRef, useState } from 'react';
-import { Download, ImageIcon } from 'lucide-react';
-import CodeIcon from '@/components/icons/CodeIcon';
 import Avatar from '@/components/common/Avatar';
-import { useAuth } from '@/store/authSignal';
+import CodeIcon from '@/components/icons/CodeIcon';
+import SendIcon from '@/components/icons/SendIcon';
 import { Dialog, DialogContent } from '@/components/ui/dialog'; // Nếu bạn có thư viện UI hoặc có thể tự custom modal
+import { useAnswerMutation, useAnswerQuery } from '@/queries/answer';
+import { useAuth } from '@/store/authSignal';
+import { QuestionResponse } from '@/types/question';
+import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
+import { formatDistanceToNow } from 'date-fns';
+import { ImageIcon } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import LanguageSeletor from '../../ask-question/partials/LanguageSeletor';
 import { QuestionSchema } from '../../ask-question/schema/questionSchema';
-import { zodResolver } from '@hookform/resolvers/zod';
+import QuestionSection from './partials/QuestionSection';
 import { questionSchema } from './schema/questionSchema';
 
 type QuestionDetailsProps = {
@@ -47,6 +47,13 @@ const QuestionDetails = ({ question }: QuestionDetailsProps) => {
     }).then(() => {
       if (inputRef.current?.value) inputRef.current.value = '';
     });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
   };
 
   console.log('[answers]', data);
@@ -93,6 +100,7 @@ const QuestionDetails = ({ question }: QuestionDetailsProps) => {
           type='text'
           placeholder='Write a reply...'
           className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+          onKeyDown={handleKeyDown}
         />
         <div className='flex items-center gap-1'>
           <button className='p-2 rounded-lg hover:text-primary-600'>

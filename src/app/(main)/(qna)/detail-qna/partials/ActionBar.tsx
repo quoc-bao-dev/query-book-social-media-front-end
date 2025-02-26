@@ -40,7 +40,7 @@ const ActionBar = ({ id }: ActionBarProps) => {
     <div className='mt-2 flex items-center gap-2 text-gray-600'>
       <HeartIcon className='w-5 h-5 fill-error-300 text-error-200' />
       <span>2.3k</span>
-      <ChatBubbleOvalLeftIcon className='w-5 h-5 text-neutral-700 fill-neutral-600' />
+      <ChatBubbleOvalLeftIcon className='w-5 h-5 text-neutral-600' />
       <span>200</span>
       <ShareIcon className='w-5 h-5 text-neutral-800 fill-neutral-600' />
       <span>Share</span>
