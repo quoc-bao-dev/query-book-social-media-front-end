@@ -17,6 +17,7 @@ import { useCommentDetail } from '../signal/commentDetail';
 import { useListImageDetail } from '../signal/listImageDetail';
 import PostComment from './PostComment';
 import PostImage from './PostImage';
+import { cn } from '@/lib/utils';
 
 // FIXME: fix interface of post
 
