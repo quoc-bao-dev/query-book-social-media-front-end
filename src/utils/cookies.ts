@@ -10,7 +10,7 @@ export const setCookies = (response: NextResponse) => ({
       maxAge: 60 * 10, // 10 phut)
       path: config.API_PATH,
       domain: config.API_DOMAIN,
-      // sameSite: 'none',
+      sameSite: 'none',
     });
   },
   // TODO: check samesite here
