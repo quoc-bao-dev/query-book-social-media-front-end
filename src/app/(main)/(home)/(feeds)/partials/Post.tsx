@@ -1,24 +1,22 @@
 'use client';
+import Avatar from '@/components/common/Avatar';
 import Tooltip from '@/components/common/Tooltip';
 import CommentIcon from '@/components/icons/CommentIcon';
 import EllipsisVerticalIcon from '@/components/icons/EllipsisVerticalIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
+import LockIcon from '@/components/icons/LockIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
-import { cn } from '@/lib/utils';
+import UsersIcon from '@/components/icons/UsersIcon';
+import WorldIcon from '@/components/icons/WorldIcon';
 import { useLikeMutation } from '@/queries/like';
 import { useAuth } from '@/store/authSignal';
 import { PostResponse } from '@/types/post';
-import { getFirstCharacter } from '@/utils/nameUtilts';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import Image from 'next/image';
 import { useCommentDetail } from '../signal/commentDetail';
 import { useListImageDetail } from '../signal/listImageDetail';
 import PostComment from './PostComment';
 import PostImage from './PostImage';
-import WorldIcon from '@/components/icons/WorldIcon';
-import LockIcon from '@/components/icons/LockIcon';
-import UsersIcon from '@/components/icons/UsersIcon';
-import Avatar from '@/components/common/Avatar';
 
 // FIXME: fix interface of post
 
