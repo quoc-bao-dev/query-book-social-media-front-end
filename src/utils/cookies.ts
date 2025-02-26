@@ -4,15 +4,6 @@ import { NextResponse } from 'next/server';
 export const setCookies = (response: NextResponse) => ({
   // TODO: check samesite here
   accessToken: (accessToken: string) => {
-    console.log('accessToken', {
-      httpOnly: true, // Cookie chỉ có thể được truy cập từ server
-      secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
-      maxAge: 60 * 10, // 10 phut)
-      path: config.API_PATH,
-      domain: config.API_DOMAIN,
-      sameSite: 'none',
-    });
-
     response.cookies.set('accessToken', accessToken, {
       httpOnly: true, // Cookie chỉ có thể được truy cập từ server
       secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
@@ -30,7 +21,7 @@ export const setCookies = (response: NextResponse) => ({
       maxAge: 60 * 60 * 24 * 15, // 15 ngày)
       path: config.API_PATH,
       domain: config.API_DOMAIN,
-      sameSite: 'lax',
+      sameSite: 'none',
     });
   },
 
