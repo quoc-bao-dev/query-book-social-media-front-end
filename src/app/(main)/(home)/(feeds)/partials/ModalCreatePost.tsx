@@ -87,9 +87,6 @@ const ModalCreatePost = () => {
           },
         },
       );
-
-      console.log(response.data);
-
       return response.data;
     } catch (error) {
       console.log(error);
@@ -98,8 +95,11 @@ const ModalCreatePost = () => {
 
   //handle form
   const {
+    // Bắt lỗi form
     control,
+    // Bắt sự kiện của form
     handleSubmit,
+    // clear đi form
     reset,
     formState: { errors },
   } = useForm<CreatePostSchema>({
@@ -194,6 +194,7 @@ const ModalCreatePost = () => {
                   <AutoResizeTextarea onchange={field.onChange} />
                 )}
               />
+
               <div className='mt-5'>
                 {files.map((file, index) => (
                   <div
@@ -228,7 +229,11 @@ const ModalCreatePost = () => {
                 multiple
                 id='uploadFile'
               />
-              <MediaIcon className='size-6 fill-primary-500' />
+              <div className=''>
+                <label htmlFor='uploadFile'>
+                  <MediaIcon className='size-6 text-primary-500' />
+                </label>
+              </div>
               <TagFriendIcon />
               <FaceIcon />
               <EllipsisHorizontalIcon />

@@ -1,12 +1,15 @@
 'use client';
 import Modal from '@/components/common/Modal';
 import MediaIcon from '@/components/icons/MediaIcon';
+import axiosClient from '@/httpClient';
 import { useAuth } from '@/store/authSignal';
+import { uploadImage } from '@/utils/uploadUtils';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { DialogTitle } from '@radix-ui/react-dialog';
 import { DeleteIcon } from 'lucide-react';
-import { Controller } from 'react-hook-form';
+import Image from 'next/image';
+import { useState } from 'react';
 import { signify } from 'react-signify';
+import { CreateFeed } from '../schema/CreateFeedSchema';
 
 type CreateFeed = {
   isShow: boolean;
@@ -27,30 +30,68 @@ const ModalCreateFeed = () => {
   const { user } = useAuth();
   const { isShow } = sModalCreateFeed.use();
   const { close } = useModalCreateFeed();
+  const [files, setFiles] = useState<File[]>([]);
+  const [error, setError] = useState('');
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFiles(Array.from(event.target.files)); // Chuyển FileList thành mảng
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (files.length === 0) {
+      setError('no have image');
+    }
+    const file = files[0];
+
+    const media = await uploadImage(file);
+    const content = 'no content';
+    //fix type
+    const payload = {
+      content,
+      media: {
+        type: 'image',
+        sourceType: 'file',
+        fileName: media,
+      },
+      status: 'public',
+    };
+
+    // fecth data
+    try {
+      const response = await axiosClient.post(`/stories`, payload);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+
+    //clear state
+    setFiles([]);
+  };
 
   return (
     <Modal isOpen={isShow} onClose={close}>
       <div className='flex'>
-        <form
-          className='w-full bg-card rounded-lg'
-          //   onSubmit={handleSubmit(onSubmit)}
-        >
+        <form className='w-full bg-card rounded-lg' onSubmit={onSubmit}>
           <div className='py-4 text-xl'>
-            <p className='text-center font-semibold'>Tạo bài viết</p>
+            <p className='text-center font-semibold'>Tạo tin của bạn</p>
           </div>
-
           <hr />
-
           <div className='flex items-center gap-3 mt-5 mx-auto px-5'>
-            <Avatar>
-              <AvatarImage src={`${user?.avatarUrl}`} />
+            <Avatar className='rounded-[50%] w-[50px] h-[50px]  object-cover bg-slate-300'>
+              <AvatarImage
+                src={`${user?.avatarUrl}`}
+                className='w-full h-full rounded-[50%]'
+              />
               <AvatarFallback>{user?.fullName}</AvatarFallback>
             </Avatar>
 
-            {/* <div className=''>
+            <div className=''>
               <p className='font-bold'>{user?.fullName}</p>
               <div className='pt-2'>
-                <Controller
+                {/* <Controller
                   control={control}
                   name={'status'}
                   render={({ field }) => (
@@ -73,21 +114,40 @@ const ModalCreateFeed = () => {
                       </SelectContent>
                     </Select>
                   )}
-                />
+                /> */}
               </div>
-            </div> */}
+            </div>
           </div>
 
-          {/* <div className='mt-5'>
+          <div className='mt-5'>
             <div className='px-3 max-h-[375px] overflow-y-auto'>
-              <Controller
+              {/* <Controller
                 control={control}
                 name='content'
                 render={({ field }) => (
                   <AutoResizeTextarea onchange={field.onChange} />
                 )}
-              />
-              <div className='mt-5'>
+              /> */}
+
+              {/* Render hình ảnh khi thêm từ input */}
+              {!files.length && (
+                <div className='flex py-8 gap-8 justify-center items-center'>
+                  <input
+                    onChange={handleFileChange}
+                    type='file'
+                    hidden
+                    multiple
+                    id='uploadFile'
+                  />
+                  <div className=''>
+                    <label htmlFor='uploadFile'>
+                      <MediaIcon className='size-20 text-primary-500' />
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              <div className='flex justify-center items-center'>
                 {files.map((file, index) => (
                   <div
                     className='w-[200px] h-auto flex items-center justify-center'
@@ -104,25 +164,9 @@ const ModalCreateFeed = () => {
                 ))}
               </div>
             </div>
-            {errors.content && (
+            {/* {errors.content && (
               <p className='text-error-500'>{errors.content.message}</p>
-            )}
-          </div> */}
-
-          <div className='w-[476px] border-[0.5px] border-gray-300 h-[50px] mx-auto rounded-md px-2 py-2 grid grid-cols-2 mt-5'>
-            <div className=' text-center pt-1'>
-              <p>Thêm vào bài viết của bạn</p>
-            </div>
-            <div className='flex gap-8 justify-center items-center'>
-              <input
-                // onChange={handleFileChange}
-                type='file'
-                hidden
-                multiple
-                id='uploadFile'
-              />
-              <MediaIcon className='size-6 fill-primary-500' />
-            </div>
+            )} */}
           </div>
 
           <button
