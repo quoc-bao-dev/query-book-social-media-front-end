@@ -1,7 +1,6 @@
 import { Button } from '@/components/common/Button';
 import Tooltip from '@/components/common/Tooltip';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAuth } from '@/store/authSignal';
 import { getFirstCharacter } from '@/utils/nameUtilts';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -49,6 +48,7 @@ const UserFollowSuggestRow = ({
           size='sm'
           variant={isFollowing ? 'lighten' : 'primary'}
           onClick={handleFollow}
+          disabled={isFollowing}
         >
           {!isFollowing ? t('follow') : t('following')}
         </Button>
