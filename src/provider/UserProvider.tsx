@@ -6,23 +6,22 @@ import { useRouter } from 'next/navigation';
 import { PropsWithChildren, useEffect } from 'react';
 
 const UserProvider = ({ children }: PropsWithChildren) => {
-    const router = useRouter();
-    useEffect(() => {
-        (async () => {
-            try {
-                const user = await axiosClient.get('/users/me');
-                console.log('[user provider]', user);
+  const router = useRouter();
+  useEffect(() => {
+    (async () => {
+      try {
+        const user = await axiosClient.get('/users/me');
 
-                authActions.login(user.data.data);
-            } catch (error) {
-                console.log(error);
-                authActions.logout();
-                router.push('/login');
-            }
-        })();
-    }, []);
+        authActions.login(user.data.data);
+      } catch (error) {
+        console.log(error);
+        authActions.logout();
+        router.push('/login');
+      }
+    })();
+  }, []);
 
-    return <>{children}</>;
+  return <>{children}</>;
 };
 
 export default UserProvider;

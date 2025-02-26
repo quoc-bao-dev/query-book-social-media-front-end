@@ -1,11 +1,10 @@
 import PlusIcon from '@/components/icons/PlusIcon';
 import { useStoryQuery } from '@/queries/story';
 import { useAuth } from '@/store/authSignal';
+import { getFirstCharacter } from '@/utils/nameUtilts';
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import Image from 'next/image';
 import { useListFeedDetail } from '../signal/listFeedDetail';
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { getFirstCharacter } from '@/utils/nameUtilts';
-import { use } from 'react';
 import { useModalCreateFeed } from './ModalCreateFeed';
 
 const Feeds = () => {
@@ -13,6 +12,7 @@ const Feeds = () => {
   const { showModal, setCurIndex, setImages } = useListFeedDetail();
   const { open } = useModalCreateFeed();
 
+  // Query dữ liệu từ sever
   const { data } = useStoryQuery();
 
   const stories = data?.data.data;
