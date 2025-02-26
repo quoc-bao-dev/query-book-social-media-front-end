@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       'picsum.photos',
       'loremflickr.com',
       'avatars.githubusercontent.com',
+      'query-book-social-media-image-server.onrender.com',
     ], // Add your local development domain
   },
   typescript: {
