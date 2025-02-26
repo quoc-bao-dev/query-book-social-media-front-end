@@ -1,29 +1,29 @@
+import Avatar from '@/components/common/Avatar';
 import PlusIcon from '@/components/icons/PlusIcon';
 import { useStoryQuery } from '@/queries/story';
 import { useAuth } from '@/store/authSignal';
-import { getFirstCharacter } from '@/utils/nameUtilts';
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import Image from 'next/image';
-import { useListFeedDetail } from '../signal/listFeedDetail';
 import { useModalCreateFeed } from './ModalCreateFeed';
+import { useListImageDetail } from '../signal/listImageDetail';
 
 const Feeds = () => {
   const { user } = useAuth();
-  const { showModal, setCurIndex, setImages } = useListFeedDetail();
   const { open } = useModalCreateFeed();
+  // const { showModal, setImages, setCurIndex } = useListImageDetail();
+  const { showModal, setImages, setCurIndex } = useListImageDetail();
 
   // Query dữ liệu từ sever
   const { data } = useStoryQuery();
 
   const stories = data?.data.data;
 
-  const showFeedDetail = (index: number) => () => {
-    setCurIndex(index);
-    showModal();
-  };
-
   const showCreateFeed = () => {
     open();
+  };
+
+  const showDetail = (image: string) => () => {
+    setImages([image]);
+    setCurIndex(0);
+    showModal();
   };
 
   // useEffect(() => {
@@ -31,31 +31,23 @@ const Feeds = () => {
   // }, [feed, setImages]);
 
   return (
-    <div className='w-full flex gap-2 justify-between items-center'>
+    <div className='w-full flex gap-2 items-center'>
       <div
         onClick={showCreateFeed}
-        className='w-[115px] h-[204px] rounded-xl bg-slate-200 relative flex justify-center '
+        className='w-[115px] h-[204px] rounded-xl relative flex justify-center '
       >
-        <Avatar>
-          <AvatarImage
-            src={user?.avatarUrl}
-            className='h-full w-full rounded-xl'
-          />
-          <AvatarFallback>
-            {getFirstCharacter(user?.fullName ?? '')}
-          </AvatarFallback>
-        </Avatar>
+        <Avatar
+          src={user?.avatarUrl}
+          className='h-full w-full rounded-xl'
+          fallBack={user?.fullName}
+        />
 
         <div className='absolute top-2 left-2 border-[4px] border-primary-500 rounded-[50%]'>
-          <Avatar>
-            <AvatarImage
-              src={user?.avatarUrl}
-              className='w-[40px] h-[40px] rounded-[50%] object-cover'
-            />
-            <AvatarFallback>
-              {getFirstCharacter(user?.fullName ?? '')}
-            </AvatarFallback>
-          </Avatar>
+          <Avatar
+            src={user?.avatarUrl}
+            className='w-[40px] h-[40px] rounded-[50%] object-cover'
+            fallBack={user?.fullName}
+          />
         </div>
 
         <div className='w-full bg-primary-600 absolute bottom-0 rounded-b-xl h-[50px] '>
@@ -72,24 +64,21 @@ const Feeds = () => {
 
       {stories?.map((item, index) => (
         <div
-          onClick={showFeedDetail(index)}
           key={index}
-          className='w-[153px] h-[204px] rounded-xl relative'
+          onClick={showDetail(item.mediaUrl)}
+          className='w-[115px] h-[204px] rounded-xl bg-slate-200 relative flex justify-center '
         >
-          <Image
-            src={`/images/${item.image}`}
-            alt=''
-            className='w-full h-full rounded-xl object-cover'
-            width={500}
-            height={0}
+          <Avatar
+            src={item.mediaUrl}
+            className='h-full w-full rounded-xl object-cover'
+            fallBack={user?.fullName}
           />
+
           <div className=' absolute top-2 left-2 border-[5px] border-primary-500 rounded-[50%]'>
-            <Image
-              src={`/images/${item.image}`}
-              alt=''
-              width={100}
+            <Avatar
+              src={item.author.avatarUrl}
               className='w-[40px] h-[40px] rounded-[50%] object-cover'
-              height={0}
+              fallBack={user?.fullName}
             />
           </div>
           <div className='absolute bottom-2 left-2'>

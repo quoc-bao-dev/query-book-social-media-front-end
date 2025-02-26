@@ -39,7 +39,7 @@ const ModalCreateFeed = () => {
     }
   };
 
-  const onSubmit = async (e: Event) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (files.length === 0) {
       setError('no have image');
@@ -56,6 +56,7 @@ const ModalCreateFeed = () => {
         sourceType: 'file',
         fileName: media,
       },
+      status: 'public',
     };
 
     // fecth data
