@@ -8,7 +8,7 @@ export const setCookies = (response: NextResponse) => ({
       httpOnly: true, // Cookie chỉ có thể được truy cập từ server
       secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
       maxAge: 60 * 10, // 10 phut)
-      path: config.API_PATH,
+      path: '/',
       domain: config.API_DOMAIN,
       sameSite: 'none',
     });
@@ -19,7 +19,7 @@ export const setCookies = (response: NextResponse) => ({
       httpOnly: true, // Cookie chỉ có thể được truy cập từ server
       secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
       maxAge: 60 * 60 * 24 * 15, // 15 ngày)
-      path: config.API_PATH,
+      path: '/',
       domain: config.API_DOMAIN,
       sameSite: 'none',
     });
