@@ -6,10 +6,10 @@ import UserCircle from '@/components/icons/User-circle';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PropsWithChildren } from 'react';
-import SetCurUserProfileSignal from '../../partials/SetCurUserProfileSignal';
 import { useAuth } from '@/store/authSignal';
+import SetCurUserProfileSignal from '../../partials/SetCurUserProfileSignal';
 
-const layout = ({ children }: PropsWithChildren) => {
+const Layout = ({ children }: PropsWithChildren) => {
   const friended = `/me/friended`; // Đường dẫn đến trang profile
   const followers = `/me/followers`; // Đường dẫn đến trang personal
   const followings = `/me/followings`; // Đường dẫn đến trang personal
@@ -86,4 +86,4 @@ const layout = ({ children }: PropsWithChildren) => {
     </div>
   );
 };
-export default layout;
+export default Layout;

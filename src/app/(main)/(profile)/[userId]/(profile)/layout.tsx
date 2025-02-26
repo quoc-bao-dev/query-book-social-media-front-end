@@ -18,8 +18,6 @@ type PageProps = {
 const Layout = async ({ params, children }: PageProps) => {
   const { userId } = await params;
 
-  console.log(userId);
-
   const user = (
     await httpClient.get<HttpResponse<UserProfileResponse>>(
       `${config.BASE_URL}/users/profile/${userId}`,

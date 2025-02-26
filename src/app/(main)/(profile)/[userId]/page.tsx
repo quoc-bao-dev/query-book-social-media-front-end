@@ -52,14 +52,14 @@ const Page = async ({ params }: PageProps) => {
               Giới thiệu
             </span>
           </div>
-          <div className='px-4 block mt-2'>
-            <span className='text-sm text-neutral-900'>
+          <div className='px-4 block text-center mt-2 md:w-[276px]'>
+            <span className='block text-sm text-neutral-900 break-word'>
               {user?.bio || (
                 <span className='flex justify-center items-center text-neutral-400 italic opacity-50'>
                   chưa có phần giới thiệu
                 </span>
               )}
-            </span>{' '}
+            </span>
           </div>
           <div className='flex items-center mt-4 px-4 space-x-3 group relative'>
             <MapPin />

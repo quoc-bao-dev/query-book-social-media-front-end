@@ -1,5 +1,6 @@
 'use client';
 
+import Avatar from '@/components/common/Avatar';
 import { sCurUserProfileSignal } from '../../../signal/curUserProfileSignal';
 import Image from 'next/image';
 
@@ -19,21 +20,26 @@ const Page = () => {
         >
           {/* Avatar */}
           <div className='w-16 h-16 rounded-full overflow-hidden border border-gray-300'>
-            <Image
-              src={friend?.avatarUrl || '/images/git.png'}
-              alt={`Avatar of ${friend.fullName}`}
-              width={64}
-              height={64}
+            <Avatar
+              src={`https://avatar.iran.liara.run/public?name=${encodeURIComponent(
+                friend?.fullName || 'User',
+              )}`}
               className='w-full h-full object-cover'
             />
           </div>
 
           {/* Thông tin bạn bè */}
-          <div className='mt-3 text-center w-full'>
-            <p className='text-gray-900 font-medium truncate'>
+          <div className='mt-3 w-full flex flex-col items-center text-center gap-2'>
+            <p className='text-gray-900 font-medium text-sm truncate'>
               {friend.fullName}
             </p>
-            <p className='text-gray-500 text-sm truncate'>{friend.handle}</p>
+            <p className='text-gray-500 text-xs truncate'>{friend.handle}</p>
+            <button
+              className='bg-primary-100/50 text-neutral-900 px-5 py-2 rounded-full text-xs font-semibold transition 
+                     hover:bg-primary-200 hover:text-primary-900-800'
+            >
+              Xem trang cá nhân
+            </button>
           </div>
         </div>
       ))}
