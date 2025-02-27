@@ -33,7 +33,6 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     const httpError = error as HttpError;
-    console.log('[error]', httpError);
 
     if (
       httpError.status === 400 &&
@@ -41,6 +40,8 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json(httpError, { status: httpError.status });
     }
+
+    console.log('[error]', httpError);
 
     if (error)
       return NextResponse.json({ message: 'Login failed' }, { status: 500 });
