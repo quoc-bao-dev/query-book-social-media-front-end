@@ -54,6 +54,12 @@ function FormLogin() {
       const status = response.status;
 
       if (status === 200) {
+        const { accessToken, refreshToken } = response.data;
+
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        console.log('[accessToken]', accessToken);
+        console.log('[accessToken]', response);
         router.push('/');
       }
     } catch (error) {

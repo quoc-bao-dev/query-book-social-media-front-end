@@ -5,60 +5,62 @@ import { setCookies } from '@/utils/cookies';
 import { jwtDecode } from 'jwt-decode';
 import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
-    const { otp } = await request.json();
+  const { otp } = await request.json();
 
-    const cookies = request.headers.get('cookie');
+  const cookies = request.headers.get('cookie');
 
-    if (!cookies) {
-        return NextResponse.json(
-            { message: 'Active token not found' },
-            { status: 400 },
-        );
-    }
-    const cookiesObj = Object.fromEntries(
-        cookies.split(';').map((cookie) => {
-            const [key, value] = cookie.trim().split('=');
-            return [key, value];
-        }),
+  if (!cookies) {
+    return NextResponse.json(
+      { message: 'Active token not found' },
+      { status: 400 },
+    );
+  }
+  const cookiesObj = Object.fromEntries(
+    cookies.split(';').map((cookie) => {
+      const [key, value] = cookie.trim().split('=');
+      return [key, value];
+    }),
+  );
+
+  const activeToken = cookiesObj['activeTokenNext'];
+
+  if (!activeToken) {
+    return NextResponse.json(
+      { message: 'Active token not found' },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const res = await httpClient.post(
+      `${config.BASE_URL}/auth/register/verify-otp`,
+      {
+        activeToken,
+        otp,
+      },
     );
 
-    const activeToken = cookiesObj['activeTokenNext'];
+    const { accessToken, refreshToken } = res.data;
 
-    if (!activeToken) {
-        return NextResponse.json(
-            { message: 'Active token not found' },
-            { status: 400 },
-        );
-    }
+    const { userId } = jwtDecode(accessToken) as { userId: string };
 
-    try {
-        const res = await httpClient.post(
-            `${config.BASE_URL}/auth/register/verify-otp`,
-            {
-                activeToken,
-                otp,
-            },
-        );
+    const response = NextResponse.json({
+      message: 'Active account success',
+      userId,
+      accessToken,
+      refreshToken,
+    });
 
-        const { accessToken, refreshToken } = res.data;
+    setCookies(response).accessToken(accessToken);
+    setCookies(response).accessTokenNext(accessToken);
+    setCookies(response).refreshToken(refreshToken);
+    setCookies(response).refreshTokenNext(refreshToken);
 
-        const { userId } = jwtDecode(accessToken) as { userId: string };
+    return response;
+  } catch (error) {
+    const { message }: { message: string } = error as HttpError;
+    console.log(error);
 
-        const response = NextResponse.json({
-            message: 'Active account success',
-            userId,
-        });
-
-        setCookies(response).accessToken(accessToken);
-        setCookies(response).accessTokenNext(accessToken);
-        setCookies(response).refreshToken(refreshToken);
-        setCookies(response).refreshTokenNext(refreshToken);
-
-        return response;
-    } catch (error) {
-        const { message }: { message: string } = error as HttpError;
-        console.log(error);
-
-        return NextResponse.json({ message }, { status: 400 });
-    }
+    return NextResponse.json({ message }, { status: 400 });
+  }
 }
