@@ -7,7 +7,7 @@ export const setCookies = (response: NextResponse) => ({
     response.cookies.set('accessToken', accessToken, {
       httpOnly: true, // Cookie chỉ có thể được truy cập từ server
       secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi trường production
-      maxAge: 60 * 10, // 10 phut)
+      maxAge: 60 * 10,
       path: '/',
       domain: config.API_DOMAIN,
       sameSite: 'none',

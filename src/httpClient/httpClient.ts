@@ -16,6 +16,7 @@ const httpClient: HttpClient = {
         ...headers,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -37,6 +38,7 @@ const httpClient: HttpClient = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -58,6 +60,7 @@ const httpClient: HttpClient = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -74,6 +77,7 @@ const httpClient: HttpClient = {
         ...headers,
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
     });
 
     if (!response.ok) {
