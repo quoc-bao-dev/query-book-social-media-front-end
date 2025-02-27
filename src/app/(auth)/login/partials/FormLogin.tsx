@@ -87,14 +87,6 @@ function FormLogin() {
           )}
         </div>
         <div className='py-2'>
-          {/* <p
-            className='my-2 text-right cursor-pointer'
-            onClick={() =>
-              sModalConfirmResetPass.set((n) => (n.value.isOpen = true))
-            }
-          >
-            Forgot password?
-          </p> */}
           <Link href='/forgot-password'>
             <p className='my-2 text-right cursor-pointer'>Forgot password?</p>
           </Link>
@@ -121,8 +113,6 @@ function FormLogin() {
             </Button>
           </div>
         )}
-        {isSubmitting && <p>Loading...</p>}
-
         <div className='text-center pt-4'>
           <Button
             disabled={isSubmitting || isShowActive}
