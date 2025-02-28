@@ -1,7 +1,6 @@
-import { z } from 'zod'
+import { z } from 'zod';
 export const CreateFeed = z.object({
-    media: z.object({})
-})
+  media: z.object({}),
+});
 
-
-export type CreateFeedType = z.infer<typeof CreateFeed> 
+export type CreateFeedType = z.infer<typeof CreateFeed>;

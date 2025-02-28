@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
 import {
   AvatarFallback,
   AvatarImage,
   Avatar as AvatarUI,
-} from "@/components/ui/avatar";
-import { sAuth } from "@/store/authSignal";
+} from '@/components/ui/avatar';
+import { sAuth } from '@/store/authSignal';
 
 const Avatar = () => {
   const user = sAuth.use();
   const name =
     user.user?.firstName
-      ?.split(" ")
+      ?.split(' ')
       .map((name) => name[0])
-      .join("") || "";
+      .join('') || '';
   return (
     <div>
       <AvatarUI>

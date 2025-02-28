@@ -17,85 +17,80 @@ import SearchHeader from './SearchHeader';
 export const sNotification = signify<{ count: number }>({ count: 0 });
 
 export const useNotification = () => ({
-    setNotifyCount: (count: number) =>
-        sNotification.set((n) => (n.value.count = count)),
+  setNotifyCount: (count: number) =>
+    sNotification.set((n) => (n.value.count = count)),
 });
 
 const Header = () => {
-    const { open: openNotifyDrawer } = useNotifyDrawer();
-    const { open: openUserDrawer } = useUserDrawer();
+  const { open: openNotifyDrawer } = useNotifyDrawer();
+  const { open: openUserDrawer } = useUserDrawer();
 
-    return (
-        <>
-            <header className="flex items-center bg-card border-b border-gray-500/40 fixed top-0 left-0 w-full z-50 h-[var(--header-height)]">
-                <div className="w-full mx-auto px-4 flex justify-between items-center relative">
-                    {/* logo & search */}
-                    <div className="flex gap-6 items-center">
-                        <Link href="/">
-                            <Image
-                                src={'/images/logo_QBook.png'}
-                                alt="logo-qbook"
-                                className="w-[120px]"
-                                width={200}
-                                height={0}
-                            />
-                        </Link>
-                        <SearchHeader />
-                    </div>
-                    {/* logo & search */}
+  return (
+    <>
+      <header className='flex items-center bg-card border-b border-gray-500/40 fixed top-0 left-0 w-full z-50 h-[var(--header-height)]'>
+        <div className='w-full mx-auto px-4 flex justify-between items-center relative'>
+          {/* logo & search */}
+          <div className='flex gap-6 items-center'>
+            <Link href='/'>
+              <Image
+                src={'/images/logo_QBook.png'}
+                alt='logo-qbook'
+                className='w-[120px]'
+                width={200}
+                height={0}
+              />
+            </Link>
+            <SearchHeader />
+          </div>
+          {/* logo & search */}
 
-                    {/* Nav */}
+          {/* Nav */}
 
-                    <div className="absolute left-[50%] translate-x-[-50%] hidden lg:block">
-                        <NavMenu />
-                    </div>
-                    {/* Nav */}
+          <div className='absolute left-[50%] translate-x-[-50%] hidden lg:block'>
+            <NavMenu />
+          </div>
+          {/* Nav */}
 
-                    {/* action buttons */}
-                    <div className="flex gap-6 items-center justify-center z-50">
-                        <div className="hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200">
-                            <Cog6Tooth className="size-6 text-primary-500" />
-                        </div>
+          {/* action buttons */}
+          <div className='flex gap-6 items-center justify-center z-50'>
+            <div className='hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200'>
+              <Cog6Tooth className='size-6 text-primary-500' />
+            </div>
 
-                        <div className="hidden md:block z-50">
-                            <LocaleSwitcher />
-                        </div>
-                        <div className="hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200">
-                            <ChatBubbleOvalLeftEllipsis className="size-6 text-primary-500" />
-                        </div>
+            <div className='hidden md:block z-50'>
+              <LocaleSwitcher />
+            </div>
+            <div className='hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200'>
+              <ChatBubbleOvalLeftEllipsis className='size-6 text-primary-500' />
+            </div>
 
-                        <div
-                            className="relative hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200"
-                            onClick={openNotifyDrawer}
-                        >
-                            <Bell className="size-6 text-primary-500" />
-                            <div className="absolute top-0 right-0 size-5 text-white font-medium text-xs flex bg-error-500 rounded-full">
-                                {
-                                    <sNotification.HardWrap>
-                                        {({ count }) => (
-                                            <p className="m-auto">{count}</p>
-                                        )}
-                                    </sNotification.HardWrap>
-                                }
-                            </div>
-                        </div>
+            <div
+              className='relative hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200'
+              onClick={openNotifyDrawer}
+            >
+              <Bell className='size-6 text-primary-500' />
+              <div className='absolute top-0 right-0 size-5 text-white font-medium text-xs flex bg-error-500 rounded-full'>
+                {
+                  <sNotification.HardWrap>
+                    {({ count }) => <p className='m-auto'>{count}</p>}
+                  </sNotification.HardWrap>
+                }
+              </div>
+            </div>
 
-                        <div
-                            className="hidden lg:block"
-                            onClick={openUserDrawer}
-                        >
-                            <Avatar />
-                        </div>
+            <div className='hidden lg:block' onClick={openUserDrawer}>
+              <Avatar />
+            </div>
 
-                        <div className="block md:hidden p-2 rounded-full hover:bg-gray-200 transition-all duration-200">
-                            <Bar3 className="size-6 text-primary-500" />
-                        </div>
-                    </div>
-                    {/* action buttons */}
-                </div>
-            </header>
-        </>
-    );
+            <div className='block md:hidden p-2 rounded-full hover:bg-gray-200 transition-all duration-200'>
+              <Bar3 className='size-6 text-primary-500' />
+            </div>
+          </div>
+          {/* action buttons */}
+        </div>
+      </header>
+    </>
+  );
 };
 
 export default Header;

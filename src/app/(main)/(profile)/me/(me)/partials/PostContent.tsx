@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/store/authSignal";
-import PostsOfUser from "../../../[userId]/partials/PostsOfUser";
+import { useAuth } from '@/store/authSignal';
+import PostsOfUser from '../../../[userId]/partials/PostsOfUser';
 
 const PostContent = () => {
   const { user } = useAuth();
@@ -9,7 +9,7 @@ const PostContent = () => {
     return null;
   }
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       <PostsOfUser userId={user.id} />
     </div>
   );

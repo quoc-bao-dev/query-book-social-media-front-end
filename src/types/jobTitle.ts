@@ -1,5 +1,5 @@
 export type JobTitleResponse = {
-    id: string;
-    title: string;
-    description: string;
+  id: string;
+  title: string;
+  description: string;
 };

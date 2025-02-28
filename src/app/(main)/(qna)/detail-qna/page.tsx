@@ -1,10 +1,10 @@
-import React from "react";
-import MainContentDetailQnA from "./partials/MainContentDetailQnA";
+import React from 'react';
+import MainContentDetailQnA from './partials/MainContentDetailQnA';
 
 export const metadata = {
-  title: "Detail Q&A Page",
-  description: "Frequently asked questions about our products and services.",
-  keywords: ["questions", "faq", "help"],
+  title: 'Detail Q&A Page',
+  description: 'Frequently asked questions about our products and services.',
+  keywords: ['questions', 'faq', 'help'],
 };
 const page = () => {
   return <MainContentDetailQnA />;
