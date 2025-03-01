@@ -21,6 +21,8 @@ export const uploadImage = async (file: File) => {
           'Content-Type': 'multipart/form-data',
           'x-api-key': config.IMAGE_API_KEY,
         },
+
+        withCredentials: true,
       },
     );
 
@@ -53,6 +55,7 @@ export const uploadImages = async (files: File[]) => {
           'Content-Type': 'multipart/form-data',
           'x-api-key': config.IMAGE_API_KEY,
         },
+        withCredentials: true,
       },
     );
 
