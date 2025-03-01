@@ -2,7 +2,6 @@ import { config } from '@/config';
 import httpClient from '@/httpClient/httpClient';
 import { HttpError } from '@/types/common';
 import { setCookies } from '@/utils/cookies';
-import { jwtDecode } from 'jwt-decode';
 import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   const { otp } = await request.json();
@@ -41,17 +40,15 @@ export async function POST(request: Request) {
     );
 
     const { accessToken, refreshToken } = res.data;
-
-    const { userId } = jwtDecode(accessToken) as { userId: string };
+    console.log('[accessToken]', accessToken);
 
     const response = NextResponse.json({
       message: 'Active account success',
-      userId,
+      accessToken,
+      refreshToken,
     });
 
-    setCookies(response).accessToken(accessToken);
     setCookies(response).accessTokenNext(accessToken);
-    setCookies(response).refreshToken(refreshToken);
     setCookies(response).refreshTokenNext(refreshToken);
 
     return response;

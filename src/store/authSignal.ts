@@ -1,3 +1,4 @@
+import { tokenManager } from '@/httpClient';
 import { UserProfileResponse } from '@/types/user';
 import { signify } from 'react-signify';
 
@@ -21,6 +22,8 @@ export const authActions = {
     sAuth.set({ isLogin: true, user });
   },
   logout: () => {
+    tokenManager.removeAccessToken();
+    tokenManager.removeRefreshToken();
     sAuth.set({ isLogin: false, user: null });
   },
 };

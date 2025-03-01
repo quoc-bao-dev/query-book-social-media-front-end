@@ -1,4 +1,4 @@
-import AppProvider from '@/components/AppProvider';
+import AppProvider from '@/provider/AppProvider';
 import ClientOnly from '@/components/ClientOnly';
 import { ModeToggle } from '@/components/ModeToggle';
 import type { Metadata } from 'next';

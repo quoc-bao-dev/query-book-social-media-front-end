@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+ 
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowLeftIcon } from 'lucide-react';

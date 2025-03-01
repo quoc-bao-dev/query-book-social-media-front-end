@@ -1,12 +1,11 @@
 'use client';
 
-import { sSignUp } from '@/app/(auth)/welcome/signal/signupSignal';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp';
-import axiosClient from '@/httpClient';
+import axiosClient, { tokenManager } from '@/httpClient';
 import axios from 'axios';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { useRouter } from 'next/navigation';
@@ -29,10 +28,11 @@ const FormActiveAccount = () => {
         { otp: data },
         { baseURL: '' },
       );
+      const { accessToken, refreshToken } = res.data;
+      console.log('[accessToken]', accessToken);
 
-      const { userId } = res.data;
-
-      sSignUp.set(userId);
+      tokenManager.setAccessToken(accessToken);
+      tokenManager.setRefreshToken(refreshToken);
 
       setMessage('');
 

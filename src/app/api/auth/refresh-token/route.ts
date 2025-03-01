@@ -1,5 +1,4 @@
 import { config } from '@/config';
-import { setCookies } from '@/utils/cookies';
 import axios from 'axios';
 import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
@@ -32,22 +31,11 @@ export async function POST(request: Request) {
       refreshToken,
     });
 
+    const accessToken = res.data.data.accessToken;
     const response = NextResponse.json({
       message: 'Refresh token success',
+      accessToken,
     });
-
-    // TODO: check samesite here
-    // response.cookies.set('accessToken', res.data.data.accessToken, {
-    //     httpOnly: true, // Cookie chỉ có thể được truy cập từ server
-    //     secure: process.env.NODE_ENV === 'production', // Chỉ set cookie với HTTPS trong môi truong production
-    //     maxAge: 60 * 10, // 10 phut)
-    //     path: config.API_PATH,
-    //     domain: config.API_DOMAIN,
-    //     // sameSite: 'none',
-    // });
-
-    const accessToken = res.data.data.accessToken;
-    setCookies(response).accessToken(accessToken);
 
     return response;
   } catch (error) {

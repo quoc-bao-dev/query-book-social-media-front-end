@@ -5,6 +5,7 @@ import { setCookies } from './utils/cookies';
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get('accessTokenNext')?.value;
+  console.log('[accessToken middleware]', accessToken);
 
   if (!accessToken) {
     const refreshToken = request.cookies.get('refreshTokenNext')?.value;
@@ -19,6 +20,8 @@ export async function middleware(request: NextRequest) {
         },
       );
 
+      console.log('[tokenResponse]', tokenResponse);
+
       if (!tokenResponse) {
         throw new Error('Failed to refresh token');
       }
@@ -29,10 +32,9 @@ export async function middleware(request: NextRequest) {
 
       const response = NextResponse.next();
 
-      setCookies(response).accessToken(accessToken);
       setCookies(response).accessTokenNext(accessToken);
-      //TODO: call api to get user info
-      //TODO: return token to client
+      response.headers.set('x-new-access-token', accessToken);
+
       return response;
     } catch (error) {
       console.log('[error]: refresh token in middleware ');

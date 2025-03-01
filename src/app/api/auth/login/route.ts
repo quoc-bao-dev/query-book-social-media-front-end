@@ -15,14 +15,15 @@ export async function POST(request: Request) {
 
     const { accessToken, refreshToken } = await res.data;
 
-    const response = NextResponse.json({ message: 'Login success' });
+    const response = NextResponse.json({
+      message: 'Login success',
+      accessToken,
+      refreshToken,
+    });
 
-    // Set cookie
-
-    setCookies(response).accessToken(accessToken);
     setCookies(response).accessTokenNext(accessToken);
-    setCookies(response).refreshToken(refreshToken);
     setCookies(response).refreshTokenNext(refreshToken);
+
     return response;
   } catch (error) {
     const httpError = error as HttpError;
