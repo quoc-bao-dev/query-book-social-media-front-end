@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       'loremflickr.com',
       'avatars.githubusercontent.com',
       'query-book-social-media-image-server.onrender.com',
+      'image.query-book.quocbaoart.com'
     ], // Add your local development domain
   },
   typescript: {

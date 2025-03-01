@@ -14,7 +14,7 @@ const Login = () => {
     <>
       <div className='min-h-screen h-screen'>
         <div className='grid grid-cols-3 h-full'>
-          <div className='col-span-1 h-full hidden md:flex bg-gray-100  justify-center items-center'>
+          <div className='col-span-1 min-h-screen h-full hidden md:flex bg-gray-100  justify-center items-center'>
             <div className='py-[42px]'>
               <div className='text-center py-9'>
                 <h1 className='text-3xl font-bold text-neutral-950'>
@@ -24,14 +24,13 @@ const Login = () => {
                   More effectively with optimized workflows.
                 </h5>
               </div>
-
-              <div className='flex justify-center items-center'>
+              <div className='flex justify-center items-center px-2'>
                 <Image
-                  src={'/images/login.png'}
+                  src={'/images/logo_QBook.png'}
                   alt=''
-                  className=''
+                  className='w-full h-auto'
                   width={3000}
-                  height={3000}
+                  height={0}
                 />
               </div>
 
@@ -43,7 +42,7 @@ const Login = () => {
             </div>
           </div>
 
-          <div className='col-span-3 md:col-span-2 px-4 md:px-0 h-full bg-card flex justify-center items-center'>
+          <div className='col-span-3 min-h-screen md:col-span-2 px-4 md:px-0 h-full bg-card flex justify-center items-center'>
             <div className='w-[450px]'>
               <FormLogin />
             </div>
