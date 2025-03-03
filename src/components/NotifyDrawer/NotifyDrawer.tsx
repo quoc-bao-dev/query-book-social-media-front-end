@@ -108,7 +108,9 @@ const NotifyDrawer = () => {
       });
     }
     return () => {
-      socket?.disconnect();
+      socket?.off('receive_friend_request');
+      socket?.off('accept_friend_request');
+      socket?.off('receive_follow');
       sNotifyDrawer.reset();
     };
   }, [socket]);
