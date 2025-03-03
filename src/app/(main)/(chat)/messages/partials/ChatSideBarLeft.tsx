@@ -71,13 +71,6 @@ const ChatSideBarLeft = () => {
       };
     });
 
-  const selectRoomChat = (room: RoomRow) => () => {
-    setCurUser(room.member);
-    setCurMembers(room.members);
-    setCurRoomId(room.id);
-    setCurMemberInfo(room.members);
-  };
-
   const getRoomChat = async (friendId: string, friendName: string) => {
     const roomChat = await axiosClient
       .get(`/room-chat/user/${user?.id}/friend/${friendId}`, {
@@ -106,7 +99,6 @@ const ChatSideBarLeft = () => {
     return () => {
       socket?.off('receive_message');
       socket?.off('seen_message');
-      socket?.disconnect();
     };
   }, [socket]);
   useEffect(() => {

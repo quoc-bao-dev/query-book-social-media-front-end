@@ -20,13 +20,13 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   useEffect(() => {
     if (!user) return;
-    const socketInstance = io(config.MESSAGE_SOCKET_URL, {
+    const socketMessage = io(config.MESSAGE_SOCKET_URL, {
       query: {
         userId: user.id,
       },
     });
-    socketInstance.on('connect', () => {
-      setSocket(socketInstance);
+    socketMessage.on('connect', () => {
+      setSocket(socketMessage);
     });
 
     const socketServer = io(config.SOCKET_URL, {
@@ -41,7 +41,8 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     return () => {
-      socketInstance.disconnect();
+      socketMessage.disconnect();
+      socketServer.disconnect();
     };
   }, [user]);
 

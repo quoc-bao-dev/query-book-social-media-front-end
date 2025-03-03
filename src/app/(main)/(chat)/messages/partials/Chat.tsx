@@ -27,9 +27,6 @@ const Chat = () => {
   console.log('[curRoomId]', curRoomId);
 
   const handleTyping = (data: { groupId: string; senderId: string }) => {
-    console.log('[data.groupId]', data.groupId);
-    console.log('[curRoomId]', curRoomId);
-
     if (data.groupId !== curRoomId || data.senderId === user?.id) return;
     setIsTyping(true);
     if (timerRef.current) {
