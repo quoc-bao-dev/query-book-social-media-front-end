@@ -18,7 +18,7 @@ const SignUp = () => {
               <RegisterFrom />
             </div>
           </div>
-          <div className='col-span-1 h-full bg-gray-100 hidden md:flex justify-center items-center'>
+          <div className='col-span-1 h-full min-h-screen bg-gray-100 hidden md:flex justify-center items-center'>
             <div className='py-[42px]'>
               <div className='text-center py-8'>
                 <h1 className='text-3xl font-bold text-neutral-950'>
@@ -30,13 +30,13 @@ const SignUp = () => {
                 </h5>
               </div>
 
-              <div className='flex justify-center items-center'>
+              <div className='flex justify-center items-center px-2'>
                 <Image
-                  src={'/images/login.png'}
+                  src={'/images/logo_QBook.png'}
                   alt=''
-                  className=''
+                  className='w-full h-auto'
                   width={3000}
-                  height={3000}
+                  height={0}
                 />
               </div>
 

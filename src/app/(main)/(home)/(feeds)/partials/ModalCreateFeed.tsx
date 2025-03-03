@@ -1,16 +1,17 @@
 'use client';
+import Avatar from '@/components/common/Avatar';
 import Modal from '@/components/common/Modal';
 import MediaIcon from '@/components/icons/MediaIcon';
 import axiosClient from '@/httpClient';
 import { useAuth } from '@/store/authSignal';
 import { uploadImage } from '@/utils/uploadUtils';
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { DeleteIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { signify } from 'react-signify';
 import { CreateFeed } from '../schema/CreateFeedSchema';
-
+import DeleteIcon from '@/components/icons/DeleteIcon';
+import { Button } from '@/components/common/Button';
+import LoadingIcon from '@/components/icons/LoadingIcon';
 type CreateFeed = {
   isShow: boolean;
 };
@@ -32,6 +33,7 @@ const ModalCreateFeed = () => {
   const { close } = useModalCreateFeed();
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -46,6 +48,7 @@ const ModalCreateFeed = () => {
     }
     const file = files[0];
 
+    setIsLoading(true);
     const media = await uploadImage(file);
     const content = 'no content';
     //fix type
@@ -60,14 +63,10 @@ const ModalCreateFeed = () => {
     };
 
     // fecth data
-    try {
-      const response = await axiosClient.post(`/stories`, payload);
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    }
 
-    //clear state
+    await //clear state
+    setIsLoading(false);
+    close();
     setFiles([]);
   };
 
@@ -80,13 +79,11 @@ const ModalCreateFeed = () => {
           </div>
           <hr />
           <div className='flex items-center gap-3 mt-5 mx-auto px-5'>
-            <Avatar className='rounded-[50%] w-[50px] h-[50px]  object-cover bg-slate-300'>
-              <AvatarImage
-                src={`${user?.avatarUrl}`}
-                className='w-full h-full rounded-[50%]'
-              />
-              <AvatarFallback>{user?.fullName}</AvatarFallback>
-            </Avatar>
+            <Avatar
+              src={user?.avatarUrl}
+              fallBack={user?.fullName}
+              className='w-[50px] h-[50px] rounded-[50%]'
+            />
 
             <div className=''>
               <p className='font-bold'>{user?.fullName}</p>
@@ -169,12 +166,21 @@ const ModalCreateFeed = () => {
             )} */}
           </div>
 
-          <button
+          <Button
+            disabled={isLoading}
             type='submit'
-            className='w-[476px] bg-primary-500 border-[0.5px] h-[35px] mx-auto rounded-md flex items-center justify-center mt-5 mb-4'
+            className='w-[476px] bg-primary-500 border-[0.5px] h-[35px] text-white rounded-md flex items-center mx-4 justify-center mt-5 mb-4'
           >
-            <div className=' text-center text-white'>Đăng</div>
-          </button>
+            {isLoading ? (
+              <div className='flex items-center'>
+                {/* <Spinner /> */}
+                <LoadingIcon />
+                <span className='ml-2'>Loading...</span>
+              </div>
+            ) : (
+              <p>Tạo</p>
+            )}
+          </Button>
         </form>
         {/* Nút Delete */}
         <div
