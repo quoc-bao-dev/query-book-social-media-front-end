@@ -1,10 +1,10 @@
+import Avatar from '@/components/common/Avatar';
+import { QuestionResponse } from '@/types/question';
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 import ActionBar from '../../../detail-qna/partials/ActionBar';
-import { QuestionResponse } from '@/types/question';
-import Avatar from '@/components/common/Avatar';
 
 const QuestionSection = ({ question }: { question: QuestionResponse }) => {
   const isValidCode = (code: string | undefined) => {
@@ -79,9 +79,9 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
       )}
 
       <div className='flex justify-between items-center'>
-        <ActionBar id={question._id} />
+        <ActionBar id={question._id} countComment={0} />
         {isValidCode(question.code?.code) && (
-          <p className='mt-2 text-info-500 capitalize border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs'>
+          <p className='mt-2 text-info-500 capitalize border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs font-semibold'>
             {question.code.fileType}
           </p>
         )}
