@@ -1,17 +1,20 @@
 'use client';
 import Avatar from '@/components/common/Avatar';
+import { Button } from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
+import DeleteIcon from '@/components/icons/DeleteIcon';
+import LoadingIcon from '@/components/icons/LoadingIcon';
 import MediaIcon from '@/components/icons/MediaIcon';
-import axiosClient from '@/httpClient';
+import { useCreateStoryMutation } from '@/queries/story';
 import { useAuth } from '@/store/authSignal';
+import { CrateStoryPayload } from '@/types/story';
 import { uploadImage } from '@/utils/uploadUtils';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signify } from 'react-signify';
 import { CreateFeed } from '../schema/CreateFeedSchema';
-import DeleteIcon from '@/components/icons/DeleteIcon';
-import { Button } from '@/components/common/Button';
-import LoadingIcon from '@/components/icons/LoadingIcon';
+import { cn } from '@/lib/utils';
+
 type CreateFeed = {
   isShow: boolean;
 };
@@ -34,6 +37,7 @@ const ModalCreateFeed = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { mutateAsync } = useCreateStoryMutation();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -43,30 +47,48 @@ const ModalCreateFeed = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (files.length === 0) {
-      setError('no have image');
-    }
     const file = files[0];
-
+    // Set loading cho người dùng chờ
     setIsLoading(true);
     const media = await uploadImage(file);
     const content = 'no content';
     //fix type
-    const payload = {
+    const payload: CrateStoryPayload = {
       content,
       media: {
         type: 'image',
         sourceType: 'file',
-        fileName: media,
+        fileName: media as string,
       },
       status: 'public',
     };
-
     // fecth data
-
-    await //clear state
+    await mutateAsync(payload);
+    //clear state
     setIsLoading(false);
     close();
+    setFiles([]);
+  };
+
+  useEffect(() => {
+    if (files.length === 0) {
+      setError('Hãy chọn ảnh');
+    }
+
+    if (files.length >= 2) {
+      setError('Bạn chỉ được phép chọn một hình ảnh');
+    }
+  }, [files]);
+
+  // Xóa ảnh theo từng index
+  const closeFile = (indexToRemove: number) => {
+    setFiles((prevFiles) =>
+      // Lọc qua Image nào khác indexToRemove thì giữ lại không thì xóa đi
+      prevFiles.filter((_, index) => index !== indexToRemove),
+    );
+  };
+
+  const closeFileAll = () => {
     setFiles([]);
   };
 
@@ -128,7 +150,7 @@ const ModalCreateFeed = () => {
 
               {/* Render hình ảnh khi thêm từ input */}
               {!files.length && (
-                <div className='flex py-8 gap-8 justify-center items-center'>
+                <div className='text-center py-8 gap-8'>
                   <input
                     onChange={handleFileChange}
                     type='file'
@@ -136,40 +158,71 @@ const ModalCreateFeed = () => {
                     multiple
                     id='uploadFile'
                   />
-                  <div className=''>
+                  <div className='flex justify-center items-center'>
                     <label htmlFor='uploadFile'>
                       <MediaIcon className='size-20 text-primary-500' />
                     </label>
                   </div>
+                  <p>{error}</p>
                 </div>
               )}
 
               <div className='flex justify-center items-center'>
-                {files.map((file, index) => (
-                  <div
-                    className='w-[200px] h-auto flex items-center justify-center'
-                    key={index}
-                  >
-                    <Image
-                      className='w-full object-cover'
-                      src={URL.createObjectURL(file)}
-                      alt=''
-                      width={500}
-                      height={500}
-                    />
-                  </div>
-                ))}
+                <div className=''>
+                  {files.length && files.length >= 2 ? (
+                    <div className='py-8 gap-8 text-center text-error-500'>
+                      <input
+                        onChange={handleFileChange}
+                        type='file'
+                        hidden
+                        multiple
+                        id='uploadFile'
+                      />
+                      <div className='flex justify-center'>
+                        <label htmlFor='uploadFile'>
+                          <MediaIcon className='size-20 text-primary-500' />
+                        </label>
+                      </div>
+                      <p>{error}</p>
+                    </div>
+                  ) : (
+                    files.map((file, index) => (
+                      <div
+                        className='relative w-[200px] h-auto flex justify-center'
+                        key={index}
+                      >
+                        <Image
+                          className='w-full object-cover'
+                          src={URL.createObjectURL(file)}
+                          alt=''
+                          width={500}
+                          height={500}
+                        />
+                        <div
+                          onClick={() => closeFile(index)}
+                          className='bg-gray-100 absolute top-1 right-1 rounded-[50%]'
+                        >
+                          <DeleteIcon className='size-6 text-primary-500' />
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
             {/* {errors.content && (
               <p className='text-error-500'>{errors.content.message}</p>
             )} */}
           </div>
-
           <Button
             disabled={isLoading}
             type='submit'
-            className='w-[476px] bg-primary-500 border-[0.5px] h-[35px] text-white rounded-md flex items-center mx-4 justify-center mt-5 mb-4'
+            className={cn(
+              'w-[476px] bg-primary-500 border-[0.5px] h-[35px] text-white rounded-md flex items-center mx-4 justify-center mt-5 mb-4',
+              {
+                'pointer-events-none': files.length >= 2 || files.length === 0,
+              },
+            )}
           >
             {isLoading ? (
               <div className='flex items-center'>
@@ -184,7 +237,10 @@ const ModalCreateFeed = () => {
         </form>
         {/* Nút Delete */}
         <div
-          onClick={close}
+          onClick={() => {
+            closeFileAll();
+            close();
+          }}
           className='bg-neutral-200 flex items-center justify-center absolute top-1 right-1 w-[30px] h-[30px] rounded-full '
         >
           <DeleteIcon className='size-8' />

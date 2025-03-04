@@ -2,10 +2,14 @@ import Avatar from '@/components/common/Avatar';
 import PlusIcon from '@/components/icons/PlusIcon';
 import { useStoryQuery } from '@/queries/story';
 import { useAuth } from '@/store/authSignal';
-import { useModalCreateFeed } from './ModalCreateFeed';
+import { useEffect, useState } from 'react';
 import { useListImageDetail } from '../signal/listImageDetail';
+import { useModalCreateFeed } from './ModalCreateFeed';
 
 const Feeds = () => {
+  //Tạo State groupStories
+  const [groupedStories, setGroupedStories] = useState({});
+
   const { user } = useAuth();
   const { open } = useModalCreateFeed();
   // const { showModal, setImages, setCurIndex } = useListImageDetail();
@@ -13,8 +17,57 @@ const Feeds = () => {
 
   // Query dữ liệu từ sever
   const { data } = useStoryQuery();
-
+  // Lấy dữ liệu gán vào biến stories
   const stories = data?.data.data;
+
+  // console.log('stories', groupedStories);
+
+  // Tạo groupStories
+  useEffect(() => {
+    if (stories) {
+      let index = 0;
+
+      const result: {
+        userName: string;
+        avatarUrl: string;
+        images: string[];
+      }[] = [];
+
+      const strGroups: { [key: string]: number | undefined } = {};
+
+      stories.forEach((story) => {
+        const userId = story.author.id;
+
+        //
+        const findUserIndex = strGroups[userId];
+
+        console.log('[strGroups]', strGroups[userId]);
+
+        // Nếu strGroup chưa tồn tại thì tạo mảng rỗng
+        if (Number.isNaN((findUserIndex as number) + 1) && !strGroups[userId]) {
+          strGroups[userId] = index;
+          result[index] = {
+            userName: story.author.name,
+            avatarUrl: story.author.avatarUrl,
+            images: [],
+          };
+          index += 1;
+        }
+
+        const userIndex = strGroups[userId] as number;
+
+        const image = story.mediaUrl;
+        // Group lại theo id user
+        console.log('[userIndex]', userIndex, result[userIndex]);
+
+        result[userIndex!].images.push(image);
+      });
+
+      console.log('[result]', result);
+
+      // setGroupedStories(group);
+    }
+  }, [stories]);
 
   const showCreateFeed = () => {
     open();
@@ -62,7 +115,7 @@ const Feeds = () => {
         </div>
       </div>
 
-      {stories?.map((item, index) => (
+      {/* {groupedStories.map((index, item) => (
         <div
           key={index}
           onClick={showDetail(item.mediaUrl)}
@@ -85,7 +138,7 @@ const Feeds = () => {
             <p className='font-semibold text-gray-50'>{item.name}</p>
           </div>
         </div>
-      ))}
+      ))} */}
     </div>
   );
 };

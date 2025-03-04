@@ -1,11 +1,14 @@
 'use client';
 
+import Avatar from '@/components/common/Avatar';
+import { Button } from '@/components/common/Button';
+import Modal from '@/components/common/Modal';
+import DeleteIcon from '@/components/icons/DeleteIcon';
 import EllipsisHorizontalIcon from '@/components/icons/EllipsisHorizontalIcon';
 import FaceIcon from '@/components/icons/FaceIcon';
+import LoadingIcon from '@/components/icons/LoadingIcon';
 import MediaIcon from '@/components/icons/MediaIcon';
 import TagFriendIcon from '@/components/icons/TagFriendIcon';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -23,12 +26,12 @@ import { extractHashtags } from '@/utils/hashtagUtils';
 import { getFirstCharacter } from '@/utils/nameUtilts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import Image from 'next/image';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { signify } from 'react-signify';
 import { createPost, CreatePostSchema } from '../schema/CreatePostSchema';
 import AutoResizeTextarea from './AutoResizeTextarea';
+import CreatePostImage from './CreatePostImage';
 
 type ModalCreatePostSignal = {
   isOpen: boolean;
@@ -44,6 +47,7 @@ const ssOpenFormModal = sModalCreatePost.slice((s) => s.isOpen);
 
 const ModalCreatePost = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -108,9 +112,9 @@ const ModalCreatePost = () => {
 
   const onSubmit = async (data: CreatePostSchema) => {
     const hashTags = extractHashtags(data.content);
-
+    // Set loading cho người dùng chờ
+    setIsLoading(true);
     const mediasRes = await uploadFile();
-
     const medias =
       mediasRes?.files &&
       mediasRes.files.map((media: { filename: string }) => ({
@@ -127,33 +131,35 @@ const ModalCreatePost = () => {
     };
 
     await mutateAsync(payload);
-
+    // set loading
+    setIsLoading(false);
     queryClient.invalidateQueries({ queryKey: ['post', user?.id] });
     sModalCreatePost.set((n) => (n.value.isOpen = false));
     reset();
     setFiles([]);
   };
 
+  const closeAllFiles = () => {
+    setFiles([]);
+  };
+
   return (
-    <Dialog open={isShow} onOpenChange={onModalChange}>
-      <DialogContent className='p-0 w-[500px]'>
+    <Modal isOpen={isShow} onClose={() => onModalChange(false)}>
+      <div className='w-[500px] relative'>
         <form
           className='w-full bg-card rounded-lg'
           onSubmit={handleSubmit(onSubmit)}
         >
-          <DialogTitle>
+          <div>
             <div className='py-4 text-xl'>
               <p className='text-center font-semibold'>Tạo bài viết</p>
             </div>
-          </DialogTitle>
+          </div>
 
           <hr />
 
           <div className='flex items-center gap-3 mt-5 mx-auto px-5'>
-            <Avatar>
-              <AvatarImage src='/images/git.png' />
-              <AvatarFallback>{name}</AvatarFallback>
-            </Avatar>
+            <Avatar src={user?.avatarUrl} fallBack={name} />
             <div className=''>
               <p className='font-bold'>{user?.fullName}</p>
               <div className='pt-2'>
@@ -195,21 +201,10 @@ const ModalCreatePost = () => {
                 )}
               />
 
-              <div className='mt-5'>
-                {files.map((file, index) => (
-                  <div
-                    className='w-[200px] h-auto flex items-center justify-center'
-                    key={index}
-                  >
-                    <Image
-                      className='w-full object-cover'
-                      src={URL.createObjectURL(file)}
-                      alt=''
-                      width={500}
-                      height={500}
-                    />
-                  </div>
-                ))}
+              <div className='mt-5 flex gap-2 justify-center'>
+                <CreatePostImage
+                  lsImage={files.map((file) => URL.createObjectURL(file))}
+                />
               </div>
             </div>
             {errors.content && (
@@ -239,16 +234,35 @@ const ModalCreatePost = () => {
               <EllipsisHorizontalIcon />
             </div>
           </div>
-
-          <button
-            type='submit'
-            className='w-[476px] bg-primary-500 border-[0.5px] h-[35px] mx-auto rounded-md flex items-center justify-center mt-5 mb-4'
-          >
-            <div className=' text-center text-white'>Đăng</div>
-          </button>
+          <div className='flex justify-center py-4'>
+            <Button
+              disabled={isLoading}
+              type='submit'
+              className='w-[476px] bg-primary-500 text-white text-center border-[0.5px] h-[35px] rounded-md'
+            >
+              {isLoading ? (
+                <div className='flex items-center'>
+                  {/* <Spinner /> */}
+                  <LoadingIcon />
+                  <span className='ml-2'>Loading...</span>
+                </div>
+              ) : (
+                <p>Đăng</p>
+              )}
+            </Button>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+
+        <div
+          onClick={() => {
+            closeAllFiles();
+            onModalChange(false);
+          }}
+        >
+          <DeleteIcon className='absolute top-1 right-1 size-6 text-primary-500' />
+        </div>
+      </div>
+    </Modal>
   );
 };
 
