@@ -8,7 +8,14 @@ import { useModalCreateFeed } from './ModalCreateFeed';
 
 const Feeds = () => {
   //Tạo State groupStories
-  const [groupedStories, setGroupedStories] = useState({});
+  const [groupedStories, setGroupedStories] = useState<
+    {
+      userId: string;
+      userName: string;
+      avatarUrl: string;
+      images: string[];
+    }[]
+  >([]);
 
   const { user } = useAuth();
   const { open } = useModalCreateFeed();
@@ -28,6 +35,7 @@ const Feeds = () => {
       let index = 0;
 
       const result: {
+        userId: string;
         userName: string;
         avatarUrl: string;
         images: string[];
@@ -37,16 +45,12 @@ const Feeds = () => {
 
       stories.forEach((story) => {
         const userId = story.author.id;
-
-        //
         const findUserIndex = strGroups[userId];
-
-        console.log('[strGroups]', strGroups[userId]);
-
         // Nếu strGroup chưa tồn tại thì tạo mảng rỗng
         if (Number.isNaN((findUserIndex as number) + 1) && !strGroups[userId]) {
           strGroups[userId] = index;
           result[index] = {
+            userId: story.author.id,
             userName: story.author.name,
             avatarUrl: story.author.avatarUrl,
             images: [],
@@ -57,31 +61,24 @@ const Feeds = () => {
         const userIndex = strGroups[userId] as number;
 
         const image = story.mediaUrl;
-        // Group lại theo id user
-        console.log('[userIndex]', userIndex, result[userIndex]);
-
+        // Result tại vị trí index userIndex thì push với image
         result[userIndex!].images.push(image);
       });
-
-      console.log('[result]', result);
-
-      // setGroupedStories(group);
+      setGroupedStories(result);
     }
   }, [stories]);
+
+  console.log('groupedStories', groupedStories);
 
   const showCreateFeed = () => {
     open();
   };
 
-  const showDetail = (image: string) => () => {
-    setImages([image]);
+  const showDetail = (images: string[]) => () => {
+    setImages(images);
     setCurIndex(0);
     showModal();
   };
-
-  // useEffect(() => {
-  //   setImages(stories?.map((item) => `/images/${item.image}`));
-  // }, [feed, setImages]);
 
   return (
     <div className='w-full flex gap-2 items-center'>
@@ -114,31 +111,32 @@ const Feeds = () => {
           </p>
         </div>
       </div>
-
-      {/* {groupedStories.map((index, item) => (
-        <div
-          key={index}
-          onClick={showDetail(item.mediaUrl)}
-          className='w-[115px] h-[204px] rounded-xl bg-slate-200 relative flex justify-center '
-        >
-          <Avatar
-            src={item.mediaUrl}
-            className='h-full w-full rounded-xl object-cover'
-            fallBack={user?.fullName}
-          />
-
-          <div className=' absolute top-2 left-2 border-[5px] border-primary-500 rounded-[50%]'>
+      {groupedStories
+        .sort((_, b) => (b.userId === user?.id ? 1 : -1))
+        .map((item, index) => (
+          <div
+            key={index}
+            onClick={showDetail(item.images)}
+            className='w-[115px] h-[204px] rounded-xl bg-slate-200 relative flex justify-center '
+          >
             <Avatar
-              src={item.author.avatarUrl}
-              className='w-[40px] h-[40px] rounded-[50%] object-cover'
-              fallBack={user?.fullName}
+              src={item.images[0]}
+              className='h-full w-full rounded-xl object-cover'
+              fallBack={item.userName}
             />
+
+            <div className=' absolute top-2 left-2 border-[4px] border-primary-500 rounded-[50%]'>
+              <Avatar
+                src={item.avatarUrl}
+                className='w-[40px] h-[40px] rounded-[50%] object-cover'
+                fallBack={item.userName}
+              />
+            </div>
+            <div className='absolute bottom-2 left-2'>
+              <p className='font-semibold text-gray-50'>{item.userName}</p>
+            </div>
           </div>
-          <div className='absolute bottom-2 left-2'>
-            <p className='font-semibold text-gray-50'>{item.name}</p>
-          </div>
-        </div>
-      ))} */}
+        ))}
     </div>
   );
 };
