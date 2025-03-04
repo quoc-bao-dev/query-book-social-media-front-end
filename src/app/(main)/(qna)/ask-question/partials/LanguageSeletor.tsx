@@ -83,7 +83,6 @@ const monacoLanguages = [
   { key: 'xml', value: 'xml', display: 'XML' },
   { key: 'yaml', value: 'yaml', display: 'YAML' },
 ];
-
 type LanguageSelectProps = {
   setCurlanguage: React.Dispatch<React.SetStateAction<string>>;
   curLaguage: string | undefined;

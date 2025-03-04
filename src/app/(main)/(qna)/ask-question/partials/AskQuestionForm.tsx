@@ -1,17 +1,19 @@
 'use client';
 
+import { useCreateQuestionMutation } from '@/queries/question';
 import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { QuestionSchema, questionSchema } from '../schema/questionSchema';
-import LanguageSeletor from './LanguageSeletor';
-import { useCreateQuestionMutation } from '@/queries/question';
 import HashTagInput from './HashTagInput';
+import LanguageSeletor from './LanguageSeletor';
+import TopicSelect from './TopicSelect';
+import { Button } from '@/components/common/Button';
 
 export default function AskQuestionForm() {
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
-  const { mutateAsync } = useCreateQuestionMutation();
+  const { mutateAsync, isPending } = useCreateQuestionMutation();
 
   const {
     register,
@@ -44,21 +46,10 @@ export default function AskQuestionForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-      <div>
-        <label className='block text-neutral-900 font-medium mb-2'>Topic</label>
-        <select
-          {...register('topic')}
-          className='w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-green-500'
-          defaultValue='67aec593090fde960dd8f81c'
-        >
-          <option value=''>Select a topic...</option>
-          <option value='67aec593090fde960dd8f81c'>Topic A</option>
-          <option value='78bfc6824311dc87a19e34fd'>Topic B</option>
-          <option value='89dcd7935522ed98b20f45fe'>Topic C</option>
-        </select>
-        {errors.topic && <p className='text-red-500'>{errors.topic.message}</p>}
-      </div>
+      {/* Topic Select Component */}
+      <TopicSelect register={register} error={errors.topic?.message} />
 
+      {/* Title Input */}
       <div>
         <label className='block text-neutral-900 font-medium mb-2'>Title</label>
         <input
@@ -70,6 +61,7 @@ export default function AskQuestionForm() {
         {errors.title && <p className='text-red-500'>{errors.title.message}</p>}
       </div>
 
+      {/* Content Input */}
       <div>
         <label className='block text-neutral-900 font-medium mb-2'>
           Content
@@ -84,6 +76,7 @@ export default function AskQuestionForm() {
         )}
       </div>
 
+      {/* Code Editor */}
       <div>
         <label className='block text-neutral-900 font-medium mb-2'>
           Have you code?
@@ -110,6 +103,7 @@ export default function AskQuestionForm() {
         {errors.code && <p className='text-red-500'>{errors.code.message}</p>}
       </div>
 
+      {/* Hashtag Input */}
       <div>
         <label className='block text-neutral-900 font-medium mb-2'>
           Hashtag
@@ -124,6 +118,7 @@ export default function AskQuestionForm() {
         )}
       </div>
 
+      {/* Upload Image/Video */}
       <div>
         <label className='block text-neutral-900 font-medium mb-2'>
           Upload Image/Video
@@ -136,12 +131,14 @@ export default function AskQuestionForm() {
         </div>
       </div>
 
-      <button
+      {/* Submit Button */}
+      <Button
         type='submit'
+        disabled={isPending}
         className='w-full bg-primary-500 text-accent-foreground p-3 rounded-lg font-semibold hover:bg-primary-200 transition duration-300'
       >
-        Post
-      </button>
+        {isPending ? 'Creating...' : 'Post'}
+      </Button>
     </form>
   );
 }
