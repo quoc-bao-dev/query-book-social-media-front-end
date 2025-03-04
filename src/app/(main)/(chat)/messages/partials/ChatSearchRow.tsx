@@ -10,7 +10,7 @@ const ChatSearchRow = ({ user, onGetRoomChat }: Props) => {
   return (
     <div
       onClick={() => onGetRoomChat(user.id, user.fullName)}
-      className='px-2 py-1  bg-card rounded-lg cursor-pointer hover:bg-gray-200/40 flex gap-2'
+      className='px-4 py-1  bg-card rounded-lg cursor-pointer hover:bg-gray-200/40 flex gap-2'
     >
       <Avatar className='size-[48px] rounded-full overflow-hidden '>
         <AvatarImage

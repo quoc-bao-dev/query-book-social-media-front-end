@@ -7,9 +7,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const getAllQuestions = (limit: number, page: number, search: string) =>
   axiosClient
-    .get<
-      HttpResponseWithPagination<QuestionResponse[]>
-    >(`/questions/?limit=${limit}&page=${page}${search && `&s=${search}`}`)
+    .get<HttpResponseWithPagination<QuestionResponse[]>>(
+      `/questions/?limit=${limit}&page=${page}${search && `&s=${search}`}`,
+    )
     .then((response) => response.data);
 
 export const useQuestionQuery = ({
@@ -31,9 +31,11 @@ const postCreateQuestion = (payload: any) =>
   axiosClient.post('/questions', payload);
 
 export const useCreateQuestionMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: postCreateQuestion,
     onSuccess: () => {
+      // queryClient.invalidateQueries({queryKey:});
       swal.fire({
         title: 'Create question success!',
         text: 'You have been create question!',
