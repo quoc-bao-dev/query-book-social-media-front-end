@@ -45,7 +45,8 @@ const PostsMySave = ({ post }: PostProps) => {
       <div className='flex items-center justify-between mt-3'>
         <div className='flex items-center space-x-2'>
           <Avatar className='w-10 h-10 rounded-full'>
-            <AvatarImage src={post.questionId.userId.avatarUrl} />
+            <AvatarImage src={post.questionId.userId.avatarUrl ?? undefined} />
+
             <AvatarFallback>
               {getFirstCharacter(post.questionId.userId.firstName!)}
             </AvatarFallback>
@@ -71,9 +72,13 @@ const PostsMySave = ({ post }: PostProps) => {
       </div>
 
       {/* Title */}
-      <h2 className='mt-2 text-3xl font-semibold text-neutral-900'>
+      <p className='mt-2 text-3xl font-semibold text-neutral-900'>
         {post.questionId.title}
-      </h2>
+      </p>
+      {/* Content */}
+      <div className='mt-2 text-lg text-neutral-600 whitespace-pre-wrap break-words'>
+        {post.questionId.question}
+      </div>
 
       {/* Hashtags */}
       {post.questionId?.hashtags &&
@@ -99,7 +104,14 @@ const PostsMySave = ({ post }: PostProps) => {
       )}
 
       {/* Actions */}
-      <ActionBar id={post.questionId._id!} />
+      <div className='flex justify-between items-center'>
+        <ActionBar id={post.questionId._id!} />
+        {isValidCode(post.questionId.code?.code) && (
+          <p className='mt-2 text-info-500 capitalize border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs'>
+            {post.questionId.code?.fileType}
+          </p>
+        )}
+      </div>
 
       {/* Reply Section */}
       <div className='mt-4 flex items-center gap-3'>

@@ -32,7 +32,10 @@ const Layout = ({ children }: PropsWithChildren) => {
 
         {/* Sidebar */}
         <div
-          className={`fixed mt-4 top-0 left-0 h-full bg-card z-50 shadow-lg transition-all duration-300 ease-in-out w-64 md:w-auto md:static md:col-span-3 ${
+          className={`bg-card shadow-lg transition-all duration-300 ease-in-out 
+          md:sticky md:w-full md:mt-4 md:h-[calc(100vh-1rem)] md:col-span-3
+          fixed top-0 left-0 h-full w-64 z-50 
+          ${
             isSidebarOpen
               ? 'translate-x-0'
               : '-translate-x-full md:translate-x-0'
@@ -41,7 +44,6 @@ const Layout = ({ children }: PropsWithChildren) => {
           <SidebarQnA />
 
           {/* Button Toggle Sidebar */}
-          {/* Nút mở sidebar - chỉ hiển thị khi sidebar đóng */}
           {!isSidebarOpen && (
             <button
               onClick={() => setIsSidebarOpen(true)}

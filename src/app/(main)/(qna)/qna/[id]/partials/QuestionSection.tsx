@@ -1,11 +1,10 @@
- 
+import Avatar from '@/components/common/Avatar';
+import { QuestionResponse } from '@/types/question';
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 import ActionBar from '../../../detail-qna/partials/ActionBar';
-import { QuestionResponse } from '@/types/question';
-import Avatar from '@/components/common/Avatar';
 
 const QuestionSection = ({ question }: { question: QuestionResponse }) => {
   const isValidCode = (code: string | undefined) => {
@@ -16,6 +15,7 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
     const isOnlyComment = /^(\s*\/\/.*|\s*)$/.test(trimmedCode);
     return trimmedCode.length > 0 && !isOnlyComment;
   };
+
   return (
     <div className='bg-card p-4'>
       <Link
@@ -53,7 +53,9 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
       <h2 className='mt-2 text-3xl font-semibold text-neutral-900'>
         {question.title}
       </h2>
-      <p className='mt-2 text-lg text-neutral-600'>{question.question}</p>
+      <div className='mt-2 text-lg text-neutral-600 whitespace-pre-wrap break-words'>
+        {question.question}
+      </div>
 
       {/* Hashtags */}
       {question?.hashtags.map((item: any) => (
@@ -68,7 +70,7 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
       {/* Code Block */}
       {isValidCode(question.code?.code) && (
         <MonacoEditor
-          className='h-[300px] pt-[10px]'
+          className='h-[350px] pt-[10px]'
           value={question.code.code}
           theme='vs-dark'
           language={question.code.fileType}
@@ -76,7 +78,14 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
         />
       )}
 
-      <ActionBar id={question._id} />
+      <div className='flex justify-between items-center'>
+        <ActionBar id={question._id} countComment={0} />
+        {isValidCode(question.code?.code) && (
+          <p className='mt-2 text-info-500 capitalize border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs font-semibold'>
+            {question.code.fileType}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

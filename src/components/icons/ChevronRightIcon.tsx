@@ -8,7 +8,7 @@ const ChevronRightIcon = ({ className }: { className?: string }) => {
       viewBox='0 0 24 24'
       strokeWidth={1.5}
       stroke='black'
-      className={`size-6 ${className}`}
+      className={`${className}`}
     >
       <path
         strokeLinecap='round'
