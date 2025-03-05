@@ -142,10 +142,11 @@ const ModalCreatePost = () => {
 
   const closeAllFiles = () => {
     setFiles([]);
+    sModalCreatePost.set((n) => (n.value.isOpen = false));
   };
 
   return (
-    <Modal isOpen={isShow} onClose={() => onModalChange(false)}>
+    <Modal isOpen={isShow} onClose={() => closeAllFiles()}>
       <div className='w-[500px] relative'>
         <form
           className='w-full bg-card rounded-lg'
@@ -173,7 +174,7 @@ const ModalCreatePost = () => {
                       defaultValue={field.value}
                     >
                       <SelectTrigger className='w-[180px] h-6'>
-                        <SelectValue placeholder='Select post status' />
+                        <SelectValue placeholder='Public' />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
@@ -202,15 +203,20 @@ const ModalCreatePost = () => {
                 )}
               />
 
+              {/* Báo lỗi cho người dùng */}
+              <div className='text-center'>
+                {errors.content && (
+                  <p className='text-error-500'>{errors.content.message}</p>
+                )}
+              </div>
+
+              {/* Show image */}
               <div className='mt-5 flex gap-2 justify-center'>
                 <CreatePostImage
                   lsImage={files.map((file) => URL.createObjectURL(file))}
                 />
               </div>
             </div>
-            {errors.content && (
-              <p className='text-error-500'>{errors.content.message}</p>
-            )}
           </div>
 
           <div className='w-[476px] border-[0.5px] border-gray-300 h-[50px] mx-auto rounded-md px-2 py-2 grid grid-cols-2 mt-5'>
