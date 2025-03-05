@@ -40,24 +40,22 @@ const CreatePostImage = ({ lsImage }: Props) => {
       <div>
         <div className='relative z-40'>
           {File.map((mediaUrl, index) => (
-            <div className='flex' key={index}>
+            <div className='flex relative w-[200px]' key={index}>
               <Image
                 onClick={showDetail(index)}
                 key={index}
                 src={`${mediaUrl}`}
-                className='rounded-md text-center max-h-[600px] object-contain'
+                className='rounded-md text-center object-contain'
                 alt=''
                 width={1000}
                 height={1000}
               />
 
-              <div className='relative w-[200px] h-auto'>
-                <div
-                  onClick={() => closeFile(index)}
-                  className='absolute top-1 right-1 rounded-[50%] bg-gray-100'
-                >
-                  <DeleteIcon className='size-6 text-primary-500' />
-                </div>
+              <div
+                onClick={() => closeFile(index)}
+                className='absolute top-1 right-1 rounded-[50%] bg-gray-100'
+              >
+                <DeleteIcon className='size-6 text-primary-500' />
               </div>
             </div>
           ))}

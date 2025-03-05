@@ -3,7 +3,7 @@ import PlusIcon from '@/components/icons/PlusIcon';
 import { useStoryQuery } from '@/queries/story';
 import { useAuth } from '@/store/authSignal';
 import { useEffect, useState } from 'react';
-import { useListImageDetail } from '../signal/listImageDetail';
+import { useListImageDetailFeed } from '../signal/listImageDeltaiFeed';
 import { useModalCreateFeed } from './ModalCreateFeed';
 
 const Feeds = () => {
@@ -20,7 +20,7 @@ const Feeds = () => {
   const { user } = useAuth();
   const { open } = useModalCreateFeed();
   // const { showModal, setImages, setCurIndex } = useListImageDetail();
-  const { showModal, setImages, setCurIndex } = useListImageDetail();
+  const { showModal, setImages, setCurIndex } = useListImageDetailFeed();
 
   // Query dữ liệu từ sever
   const { data } = useStoryQuery();
@@ -106,7 +106,7 @@ const Feeds = () => {
               <PlusIcon className='size-6 fill-card' />
             </div>
           </div>
-          <p className='font-semibold text-gray-50 absolute bottom-1 left-[50%] translate-x-[-50%]'>
+          <p className='font-semibold text-gray-200 text-[12px] absolute bottom-1 left-[50%] translate-x-[-50%]'>
             Tạo tin
           </p>
         </div>
@@ -133,7 +133,9 @@ const Feeds = () => {
               />
             </div>
             <div className='absolute bottom-2 left-2'>
-              <p className='font-semibold text-gray-50'>{item.userName}</p>
+              <p className='font-semibold text-gray-200 text-[12px]'>
+                {item.userName}
+              </p>
             </div>
           </div>
         ))}

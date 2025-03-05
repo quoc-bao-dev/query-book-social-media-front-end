@@ -30,7 +30,7 @@ const ImageDetailModal = () => {
   return (
     <Modal isOpen={isShow} onClose={closeModal}>
       <div className='flex z-50'>
-        <div className='bg-card w-[1000px]'>
+        <div className='relative bg-card w-[1000px] rounded-lg'>
           <div className='flex w-full relative justify-center items-center h-[580px] pt-3'>
             <div className='absolute left-5' onClick={prevImage}>
               <ChevronLeftIcon className='size-12 ' />
@@ -39,7 +39,7 @@ const ImageDetailModal = () => {
               <Image
                 src={listImages[curIndex]}
                 alt=''
-                className='w-full h-full object-contain'
+                className='w-full h-full object-contain rounded-md'
                 width={1000}
                 height={1000}
               />
@@ -59,8 +59,8 @@ const ImageDetailModal = () => {
                   key={index}
                   src={image}
                   alt=''
-                  className={cn('w-auto h-full object-cover ', {
-                    'border-4 border-info-500': curIndex === index,
+                  className={cn('w-auto h-full object-cover rounded-sm ', {
+                    'border-[3px] border-primary-500': curIndex === index,
                   })}
                   width={1000}
                   height={1000}
@@ -68,10 +68,12 @@ const ImageDetailModal = () => {
               ))}
             </div>
           </div>
-        </div>
-
-        <div onClick={closeModal} className='w-8 h-8 bg-gray-600'>
-          <DeleteIcon className='size-8' />
+          <div
+            onClick={closeModal}
+            className='absolute top-1 rounded-full right-1 w-8 h-8 bg-gray-300'
+          >
+            <DeleteIcon className='size-8' />
+          </div>
         </div>
       </div>
     </Modal>

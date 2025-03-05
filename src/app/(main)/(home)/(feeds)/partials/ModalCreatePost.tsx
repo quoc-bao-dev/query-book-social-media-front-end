@@ -115,6 +115,7 @@ const ModalCreatePost = () => {
     // Set loading cho người dùng chờ
     setIsLoading(true);
     const mediasRes = await uploadFile();
+
     const medias =
       mediasRes?.files &&
       mediasRes.files.map((media: { filename: string }) => ({
@@ -226,7 +227,7 @@ const ModalCreatePost = () => {
               />
               <div className=''>
                 <label htmlFor='uploadFile'>
-                  <MediaIcon className='size-6 text-primary-500' />
+                  <MediaIcon className='size-6 text-primary-500 hover:text-primary-600' />
                 </label>
               </div>
               <TagFriendIcon />

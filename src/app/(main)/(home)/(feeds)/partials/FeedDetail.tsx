@@ -49,9 +49,6 @@ const FeedDetail = () => {
               <ScrollBar orientation='vertical' />
             </ScrollArea>
           </div>
-          {/* <div className="px-4 py-2">
-            <PostComment postId={} />
-          </div> */}
         </div>
       </div>
     </Modal>

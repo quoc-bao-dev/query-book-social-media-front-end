@@ -160,7 +160,7 @@ const ModalCreateFeed = () => {
                   />
                   <div className='flex justify-center items-center'>
                     <label htmlFor='uploadFile'>
-                      <MediaIcon className='size-20 text-primary-500' />
+                      <MediaIcon className='size-20 text-primary-500 hover:text-primary-600' />
                     </label>
                   </div>
                   <p>{error}</p>
@@ -180,7 +180,7 @@ const ModalCreateFeed = () => {
                       />
                       <div className='flex justify-center'>
                         <label htmlFor='uploadFile'>
-                          <MediaIcon className='size-20 text-primary-500' />
+                          <MediaIcon className='size-20 text-primary-500 hover:text-primary-600' />
                         </label>
                       </div>
                       <p>{error}</p>
