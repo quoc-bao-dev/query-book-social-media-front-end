@@ -26,6 +26,14 @@ interface Post {
   likes: number;
   comments: number;
 }
+const isValidCode = (code: string | undefined) => {
+  if (!code) return false; // Không có dữ liệu
+  const trimmedCode = code.trim();
+
+  // Kiểm tra nếu code chỉ chứa comment hoặc khoảng trắng
+  const isOnlyComment = /^(\s*\/\/.*|\s*)$/.test(trimmedCode);
+  return trimmedCode.length > 0 && !isOnlyComment;
+};
 
 const PostsMyQuestion = ({
   post,
@@ -69,7 +77,9 @@ const PostsMyQuestion = ({
       </p>
 
       {/* Content */}
-      <p className='mt-2 text-lg text-neutral-600'>{post.question}</p>
+      <div className='mt-2 text-lg text-neutral-600 whitespace-pre-wrap break-words'>
+        {post.question}
+      </div>
 
       {/* Hashtags */}
       {post?.hashtags.map((item: any) => (
@@ -104,7 +114,14 @@ const PostsMyQuestion = ({
       )}
 
       {/* Actions */}
-      <ActionBar id={post._id} />
+      <div className='flex justify-between items-center'>
+        <ActionBar id={post._id} />
+        {isValidCode(post.code?.code) && (
+          <p className='mt-2 text-info-500 capitalize border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs'>
+            {post.code?.fileType}
+          </p>
+        )}
+      </div>
 
       {/* Reply Section */}
       <div className='mt-4 flex items-center gap-3'>
