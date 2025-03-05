@@ -62,22 +62,26 @@ const ImageDetailFeedModal = () => {
       <div className='flex z-50'>
         <div className='relative bg-card w-[500px] rounded-lg'>
           <div className='flex w-full relative justify-center items-center h-[580px] pt-3'>
-            <div className='absolute left-5' onClick={prevImage}>
-              <ChevronLeftIcon className='size-12 ' />
-            </div>
-            <div className='h-full w-auto'>
+            {listImages.length > 1 && (
+              <div className='absolute left-5' onClick={prevImage}>
+                <ChevronLeftIcon className='size-12 ' />
+              </div>
+            )}
+            <div className='h-full mt-10 w-auto'>
               <Image
                 src={listImages[curIndex]}
                 alt=''
-                className='w-full h-full object-contain rounded-md'
+                className='w-full h-full object-contain  rounded-md'
                 width={1000}
                 height={1000}
               />
             </div>
 
-            <div className='absolute right-5' onClick={nextImage}>
-              <ChevronRightIcon className='size-12' />
-            </div>
+            {listImages.length > 1 && (
+              <div className='absolute right-5' onClick={nextImage}>
+                <ChevronRightIcon className='size-12' />
+              </div>
+            )}
           </div>
 
           {/* List Images */}
