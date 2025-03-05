@@ -28,6 +28,11 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
   const [hasCode, setHasCode] = useState(false); // State để kiểm tra có code không
+  const [visibleComments, setVisibleComments] = useState(4);
+
+  const handleShowMore = () => {
+    setVisibleComments((prev) => prev + 4); // Hiển thị thêm 4 bình luận
+  };
 
   const handleSave = () => {
     if (code?.trim()) {
@@ -87,8 +92,8 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
 
   return (
     <div className='mt-4'>
-      {data?.map((item) => (
-        <div key={item._id} className='mt-2 pl-6 border-l-2 border-gray-200'>
+      {data?.slice(0, visibleComments).map((item) => (
+        <div key={item._id} className='mt-5 pl-6 border-l-2 border-gray-200'>
           <div className='flex items-center gap-3'>
             <Avatar
               src={item.userId.avatarUrl!}
@@ -105,7 +110,6 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
             </p>
           </div>
 
-          {/* Hiển thị nội dung trả lời */}
           <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
 
           {item.code?.code && (
@@ -126,6 +130,15 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           )}
         </div>
       ))}
+
+      {data && visibleComments < data.length && (
+        <button
+          onClick={handleShowMore}
+          className='mt-2 text-primary-600 hover:underline'
+        >
+          Xem thêm bình luận
+        </button>
+      )}
 
       <div className='mt-4 flex items-center gap-2'>
         <Avatar

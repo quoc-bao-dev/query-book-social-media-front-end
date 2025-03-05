@@ -53,7 +53,7 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
       <h2 className='mt-2 text-3xl font-semibold text-neutral-900'>
         {question.title}
       </h2>
-      <div className='mt-2 text-lg text-neutral-600 whitespace-pre-wrap break-words'>
+      <div className='mt-2 text-xl text-neutral-600 whitespace-pre-wrap break-words'>
         {question.question}
       </div>
 
