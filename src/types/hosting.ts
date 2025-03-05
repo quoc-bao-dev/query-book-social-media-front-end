@@ -1,5 +1,5 @@
 export type Hosting = {
-    userId: string;
-    subDomain: string;
-    url: string;
+  userId: string;
+  subDomain: string;
+  url: string;
 };

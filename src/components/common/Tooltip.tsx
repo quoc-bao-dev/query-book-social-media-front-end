@@ -1,10 +1,10 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren } from 'react';
 import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
   Tooltip as TooltipUI,
-} from "../ui/tooltip";
+} from '../ui/tooltip';
 
 const Tooltip = ({
   children,
@@ -14,7 +14,7 @@ const Tooltip = ({
     <TooltipProvider>
       <TooltipUI>
         <TooltipTrigger>{children}</TooltipTrigger>
-        <TooltipContent className="bg-neutral-900 text-neutral-100">
+        <TooltipContent className='bg-neutral-900 text-neutral-100'>
           {content}
         </TooltipContent>
       </TooltipUI>

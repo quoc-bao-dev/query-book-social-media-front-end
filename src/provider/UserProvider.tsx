@@ -11,7 +11,6 @@ const UserProvider = ({ children }: PropsWithChildren) => {
     (async () => {
       try {
         const user = await axiosClient.get('/users/me');
-
         authActions.login(user.data.data);
       } catch (error) {
         console.log(error);

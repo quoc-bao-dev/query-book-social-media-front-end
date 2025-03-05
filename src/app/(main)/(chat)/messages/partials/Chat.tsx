@@ -1,18 +1,18 @@
 'use client';
 
 import TypingIndicator from '@/components/icons/TypingIndicator';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { cn } from '@/lib/utils';
 import { useMessageSocket } from '@/provider/SocketProvider';
 import { useMessageQuery } from '@/queries/chat';
 import { useAuth } from '@/store/authSignal';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { getFirstCharacter } from '@/utils/nameUtilts';
+import { useEffect, useRef, useState } from 'react';
 import { useChatScroll } from '../hooks/useChatScroll';
 import { sChat } from '../signal/chatSignal';
+import { sChatImageInput } from '../signal/imageInputSignal';
 import MessageLeft from './MessageLeft';
 import MessageRight from './MessageRigth';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { getFirstCharacter } from '@/utils/nameUtilts';
-import { sChatImageInput } from '../signal/imageInputSignal';
-import { cn } from '@/lib/utils';
 
 const Chat = () => {
   const [isTyping, setIsTyping] = useState(false);
@@ -24,12 +24,8 @@ const Chat = () => {
   const { hasImage } = sChatImageInput.use();
 
   const scrollRef = useChatScroll([data, isTyping]);
-  console.log('[curRoomId]', curRoomId);
 
   const handleTyping = (data: { groupId: string; senderId: string }) => {
-    console.log('[data.groupId]', data.groupId);
-    console.log('[curRoomId]', curRoomId);
-
     if (data.groupId !== curRoomId || data.senderId === user?.id) return;
     setIsTyping(true);
     if (timerRef.current) {
@@ -54,7 +50,6 @@ const Chat = () => {
     }
 
     return () => {
-      socket.off('typing');
       socket.off('receive_message');
       socket.off('typing');
     };

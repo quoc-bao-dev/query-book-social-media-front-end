@@ -1,6 +1,5 @@
-import { signify } from "react-signify";
+import { signify } from 'react-signify';
 
 export const sChatImageInput = signify({
-    hasImage: false
-})
-
+  hasImage: false,
+});

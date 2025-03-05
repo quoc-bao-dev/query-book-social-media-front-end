@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { sCurUserProfileSignal } from "../signal/curUserProfileSignal";
+import { useEffect } from 'react';
+import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 
 const SetCurUserProfileSignal = ({ user }: { user: any }) => {
   useEffect(() => {

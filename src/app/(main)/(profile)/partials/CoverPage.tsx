@@ -1,7 +1,11 @@
 'use client';
 
 import Camera from '@/components/icons/Camera';
-import { useSendRequestMutation } from '@/queries/friend';
+import {
+  useRemoveRequestMutation,
+  useSendRequestMutation,
+  useSendRequestsQuery,
+} from '@/queries/friend';
 import { useAuth } from '@/store/authSignal';
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
@@ -16,6 +20,7 @@ import CoverModal from '../me/(me)/partials/CoverModal';
 import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 import AvatarModalUser from './AvatarModalUser';
 import Friended from '../[userId]/partials/Friended';
+import { Button } from '@/components/common/Button';
 
 const CoverPage = () => {
   const { user: userMe } = useAuth();
@@ -27,10 +32,16 @@ const CoverPage = () => {
   const friends = user?.friends || [];
   const displayedFriends = friends.slice(0, maxFriendsToShow);
 
-  const { mutateAsync } = useSendRequestMutation();
+  const { mutateAsync, isPending: isSendRequestPending } =
+    useSendRequestMutation();
+
+  const { mutateAsync: removeRequest, isPending: isRemoveRequestPending } =
+    useRemoveRequestMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCoveModalOpen, setIsCoveModalOpen] = useState(false);
   const [isModalOpenAvtUserId, setIsModalOpenAvtUserId] = useState(false);
+
+  const { data } = useSendRequestsQuery();
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -59,11 +70,18 @@ const CoverPage = () => {
       });
   }, [user, mutateAsync, isLoading]);
 
+  const handleRemoveRequest = () => {
+    console.log(user?.id);
+    if (!user || isRemoveRequestPending) return;
+    removeRequest(user?.id);
+  };
+
   const isMe = user && userMe && user.id === userMe.id;
 
   const targetLink = isMe ? '/me' : `/${user?.id || ''}`;
   const profileLink = isMe ? '/me/profile' : `/${user?.id || ''}/profile`;
   const friendedLink = isMe ? '/me/friended' : `/${user?.id || ''}/friended`;
+  const isSendRequest = data?.some((item) => item.id === user?.id) ?? false;
   const isFriend =
     userMe?.friends?.some((friend) => friend?.id === user?.id) ?? false;
 
@@ -126,8 +144,19 @@ const CoverPage = () => {
                 <div className='flex gap-2'>
                   {user?.id !== userMe?.id && (
                     <>
-                      {!isFriend ? (
-                        <FriendButton onClick={handleSendRequest} />
+                      {isSendRequest ? (
+                        <Button
+                          variant='lighten'
+                          className='h-full'
+                          onClick={handleRemoveRequest}
+                        >
+                          Remove Request
+                        </Button>
+                      ) : !isFriend ? (
+                        <FriendButton
+                          onClick={handleSendRequest}
+                          disabled={isSendRequestPending}
+                        />
                       ) : (
                         <FriendStatusButton />
                       )}

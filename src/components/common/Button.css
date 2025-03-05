@@ -1,30 +1,30 @@
 .ripple-container {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .ripple {
-    position: absolute;
-    border-radius: 50%;
-    transform: scale(0);
-    animation: ripple-animation 0.6s linear;
-    background: rgba(73, 73, 73, 0.2);
-    pointer-events: none;
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  background: rgba(73, 73, 73, 0.2);
+  pointer-events: none;
 }
 
 @keyframes ripple-animation {
-    to {
-        transform: scale(4);
-        opacity: 0;
-    }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
 }
 
 .button-hover {
-    transition: all 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .button-hover:hover {
-    transform: scale(1.05); /* Tăng kích thước nhẹ khi hover */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng */
-    /* filter: brightness(1.1); Tăng độ sáng */
+  transform: scale(1.05); /* Tăng kích thước nhẹ khi hover */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng */
+  /* filter: brightness(1.1); Tăng độ sáng */
 }

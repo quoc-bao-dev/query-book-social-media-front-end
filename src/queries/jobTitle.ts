@@ -4,10 +4,10 @@ import { JobTitleResponse } from '@/types/jobTitle';
 import { useQuery } from '@tanstack/react-query';
 
 const getJobTitle = () =>
-    axiosClient.get<HttpResponse<JobTitleResponse[]>>('/job-titles');
+  axiosClient.get<HttpResponse<JobTitleResponse[]>>('/job-titles');
 
 export const useJobTitleQuery = () =>
-    useQuery({
-        queryKey: ['jobTitles'],
-        queryFn: getJobTitle,
-    });
+  useQuery({
+    queryKey: ['jobTitles'],
+    queryFn: getJobTitle,
+  });

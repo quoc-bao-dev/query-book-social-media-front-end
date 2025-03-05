@@ -134,6 +134,7 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
                 <div className='flex items-center '>
                   {post.likes
                     .sort((a) => (a.id !== user?.id ? 1 : -1))
+                    .slice(0, 3)
                     .map((like, index) => (
                       <Avatar
                         key={like.id}

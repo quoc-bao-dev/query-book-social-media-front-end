@@ -1,5 +1,5 @@
-import { getQuestionById } from "@/services/http/question";
-import QuestionDetails from "./QuestionDetails";
+import { getQuestionById } from '@/services/http/question';
+import QuestionDetails from './QuestionDetails';
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const { id } = params;

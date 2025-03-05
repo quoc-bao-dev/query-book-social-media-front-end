@@ -1,25 +1,17 @@
-"use client";
+'use client';
 
-import {
-  AvatarFallback,
-  AvatarImage,
-  Avatar as AvatarUI,
-} from "@/components/ui/avatar";
-import { sAuth } from "@/store/authSignal";
-
+import { sAuth } from '@/store/authSignal';
+import AvatarUI from '@/components/common/Avatar';
 const Avatar = () => {
   const user = sAuth.use();
   const name =
     user.user?.firstName
-      ?.split(" ")
+      ?.split(' ')
       .map((name) => name[0])
-      .join("") || "";
+      .join('') || '';
   return (
     <div>
-      <AvatarUI>
-        <AvatarImage src={user.user?.avatarUrl} />
-        <AvatarFallback>{name}</AvatarFallback>
-      </AvatarUI>
+      <AvatarUI src={user.user?.avatarUrl} className='' fallBack={name} />
     </div>
   );
 };

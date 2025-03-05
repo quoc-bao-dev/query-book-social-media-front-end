@@ -8,7 +8,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 const getAllQuestions = (limit: number, page: number, search: string) =>
   axiosClient
     .get<HttpResponseWithPagination<QuestionResponse[]>>(
-      `/questions/?limit=${limit}&page=${page}${search && `&s=${search}`}`
+      `/questions/?limit=${limit}&page=${page}${search && `&s=${search}`}`,
     )
     .then((response) => response.data);
 
@@ -27,12 +27,15 @@ export const useQuestionQuery = ({
   });
 };
 
-const postCreateQuestion = (payload: any) => axiosClient.post('/questions', payload);
+const postCreateQuestion = (payload: any) =>
+  axiosClient.post('/questions', payload);
 
 export const useCreateQuestionMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: postCreateQuestion,
     onSuccess: () => {
+      // queryClient.invalidateQueries({queryKey:});
       swal.fire({
         title: 'Create question success!',
         text: 'You have been create question!',
@@ -42,7 +45,9 @@ export const useCreateQuestionMutation = () => {
 };
 
 const getMyQuestion = () =>
-  axiosClient.get<HttpResponse<QuestionResponse[]>>('/questions/my-question').then((response) => response.data.data);
+  axiosClient
+    .get<HttpResponse<QuestionResponse[]>>('/questions/my-question')
+    .then((response) => response.data.data);
 
 export const useGetMyQuestion = () => {
   return useQuery({
@@ -52,7 +57,9 @@ export const useGetMyQuestion = () => {
 };
 
 const getMySaveQuestion = () =>
-  axiosClient.get<HttpResponse<SaveQuestionResponse[]>>('/questions/save/').then((response) => response.data.data);
+  axiosClient
+    .get<HttpResponse<SaveQuestionResponse[]>>('/questions/save/')
+    .then((response) => response.data.data);
 
 export const useGetMySaveQuestionQuery = () => {
   return useQuery({
@@ -62,7 +69,8 @@ export const useGetMySaveQuestionQuery = () => {
 };
 
 // ✅ API lưu bài viết
-const postSaveQuestion = (questionId: string) => axiosClient.post(`/questions/save`, { questionId });
+const postSaveQuestion = (questionId: string) =>
+  axiosClient.post(`/questions/save`, { questionId });
 
 export const useSaveQuestionMutation = () => {
   const queryClient = useQueryClient();
@@ -75,7 +83,8 @@ export const useSaveQuestionMutation = () => {
 };
 
 // ✅ API hủy lưu bài viết
-const postUnsaveQuestion = (questionId: string) => axiosClient.post(`/questions/unsave`, { questionId });
+const postUnsaveQuestion = (questionId: string) =>
+  axiosClient.post(`/questions/unsave`, { questionId });
 
 export const useUnsaveQuestionMutation = () => {
   const queryClient = useQueryClient();

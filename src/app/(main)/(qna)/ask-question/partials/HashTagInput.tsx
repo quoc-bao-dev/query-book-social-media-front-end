@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 type HashTagInputProps = {
   onChange: (data: string[]) => void;
 };
 const HashTagInput = ({ onChange }: HashTagInputProps) => {
   const [hashtags, setHashtags] = useState<string[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && input.trim() !== "") {
+    if (e.key === 'Enter' && input.trim() !== '') {
       e.preventDefault();
       if (!hashtags.includes(input.trim())) {
         setHashtags([...hashtags, input.trim()]);
       }
-      setInput("");
+      setInput('');
     }
   };
 
@@ -26,15 +26,15 @@ const HashTagInput = ({ onChange }: HashTagInputProps) => {
   };
   return (
     <div>
-      <div className="flex flex-wrap gap-2 mb-2">
+      <div className='flex flex-wrap gap-2 mb-2'>
         {hashtags.map((tag) => (
           <span
             key={tag}
-            className="flex items-center px-2 py-1 text-sm font-medium bg-[#4B5563] text-[#F8FAFC] rounded"
+            className='flex items-center px-2 py-1 text-sm font-medium bg-[#4B5563] text-[#F8FAFC] rounded'
           >
             #{tag}
             <button
-              className="ml-2 text-error-500"
+              className='ml-2 text-error-500'
               onClick={() => removeHashtag(tag)}
             >
               ×
@@ -43,9 +43,9 @@ const HashTagInput = ({ onChange }: HashTagInputProps) => {
         ))}
       </div>
       <input
-        type="text"
-        className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-        placeholder="Start by #...(ex: #cyber, #code,...)"
+        type='text'
+        className='w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
+        placeholder='Start by #...(ex: #cyber, #code,...)'
         // value={hashtag}
         // onChange={handleChange}
         value={input}

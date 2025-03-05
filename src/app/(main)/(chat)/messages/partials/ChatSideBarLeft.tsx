@@ -11,13 +11,8 @@ import { useEffect, useState } from 'react';
 import { sChat, useChatSignal } from '../signal/chatSignal';
 import ChatSearchRow from './ChatSearchRow';
 import ChatUserRow from './ChatUserRow';
-import { useSearchParams } from 'next/navigation';
-
-type RoomRow = {
-  id: string;
-  member: UserProfileResponse;
-  members: UserProfileResponse[];
-};
+import { useRouter, useSearchParams } from 'next/navigation';
+import SkeletonUserRow from './SkeletonUserRow';
 
 const ChatSideBarLeft = () => {
   const [isShowSearch, setIsShowSearch] = useState(false);
@@ -26,8 +21,9 @@ const ChatSideBarLeft = () => {
   const { setCurUser, setCurMembers, setCurMemberInfo, setCurRoomId } =
     useChatSignal();
 
+  const router = useRouter();
+
   const roomId = useSearchParams().get('roomId');
-  console.log('[roomId]', roomId);
 
   const user = useAuth().user;
 
@@ -63,6 +59,7 @@ const ChatSideBarLeft = () => {
         members: item.members,
         name: item.isGroup ? item.name : userRoom?.fullName,
         avatar: item.isGroup ? item.groupAvatar : userRoom?.avatarUrl,
+        userSend: item.lastMessage[0]?.senderId,
         lastMessage: item?.lastMessage
           ? item?.lastMessage[0]?.content || 'Message...'
           : 'Message...',
@@ -70,13 +67,6 @@ const ChatSideBarLeft = () => {
         seenBy: item?.seenBy,
       };
     });
-
-  const selectRoomChat = (room: RoomRow) => () => {
-    setCurUser(room.member);
-    setCurMembers(room.members);
-    setCurRoomId(room.id);
-    setCurMemberInfo(room.members);
-  };
 
   const getRoomChat = async (friendId: string, friendName: string) => {
     const roomChat = await axiosClient
@@ -86,11 +76,26 @@ const ChatSideBarLeft = () => {
       .then((response) => response.data);
 
     if (!roomChat) {
-      await mutateAsync({
+      const res = await mutateAsync({
         friendId,
         friendName,
         user: user!,
       });
+      router.push(`/messages?roomId=${res?._id}`);
+      socket?.emit('seen_message', { userId: user?.id, roomChatId: res?._id });
+    } else {
+      router.push(`/messages?roomId=${roomChat?._id}`);
+      socket?.emit('seen_message', {
+        userId: user?.id,
+        roomChatId: roomChat?._id,
+      });
+    }
+  };
+
+  const handleSeen = (curRoomId: string) => () => {
+    //TODO: handle seen message
+    if (socket) {
+      socket.emit('seen_message', { userId: user?.id, roomChatId: curRoomId });
     }
   };
 
@@ -106,9 +111,9 @@ const ChatSideBarLeft = () => {
     return () => {
       socket?.off('receive_message');
       socket?.off('seen_message');
-      socket?.disconnect();
     };
   }, [socket]);
+
   useEffect(() => {
     if (lsRoomChat && lsRoomChat.length > 0) {
       const indexRoom = lsRoomChat?.findIndex((room) => room.id === roomId);
@@ -124,7 +129,7 @@ const ChatSideBarLeft = () => {
       <h1 className='text-xl font-semibold text-neutral-800 px-4 pt-4'>
         Messages
       </h1>
-      <div className='px-4 pt-2'>
+      <div className='px-4 py-2'>
         <div className='w-full'>
           <input
             type='text'
@@ -143,42 +148,40 @@ const ChatSideBarLeft = () => {
 
       {/* user rows */}
       <div className='relative py-2 flex flex-col gap-2 flex-1 mb-[56px] md:mb-0 scrollbar-custom '>
-        {isRoomsLoading && <p>Loading</p>}
-        {lsRoomChat?.map((room) => {
-          const isSeen = room.seenBy.find((id) => id === user?.id);
-
-          return (
-            <ChatUserRow
-              key={room.id}
-              id={room.id}
-              onClick={() => {}}
-              avatar={room.avatar ?? ''}
-              name={room.name ?? 'User name'}
-              lastMessage={room.lastMessage}
-              selected={room.member?.id === curUser?.id}
-              updatedAt={room.updatedAt}
-              isSeen={!!isSeen}
-            />
-          );
-        })}
+        {isRoomsLoading && <SkeletonUserRow />}
+        {!isShowSearch &&
+          lsRoomChat?.map((room) => {
+            const isSeen = room.seenBy.find((id) => id === user?.id);
+            return (
+              <ChatUserRow
+                key={room.id}
+                id={room.id}
+                onClick={handleSeen(room.id)}
+                avatar={room.avatar ?? ''}
+                name={room.name ?? 'User name'}
+                lastMessage={room.lastMessage}
+                selected={room.member?.id === curUser?.id}
+                updatedAt={room.updatedAt}
+                isSeen={!!isSeen}
+              />
+            );
+          })}
 
         {isShowSearch && (
-          <div className='absolute inset-0 bg-red-400'>
-            <div className='w-full h-full bg-card flex flex-col gap-2 px-4 py-2'>
-              {(lsUser?.length === 0 || !lsUser) && (
-                <p className='text-sm text-center text-neutral-600/70 font-semibold'>
-                  No user found
-                </p>
-              )}
-              {lsUser?.map((user) => (
-                <ChatSearchRow
-                  key={user.id}
-                  user={user}
-                  onGetRoomChat={getRoomChat}
-                />
-              ))}
-            </div>
-          </div>
+          <>
+            {(lsUser?.length === 0 || !lsUser) && (
+              <p className='text-sm text-center text-neutral-600/70 font-semibold'>
+                No user found
+              </p>
+            )}
+            {lsUser?.map((user) => (
+              <ChatSearchRow
+                key={user.id}
+                user={user}
+                onGetRoomChat={getRoomChat}
+              />
+            ))}
+          </>
         )}
       </div>
       {/* user rows */}
