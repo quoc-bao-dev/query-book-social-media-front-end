@@ -9,6 +9,7 @@ import UserDrawer from './partials/UserDrawer';
 import ModalCommentDetail from './(home)/(feeds)/partials/ModalCommentDetail';
 import AppLoading from '@/components/Layout/AppLoading';
 import ModalCreateFeed from './(home)/(feeds)/partials/ModalCreateFeed';
+import ImageDetailFeedModal from './(home)/(feeds)/partials/ImageDetailFeedModal';
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
@@ -28,6 +29,7 @@ const Layout = ({ children }: PropsWithChildren) => {
       <UserDrawer />
       <ImageDetailModal />
       <ModalCommentDetail />
+      <ImageDetailFeedModal />
       <ModalCreateFeed />
       <AppLoading />
     </UserProvider>

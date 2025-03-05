@@ -2,6 +2,7 @@ import { CreatePostSchema } from '@/app/(main)/(home)/(feeds)/schema/CreatePostS
 import axiosClient from '@/httpClient';
 import { HttpResponse } from '@/types/common';
 import { PostResponse } from '@/types/post';
+import { swal } from '@/utils/swal';
 import {
   useInfiniteQuery,
   useMutation,
@@ -66,6 +67,13 @@ export const useCreatePostMutation = () => {
     mutationFn: postCreatePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      swal.fire({
+        icon: 'success',
+        title: 'Đăng bài thành công',
+        showConfirmButton: false,
+        timer: 2000,
+        confirmButtonColor: '#0abf7e',
+      })
     },
   });
 };
