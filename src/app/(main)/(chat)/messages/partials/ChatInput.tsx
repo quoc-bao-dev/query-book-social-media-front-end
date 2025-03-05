@@ -1,21 +1,27 @@
 'use client';
 
+import ImageIcon from '@/components/icons/ImageIcon';
 import SendIcon from '@/components/icons/SendIcon';
 import { useMessageSocket } from '@/provider/SocketProvider';
 import { useAuth } from '@/store/authSignal';
+import { Message, RoomChatResponse } from '@/types/chat';
+import { uploadImages } from '@/utils/uploadUtils';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { sChat } from '../signal/chatSignal';
-import ImageIcon from '@/components/icons/ImageIcon';
 import { sChatImageInput } from '../signal/imageInputSignal';
-import { uploadImages } from '@/utils/uploadUtils';
 
 const ChatInput = () => {
   const [images, setImages] = useState<File[]>([]);
+
   const inputRef = useRef<HTMLInputElement>(null);
+
   const { curMembers, curRoomId } = sChat.use();
   const { user } = useAuth();
 
   const { socket } = useMessageSocket();
+
+  const queriClient = useQueryClient();
 
   const addImage = () => {
     const input = document.createElement('input');
@@ -35,10 +41,59 @@ const ChatInput = () => {
   };
   const handleSendMessage = async () => {
     const message = inputRef.current?.value;
+
     if (!message && message?.trim().length === 0 && images?.length === 0)
       return;
+
     if (!socket) return;
+
     if (!user) return;
+
+    const messageTemp: Message = {
+      _id: Math.random().toString(),
+      senderId: user.id,
+      content: message || '',
+      images: images.map((i) => URL.createObjectURL(i)),
+      createdAt: Date.now().toString(),
+      updatedAt: Date.now().toString(),
+    };
+
+    queriClient.setQueryData<RoomChatResponse[]>(['roomChat'], (data) => {
+      const dataTemp = data
+        ?.map((room) => {
+          if (room._id === curRoomId) {
+            return {
+              ...room,
+              lastMessage: message
+                ? [
+                    {
+                      _id: Math.random().toString(),
+                      senderId: user.id,
+                      content: message,
+                      createdAt: Date.now().toString(),
+                    },
+                  ]
+                : [],
+              updatedAt: new Date().toISOString(),
+            };
+          }
+          return room;
+        })
+        .sort((a, b) => {
+          return (
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          );
+        });
+
+      return dataTemp;
+    });
+
+    queriClient.setQueryData<Message[]>(['message', curRoomId], (data) => {
+      return data ? [...data, messageTemp] : [messageTemp];
+    });
+
+    inputRef.current!.value = '';
+    setImages([]);
 
     let lsImages: string[] | undefined = undefined;
     if (images.length > 0) {
@@ -65,14 +120,13 @@ const ChatInput = () => {
         images: lsImages,
       });
     };
+
     sendMessage({
       senderId: user?.id,
       groupId: curRoomId,
       members: curMembers.map((m) => m.id),
-      message,
+      message: message!,
     });
-    inputRef.current!.value = '';
-    setImages([]);
   };
 
   const handleSeenMessage = () => {
@@ -94,6 +148,7 @@ const ChatInput = () => {
   }, [images]);
 
   useEffect(() => {
+    if (!socket) return;
     const handleEnter = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
         handleSendMessage();
@@ -103,7 +158,7 @@ const ChatInput = () => {
     return () => {
       window.removeEventListener('keydown', handleEnter);
     };
-  }, []);
+  }, [socket, handleSendMessage]);
 
   return (
     <div className='px-4 bg-neutral-100/50'>
