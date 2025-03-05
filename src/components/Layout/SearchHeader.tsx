@@ -1,9 +1,16 @@
 'use client';
 
 import { useSearchUserQuery } from '@/queries/search';
+import {
+  getRecommandedSearch,
+  RecommandPayload,
+  setRecommandedSearch,
+  UserRecommand,
+} from '@/utils/search';
 import { useState } from 'react';
 import Glass from '../icons/Glass';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import SearchRecommdRow from './SearchRecommdRow';
 import SearchResultRow from './SearchResultRow';
 
 function SearchHeader() {
@@ -12,6 +19,9 @@ function SearchHeader() {
   const { data } = useSearchUserQuery(keyword);
 
   const lsUserResult = data?.data.data;
+
+  const lsRecommandedSearch = getRecommandedSearch();
+
   return (
     <div className='relative'>
       {/* search input */}
@@ -49,23 +59,42 @@ function SearchHeader() {
 
             {/* recommend */}
             {!keyword && (
-              <p className='text-center text-sm font-semibold'>Recommend</p>
+              <div className='flex flex-col gap-2'>
+                <p className='text-sm font-semibold'>Search history</p>
+                {lsRecommandedSearch.map((item) => (
+                  <SearchRecommdRow
+                    key={item.updatedAt}
+                    data={item.data}
+                    type={item.type}
+                  />
+                ))}
+              </div>
             )}
             {/* recommend */}
 
             {/* result */}
             <div className='flex flex-col gap-2'>
-              {lsUserResult?.map((_item) => (
-                <SearchResultRow
-                  key={_item.id}
-                  id={_item.id}
-                  name={`${_item.firstName} ${_item.lastName}`}
-                  avatar={_item.avatarUrl}
-                  title={_item.handle}
-                  email={_item.email}
-                  onClick={() => {}}
-                />
-              ))}
+              {lsUserResult?.map((_item) => {
+                const payload: RecommandPayload<UserRecommand> = {
+                  type: 'user',
+                  data: {
+                    ..._item,
+                    avatar: _item.avatarUrl!,
+                    userName: `${_item.firstName} ${_item.lastName}`,
+                  },
+                };
+                return (
+                  <SearchResultRow
+                    key={_item.id}
+                    id={_item.id}
+                    name={`${_item.firstName} ${_item.lastName}`}
+                    avatar={_item.avatarUrl}
+                    title={_item.handle}
+                    email={_item.email}
+                    onClick={() => setRecommandedSearch(payload)}
+                  />
+                );
+              })}
             </div>
             {/* result */}
             <ScrollBar orientation='vertical' />

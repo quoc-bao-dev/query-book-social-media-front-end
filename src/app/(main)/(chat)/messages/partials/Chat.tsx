@@ -50,7 +50,6 @@ const Chat = () => {
     }
 
     return () => {
-      socket.off('typing');
       socket.off('receive_message');
       socket.off('typing');
     };

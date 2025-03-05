@@ -1,6 +1,5 @@
 'use client';
 
-import PlusIcon from '@/components/icons/PlusIcon';
 import Xmark from '@/components/icons/X-mark';
 // Định nghĩa kiểu cho props
 interface AvatarModalProps {
