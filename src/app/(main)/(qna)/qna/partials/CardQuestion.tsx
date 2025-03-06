@@ -56,10 +56,10 @@ const CardQuestion = ({
             className='text-xl font-semibold text-neutral-900 cursor-pointer hover:text-green-600 overflow-hidden'
             style={{ maxWidth: 'calc(100% - 60px)' }}
           >
-            {title.length > 60 ? `${title.slice(0, 50)}...` : title}
+            {title?.length > 60 ? `${title.slice(0, 50)}...` : title}
           </Link>
           <p className='text-sm text-neutral-500'>
-            {question.length > 60 ? `${question.slice(0, 100)}...` : question}
+            {question?.length > 60 ? `${question.slice(0, 100)}...` : question}
           </p>
 
           {/* Avatar và thông tin người đăng */}

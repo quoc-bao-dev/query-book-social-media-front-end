@@ -12,6 +12,7 @@ import { useState } from 'react';
 import ActionBar from '../../detail-qna/partials/ActionBar';
 import { ImageIcon } from 'lucide-react';
 import CodeIcon from '@/components/icons/CodeIcon';
+import ImageRender from '../../partials/ImageRender';
 interface Post {
   _id: string;
   title: string;
@@ -22,6 +23,7 @@ interface Post {
     fileType?: string;
   };
   imageUrl?: string;
+  images?: string[];
   hashtags: { name: string }[];
   likes: number;
   comments: number;
@@ -81,15 +83,9 @@ const PostsMyQuestion = ({
         {post.question}
       </div>
 
-      {/* Hashtags */}
-      {post?.hashtags.map((item: any) => (
-        <span
-          key={item._id}
-          className='text-xs bg-info-100 text-info-500 px-2 py-1 mr-1 rounded-md cursor-pointer'
-        >
-          #{item.name}
-        </span>
-      ))}
+      {/* Image */}
+
+      {post.images && <ImageRender images={post.images} />}
 
       {/* Code Editor */}
       {post.code?.code &&
@@ -103,21 +99,21 @@ const PostsMyQuestion = ({
             options={{ readOnly: true, domReadOnly: true }}
           />
         )}
-
-      {/* Image */}
-      {post.imageUrl && (
-        <img
-          src={post.imageUrl}
-          alt='Post Image'
-          className='w-full h-[500px] object-cover mx-auto mt-4 rounded-lg'
-        />
-      )}
+      {/* Hashtags */}
+      {post?.hashtags.map((item: any) => (
+        <span
+          key={item._id}
+          className='text-xs bg-info-100 text-info-500 px-2 py-1 mr-1 rounded-md cursor-pointer'
+        >
+          #{item.name}
+        </span>
+      ))}
 
       {/* Actions */}
       <div className='flex justify-between items-center'>
         <ActionBar id={post._id} />
         {isValidCode(post.code?.code) && (
-          <p className='mt-2 text-info-500 capitalize border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs'>
+          <p className='mt-2 text-info-500 border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs uppercase'>
             {post.code?.fileType}
           </p>
         )}

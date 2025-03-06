@@ -12,20 +12,17 @@ import DropdownMenu from '../../partials/DropdownMenu';
 import { useAuth } from '@/store/authSignal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getFirstCharacter } from '@/utils/nameUtilts';
+import ImageRender from '../../partials/ImageRender';
 
 interface PostProps {
   post: SaveQuestionResponse;
 }
 
 const PostsMySave = ({ post }: PostProps) => {
+  console.log('hehehe', post);
+
   const { user } = useAuth();
-  console.log(
-    'Post component rendering:',
-    post.questionId.userId.firstName,
-    post.questionId.userId.avatarUrl,
-    post.userId.firstName,
-    post.questionId.title,
-  );
+
   const [showMenu, setShowMenu] = useState(false);
 
   const toggleMenu = () => {
@@ -79,6 +76,10 @@ const PostsMySave = ({ post }: PostProps) => {
       <div className='mt-2 text-lg text-neutral-600 whitespace-pre-wrap break-words'>
         {post.questionId.question}
       </div>
+      {/* image  */}
+      {post.questionId?.images && (
+        <ImageRender images={post.questionId?.images} />
+      )}
 
       {/* Hashtags */}
       {post.questionId?.hashtags &&

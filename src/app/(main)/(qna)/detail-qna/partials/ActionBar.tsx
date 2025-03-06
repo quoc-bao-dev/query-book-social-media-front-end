@@ -13,7 +13,7 @@ import React from 'react';
 
 type ActionBarProps = {
   id: string;
-  countComment: number;
+  countComment?: number;
 };
 
 const ActionBar = ({ id }: ActionBarProps) => {

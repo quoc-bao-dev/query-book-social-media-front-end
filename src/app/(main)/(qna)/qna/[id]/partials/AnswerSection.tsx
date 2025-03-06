@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import Avatar from '@/components/common/Avatar';
@@ -15,20 +16,26 @@ import { Controller, useForm } from 'react-hook-form';
 import LanguageSeletor from '../../../ask-question/partials/LanguageSeletor';
 import { QuestionSchema } from '../../../ask-question/schema/questionSchema';
 import { questionSchema } from '../schema/questionSchema';
+import { uploadImages } from '@/utils/uploadUtils';
+import ImageRender from '../../../partials/ImageRender';
 
 type AnswerSectionProps = {
   questionId: string;
 };
 
 const AnswerSection = ({ questionId }: AnswerSectionProps) => {
-  // FIXME: use react hook form
-
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { data } = useAnswerQuery(questionId);
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
   const [hasCode, setHasCode] = useState(false); // State để kiểm tra có code không
   const [visibleComments, setVisibleComments] = useState(4);
+  const [images, setImages] = useState<File[]>([]);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const { user } = useAuth();
+
+  const { data } = useAnswerQuery(questionId);
+  console.log('hehehehehe', data);
 
   const handleShowMore = () => {
     setVisibleComments((prev) => prev + 4); // Hiển thị thêm 4 bình luận
@@ -40,9 +47,21 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
       setShowCodeEditor(false); // Ẩn modal
     }
   };
+  // FIXME
+  const handleUploadIamges = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    input.click();
+    input.onchange = (e: Event) => {
+      const files = e.target?.files as FileList;
+      if (!files) return;
+      setImages(Array.from(files));
+    };
+  };
 
   const { mutateAsync } = useAnswerMutation(questionId);
-  const { user } = useAuth();
   const {
     control,
     watch,
@@ -58,11 +77,23 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     const answer = inputRef.current?.value?.trim();
     const trimmedCode = code?.trim();
 
-    if (!answer && !trimmedCode) return; // Không gửi nếu cả hai đều rỗng
+    if (!answer && !trimmedCode && images.length === 0) return;
+
+    let uploadedImages: string[] = [];
+    if (images.length > 0) {
+      try {
+        const uploadResult = await uploadImages(images);
+        uploadedImages = uploadResult?.files.map((file) => file.filename) || [];
+      } catch (error) {
+        console.error('Upload failed', error);
+        return;
+      }
+    }
 
     const payload = {
       questionId,
       content: answer || '',
+      images: uploadedImages, // Gửi ảnh lên server
       ...(trimmedCode && {
         code: {
           fileType: selectedLanguage,
@@ -71,13 +102,13 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
       }),
     };
 
-    // console.log(payload);
-    // console.log(code);
+    // console.log('hahaha', payload);
 
     await mutateAsync(payload);
-    //reset
+
     if (inputRef.current) inputRef.current.value = '';
     reset();
+    setImages([]); // Reset ảnh sau khi gửi
     setHasCode(false);
     setShowCodeEditor(false);
     setSelectedLanguage('typescript');
@@ -111,6 +142,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           </div>
 
           <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
+          {item.images && <ImageRender images={item.images} />}
 
           {item.code?.code && (
             <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
@@ -140,6 +172,27 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
         </button>
       )}
 
+      {images.length > 0 && (
+        <div className='flex gap-2 py-2'>
+          {images.map((image, index) => (
+            <div key={index} className='relative group'>
+              <img
+                className='size-28 rounded-lg object-cover'
+                src={URL.createObjectURL(image)}
+                alt='preview'
+              />
+              {/* Nút xóa ảnh */}
+              <button
+                className='absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 text-sm opacity-0 group-hover:opacity-100 transition'
+                onClick={() => setImages(images.filter((_, i) => i !== index))}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className='mt-4 flex items-center gap-2'>
         <Avatar
           src={user?.avatarUrl}
@@ -153,8 +206,12 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
           onKeyDown={handleKeyDown}
         />
+
         <div className='flex items-center gap-1'>
-          <button className='p-2 rounded-lg hover:text-primary-600'>
+          <button
+            className='p-2 rounded-lg hover:text-primary-600'
+            onClick={handleUploadIamges}
+          >
             <ImageIcon className='w-6 h-6' />
           </button>
           <button

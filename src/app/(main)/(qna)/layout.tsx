@@ -33,13 +33,9 @@ const Layout = ({ children }: PropsWithChildren) => {
         {/* Sidebar */}
         <div
           className={`bg-card shadow-lg transition-all duration-300 ease-in-out 
-          md:sticky md:w-full md:mt-4 md:h-[calc(100vh-1rem)] md:col-span-3
-          fixed top-0 left-0 h-full w-64 z-50 
-          ${
-            isSidebarOpen
-              ? 'translate-x-0'
-              : '-translate-x-full md:translate-x-0'
-          }`}
+  md:sticky md:top-5 md:w-full md:h-[calc(100vh-1.25rem)] md:col-span-3
+  fixed top-0 mt-4 left-0 h-full w-64 z-50 
+  ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
         >
           <SidebarQnA />
 

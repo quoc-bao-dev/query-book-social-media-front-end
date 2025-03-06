@@ -5,8 +5,12 @@ import { formatDistanceToNow } from 'date-fns';
 import { ArrowLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 import ActionBar from '../../../detail-qna/partials/ActionBar';
+import ImageRender from '../../../partials/ImageRender';
+// import ImageRender from '../../../partials/ImageRender';
 
 const QuestionSection = ({ question }: { question: QuestionResponse }) => {
+  console.log('question section', question);
+
   const isValidCode = (code: string | undefined) => {
     if (!code) return false; // Không có dữ liệu
     const trimmedCode = code.trim();
@@ -56,6 +60,11 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
       <div className='mt-2 text-xl text-neutral-600 whitespace-pre-wrap break-words'>
         {question.question}
       </div>
+
+      {/* Image Render */}
+      {question.images && question.images?.length > 0 && (
+        <ImageRender images={question.images} />
+      )}
 
       {/* Hashtags */}
       {question?.hashtags.map((item: any) => (

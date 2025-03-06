@@ -9,8 +9,8 @@ export default function SidebarQnA() {
   const pathname = usePathname();
 
   return (
-    <div className=' bg-card h-full p-6 flex flex-col pt-10'>
-      <nav className='mt-6'>
+    <div className=' bg-card h-full p-6 flex flex-col  '>
+      <nav className='mt-10 '>
         <ul className='space-y-2 '>
           {/* Option Q&A */}
           <Link
