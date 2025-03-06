@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const createPost = z.object({
-  content: z.string({ message: 'Vui lòng nhập nội dung bài viết' }).min(1, 'Nội dung bài viết không được để trống'),
+  content: z.string({ message: 'Vui lòng nhập nội dung bài viết' }).min(1, ''),
   hashTags: z
     .array(
       z

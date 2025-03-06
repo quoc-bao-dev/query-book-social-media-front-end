@@ -17,6 +17,9 @@ type CommentDetail = {
     | 'comments'
     | 'commentsCount'
     | 'status'
+    | 'updatedAt'
+    | 'media'
+    | 'mediaUrls'
   >;
 };
 
@@ -39,6 +42,8 @@ export const sCommentDetail = signify<CommentDetail>({
     comments: [],
     commentsCount: 0,
     status: '',
+    updatedAt: '',
+    media: [],
   },
 });
 

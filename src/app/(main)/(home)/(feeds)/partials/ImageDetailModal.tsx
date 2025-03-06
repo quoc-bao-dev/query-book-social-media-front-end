@@ -70,9 +70,9 @@ const ImageDetailModal = () => {
           </div>
           <div
             onClick={closeModal}
-            className='absolute top-1 rounded-full right-1 w-8 h-8 bg-gray-300'
+            className='absolute top-1 rounded-full right-1 w-6 h-6 bg-gray-300'
           >
-            <DeleteIcon className='size-8' />
+            <DeleteIcon className='size-6' />
           </div>
         </div>
       </div>

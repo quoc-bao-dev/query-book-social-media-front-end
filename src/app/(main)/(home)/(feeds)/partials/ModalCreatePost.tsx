@@ -114,6 +114,7 @@ const ModalCreatePost = () => {
     const hashTags = extractHashtags(data.content);
     // Set loading cho người dùng chờ
     setIsLoading(true);
+
     const mediasRes = await uploadFile();
 
     const medias =
@@ -143,6 +144,7 @@ const ModalCreatePost = () => {
   const closeAllFiles = () => {
     setFiles([]);
     sModalCreatePost.set((n) => (n.value.isOpen = false));
+    reset();
   };
 
   return (

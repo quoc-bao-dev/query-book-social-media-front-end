@@ -51,6 +51,7 @@ type Comment = {
   mediaUrl?: string;
   createdAt: string;
   updatedAt: string;
+  userId: string;
 };
 
 export type Feed = {

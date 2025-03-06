@@ -1,8 +1,10 @@
 'use client';
 import Avatar from '@/components/common/Avatar';
 import DeleteIcon from '@/components/icons/DeleteIcon';
+import LoadingIcon from '@/components/icons/LoadingIcon';
 import MediaIcon from '@/components/icons/MediaIcon';
 import SendIcon from '@/components/icons/SendIcon';
+import { cn } from '@/lib/utils';
 import { useCommentMutation } from '@/queries/comment';
 import { useAuth } from '@/store/authSignal';
 import { uploadImages } from '@/utils/uploadUtils';
@@ -11,9 +13,9 @@ import { useRef, useState } from 'react';
 
 const PostComment = ({ postId }: { postId: string }) => {
   const [images, setImages] = useState<File[]>([]);
-
+  const [errorComment, setErrorComment] = useState('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
   const { mutateAsync: comment } = useCommentMutation(postId);
 
   const handleImageChange = (event: any) => {
@@ -41,6 +43,11 @@ const PostComment = ({ postId }: { postId: string }) => {
   const { user } = useAuth();
 
   const handleComment = async () => {
+    if (!inputRef.current?.value) {
+      return;
+    }
+
+    setIsLoading(true);
     const payload = {
       content: inputRef.current?.value,
     };
@@ -56,12 +63,17 @@ const PostComment = ({ postId }: { postId: string }) => {
         };
       }
     }
+
     await comment(payload);
 
+    setIsLoading(false);
     setImages([]);
+
     if (inputRef.current) {
       inputRef.current.value = '';
     }
+
+    setErrorComment('');
   };
 
   return (
@@ -93,19 +105,35 @@ const PostComment = ({ postId }: { postId: string }) => {
             fallBack={user?.fullName ?? ''}
           />
         </div>
-        <div className='ml-3 w-full flex gap-2 justify-center items-center'>
+        <div className='ml-3 flex w-full gap-2 justify-center items-center'>
           <input
             ref={inputRef}
+            readOnly={false}
+            onChange={(e) => setErrorComment(e.target.value)}
             type='text'
-            className='w-full h-[40px] border px-2 rounded-lg focus:border-info-500 focus:outline-none focus:ring-1 focus:ring-info-500'
+            className='w-full h-[40px] border px-2 rounded-lg focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500'
             placeholder='Write a comment'
           />
+          <div className=''></div>
 
-          <div onClick={handleUploadImage} className='px-1'>
-            <MediaIcon className='fill-gray-700' />
+          <div onClick={handleUploadImage}>
+            <MediaIcon className='size-6 fill-gray-700 hover:fill-primary-500 hover:duration-300 hover:scale-125' />
           </div>
+
           <div onClick={handleComment}>
-            <SendIcon className='fill-primary-500' />
+            {isLoading ? (
+              <div className='flex items-center'>
+                {/* <Spinner /> */}
+                <LoadingIcon size={20} color='#0abf7e' />
+              </div>
+            ) : (
+              <SendIcon
+                className={cn('fill-gray-700 size-6', {
+                  'fill-primary-500 duration-500 size-8': errorComment,
+                  'duration-500 size-6': !errorComment,
+                })}
+              />
+            )}
           </div>
         </div>
       </div>

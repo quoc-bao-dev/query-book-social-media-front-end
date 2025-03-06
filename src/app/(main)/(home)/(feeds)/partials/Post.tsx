@@ -18,6 +18,8 @@ import { useListImageDetail } from '../signal/listImageDetail';
 import PostComment from './PostComment';
 import PostImage from './PostImage';
 import { cn } from '@/lib/utils';
+import { useDeleteCommentMutation } from '@/queries/comment';
+import { Button } from '@/components/common/Button';
 
 // FIXME: fix interface of post
 
@@ -35,6 +37,9 @@ export interface PostProps {
     | 'comments'
     | 'commentsCount'
     | 'status'
+    | 'updatedAt'
+    | 'media'
+    | 'mediaUrls'
   >;
   mode: 'onPage' | 'onModal';
 }
@@ -42,6 +47,7 @@ export interface PostProps {
 const Post = ({ post, mode = 'onPage' }: PostProps) => {
   const { user } = useAuth();
   const { mutateAsync: likePost } = useLikeMutation();
+  const { mutateAsync: deleteComment } = useDeleteCommentMutation();
   const { showModal, setImages, setCurIndex } = useListImageDetail();
   const { setCurPost, open } = useCommentDetail();
 
@@ -56,6 +62,7 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
   const handleLike = () => {
     likePost(post.id);
   };
+  // console.log('post.comments', post.comments);
 
   const showDetail = (image: string) => () => {
     setImages([image]);
@@ -63,10 +70,18 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
     showModal();
   };
 
+  console.log('post comment', post.comments);
+
   const showCommentDetail = () => {
     open();
     setCurPost(post);
   };
+
+  const handleDeleteComment = async (id: string) => {
+    console.log('delete comment', id);
+    await deleteComment(id);
+  };
+
   return (
     <>
       <div className='w-full gap-5 border rounded-xl py-4 bg-card'>
@@ -98,11 +113,13 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
             </div>
           </div>
 
+          {/* Show content */}
           <div className='pt-4'>
             <p className=' whitespace-pre-line'>{post.content}</p>
           </div>
         </div>
 
+        {/* Show Image post */}
         <div className='relative px-1'>
           <PostImage lsImage={post.mediaUrls} />
         </div>
@@ -116,6 +133,7 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
                 <HeartIcon className='fill-error-500 stroke-error-500' />
               )}
             </div>
+
             <div className='pl-1 pr-3'>{post.likesCount}</div>
             <div className='w-full flex items-center'>
               <Tooltip
@@ -131,7 +149,7 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
                   </div>
                 }
               >
-                <div className='flex items-center '>
+                <div className='flex items-center ml-2'>
                   {post.likes
                     .sort((a) => (a.id !== user?.id ? 1 : -1))
                     .slice(0, 3)
@@ -139,9 +157,10 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
                       <Avatar
                         key={like.id}
                         src={like.avatarUrl}
-                        className={cn('w-[25px] h-[25px] object-cover', {
-                          '-ml-3': index > 0,
-                          'rounded-[50%] z-30': index === 0,
+                        className={cn('w-[25px] h-[25px] object-cover -ml-3', {
+                          'z-30': index === 0,
+                          'z-20': index === 1,
+                          'z-10': index === 2,
                         })}
                         fallBack={like.name}
                       />
@@ -152,7 +171,7 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
           </div>
           <div className='flex text-neutral-500 justify-end py-4 gap-3'>
             <div onClick={showCommentDetail} className='flex'>
-              <CommentIcon />
+              <CommentIcon className='hover:fill-primary-500 hover:scale-125 hover:duration-300' />
               <div className='pl-1'>{post.commentsCount}</div>
             </div>
             <ShareIcon />
@@ -198,8 +217,19 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
                   {/* show comment */}
 
                   <div className='flex justify-end items-center px-1 gap-5 text-neutral-600 text-[14px] font-medium'>
-                    <div className=''>Xóa</div>
-                    <div className=''>Trả lời</div>
+                    {_comment.userId === user?.id && (
+                      <div
+                        onClick={() => handleDeleteComment(_comment.id)}
+                        className='flex items-center gap-1'
+                      >
+                        <button className='hover:text-error-500 hover:duration-300'>
+                          Xóa
+                        </button>
+                      </div>
+                    )}
+                    <button className='hover:text-primary-500 hover:duration-300'>
+                      Trả lời
+                    </button>
                   </div>
                 </div>
               </div>

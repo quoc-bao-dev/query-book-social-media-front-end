@@ -67,7 +67,6 @@ const CreatePostImage = ({ lsImage }: Props) => {
   if (File.length === 2) {
     return (
       <div>
-        <div className='absolute inset-0 overflow-hidden rounded-md'></div>
         <div className='relative z-40'>
           <div className='grid grid-cols-2 gap-2 p-2 items-center'>
             <div className='flex '>
@@ -115,7 +114,6 @@ const CreatePostImage = ({ lsImage }: Props) => {
   if (File.length === 3) {
     return (
       <div>
-        <div className='absolute inset-0 overflow-hidden rounded-md'></div>
         <div className='relative z-40'>
           <div className='grid grid-cols-3 gap-2 p-2 items-end'>
             <div className='flex'>
@@ -181,7 +179,6 @@ const CreatePostImage = ({ lsImage }: Props) => {
   if (File.length === 4) {
     return (
       <div>
-        <div className='absolute inset-0 overflow-hidden rounded-md'></div>
         <div className='relative z-40'>
           <div className='grid grid-cols-2 gap-[6px] p-2'>
             <div className='flex'>
@@ -266,7 +263,6 @@ const CreatePostImage = ({ lsImage }: Props) => {
   if (File.length >= 5) {
     return (
       <div>
-        <div className='absolute inset-0 overflow-hidden rounded-md'></div>
         <div className='relative z-40'>
           <div className='grid grid-cols-2 gap-[6px] p-2'>
             <div className='flex'>
