@@ -1,25 +1,30 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState } from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import MonacoEditor from '@monaco-editor/react';
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
-import ActionBar from '../../detail-qna/partials/ActionBar';
-import SendIcon from '@/components/icons/SendIcon';
 import CodeIcon from '@/components/icons/CodeIcon';
-import { ImageIcon } from 'lucide-react';
-import { SaveQuestionResponse } from '@/types/saveQuestion';
-import DropdownMenu from '../../partials/DropdownMenu';
-import { useAuth } from '@/store/authSignal';
+import SendIcon from '@/components/icons/SendIcon';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAuth } from '@/store/authSignal';
+import { SaveQuestionResponse } from '@/types/saveQuestion';
 import { getFirstCharacter } from '@/utils/nameUtilts';
+import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
+import { formatDistanceToNow } from 'date-fns';
+import { ImageIcon } from 'lucide-react';
+import { useState } from 'react';
+import ActionBar from '../../detail-qna/partials/ActionBar';
+import CodeEditor from '../../partials/CodeEditor';
+import DropdownMenu from '../../partials/DropdownMenu';
+import HashTagPost from '../../partials/HashTagPost';
 import ImageRender from '../../partials/ImageRender';
+import FileType from '../../partials/FileType';
+import QuestionTitle from '../../partials/QuestionTitle';
+import QuestionContent from '../../partials/QuestionContent';
+import Link from 'next/link';
 
 interface PostProps {
   post: SaveQuestionResponse;
 }
 
 const PostsMySave = ({ post }: PostProps) => {
-  console.log('hehehe', post);
+  // console.log('hehehe', post.questionId.images);
 
   const { user } = useAuth();
 
@@ -69,48 +74,36 @@ const PostsMySave = ({ post }: PostProps) => {
       </div>
 
       {/* Title */}
-      <p className='mt-2 text-3xl font-semibold text-neutral-900'>
-        {post.questionId.title}
-      </p>
+      <Link href={`/qna/${post.questionId._id}`}>
+        <QuestionTitle title={post.questionId.title!} />
+      </Link>
+
       {/* Content */}
-      <div className='mt-2 text-lg text-neutral-600 whitespace-pre-wrap break-words'>
-        {post.questionId.question}
-      </div>
+      <QuestionContent content={post.questionId.question!} />
+
       {/* image  */}
       {post.questionId?.images && (
         <ImageRender images={post.questionId?.images} />
       )}
 
-      {/* Hashtags */}
-      {post.questionId?.hashtags &&
-        post.questionId?.hashtags?.length > 0 &&
-        post.questionId.hashtags.map((tag, index) => (
-          <span
-            key={index}
-            className='text-xs bg-info-100 text-info-500 px-2 py-1 mr-1 rounded-md cursor-pointer'
-          >
-            #{tag.name}
-          </span>
-        ))}
-
       {/* Code Editor */}
       {isValidCode(post.questionId.code?.code) && (
-        <MonacoEditor
-          className='h-[300px] pt-[10px]'
-          value={post.questionId.code?.code}
-          theme='vs-dark'
-          language={post.questionId.code?.fileType}
-          options={{ readOnly: true, domReadOnly: true }}
+        <CodeEditor
+          code={post.questionId.code?.code || ''}
+          fileType={post.questionId.code?.fileType || 'plaintext'}
         />
+      )}
+
+      {/* Hashtags */}
+      {post.questionId?.hashtags && (
+        <HashTagPost hashtags={post.questionId.hashtags} />
       )}
 
       {/* Actions */}
       <div className='flex justify-between items-center'>
         <ActionBar id={post.questionId._id!} />
         {isValidCode(post.questionId.code?.code) && (
-          <p className='mt-2 text-info-500 capitalize border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs'>
-            {post.questionId.code?.fileType}
-          </p>
+          <FileType fileType={post.questionId.code?.fileType || 'plaintext'} />
         )}
       </div>
 

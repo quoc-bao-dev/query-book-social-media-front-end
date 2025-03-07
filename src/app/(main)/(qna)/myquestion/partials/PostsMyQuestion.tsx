@@ -1,18 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 
 'use client';
-import SendIcon from '@/components/icons/SendIcon';
 import { UserResponse } from '@/types/user';
-import DropdownMenu from '../../partials/DropdownMenu';
 
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
-import MonacoEditor from '@monaco-editor/react';
-import { formatDistanceToNow } from 'date-fns';
-import { useState } from 'react';
 import ActionBar from '../../detail-qna/partials/ActionBar';
-import { ImageIcon } from 'lucide-react';
-import CodeIcon from '@/components/icons/CodeIcon';
+import CodeEditor from '../../partials/CodeEditor';
+import FileType from '../../partials/FileType';
+import HashTagPost from '../../partials/HashTagPost';
 import ImageRender from '../../partials/ImageRender';
+import QuestionContent from '../../partials/QuestionContent';
+import QuestionTitle from '../../partials/QuestionTitle';
+import PostUserInfoMyQuestion from './PostUserInfoMyQuestion';
+import Link from 'next/link';
 interface Post {
   _id: string;
   title: string;
@@ -44,105 +43,41 @@ const PostsMyQuestion = ({
   post: Post;
   user: UserResponse;
 }) => {
-  const [showMenu, setShowMenu] = useState(false);
-  const toggleMenu = () => setShowMenu(!showMenu);
   return (
     <div className='rounded-lg shadow-lg p-4 mb-6 border border-border bg-card'>
       {/* User Info */}
-      <div className='flex items-center justify-between mt-3 '>
-        <div className='flex items-center space-x-2'>
-          <img
-            src={user?.avatarUrl}
-            alt='user'
-            className='w-10 h-10 rounded-full'
-          />
-          <div className='flex justify-around items-center gap-2'>
-            <p className='font-semibold text-neutral-900'>{user?.fullName}</p>
-            <p className='text-2xl text-neutral-500 '>•</p>
-            <p className='text-sm text-neutral-500'>
-              {post?.createdAt &&
-                formatDistanceToNow(post?.createdAt, { addSuffix: true })}
-            </p>
-          </div>
-        </div>
-
-        {/* Menu */}
-        <button onClick={toggleMenu} className='relative'>
-          <EllipsisVerticalIcon className='h-6 w-6 text-gray-500' />
-          {showMenu && <DropdownMenu />}
-        </button>
-      </div>
+      <PostUserInfoMyQuestion
+        avatarUrl={user?.avatarUrl}
+        fullName={user?.fullName}
+        createdAt={post?.createdAt}
+      />
 
       {/* Title */}
-      <p className='mt-2 text-3xl font-semibold text-neutral-900'>
-        {post.title}
-      </p>
+      <Link href={`/qna/${post._id}`}>
+        <QuestionTitle title={post.title} />
+      </Link>
 
       {/* Content */}
-      <div className='mt-2 text-lg text-neutral-600 whitespace-pre-wrap break-words'>
-        {post.question}
-      </div>
+      <QuestionContent content={post.question} />
 
       {/* Image */}
-
       {post.images && <ImageRender images={post.images} />}
-
       {/* Code Editor */}
-      {post.code?.code &&
-        post.code.code.trim().replace(/\/\/.*|\/\*[\s\S]*?\*\//g, '').length >
-          0 && (
-          <MonacoEditor
-            className='h-[300px] pt-[10px]'
-            value={post.code.code}
-            theme='vs-dark'
-            language={post.code.fileType}
-            options={{ readOnly: true, domReadOnly: true }}
-          />
-        )}
+      {isValidCode(post.code?.code) && (
+        <CodeEditor
+          code={post.code?.code || ''}
+          fileType={post.code?.fileType || 'plaintext'}
+        />
+      )}
       {/* Hashtags */}
-      {post?.hashtags.map((item: any) => (
-        <span
-          key={item._id}
-          className='text-xs bg-info-100 text-info-500 px-2 py-1 mr-1 rounded-md cursor-pointer'
-        >
-          #{item.name}
-        </span>
-      ))}
+      <HashTagPost hashtags={post?.hashtags} />
 
       {/* Actions */}
       <div className='flex justify-between items-center'>
         <ActionBar id={post._id} />
         {isValidCode(post.code?.code) && (
-          <p className='mt-2 text-info-500 border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs uppercase'>
-            {post.code?.fileType}
-          </p>
+          <FileType fileType={post.code?.fileType || 'plaintext'} />
         )}
-      </div>
-
-      {/* Reply Section */}
-      <div className='mt-4 flex items-center gap-3'>
-        <img
-          src={user?.avatarUrl}
-          alt='user'
-          className='w-10 h-10 rounded-full'
-        />
-        <input
-          type='text'
-          placeholder='Write a reply...'
-          className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
-        />
-        <div className='flex items-center gap-1'>
-          <button className='p-2 rounded-lg hover:text-primary-600'>
-            <ImageIcon className='w-6 h-6' />
-          </button>
-          <button className='p-2 rounded-lg hover:text-primary-600'>
-            <CodeIcon className='w-6 h-6' />
-          </button>
-
-          <button className='p-2  rounded-lg hover:text-primary-600'>
-            <SendIcon />
-          </button>
-        </div>
       </div>
     </div>
   );

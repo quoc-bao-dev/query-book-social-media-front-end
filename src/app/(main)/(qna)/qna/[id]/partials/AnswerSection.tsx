@@ -7,6 +7,7 @@ import SendIcon from '@/components/icons/SendIcon';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useAnswerMutation, useAnswerQuery } from '@/queries/answer';
 import { useAuth } from '@/store/authSignal';
+import { uploadImages } from '@/utils/uploadUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
@@ -15,9 +16,9 @@ import { useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import LanguageSeletor from '../../../ask-question/partials/LanguageSeletor';
 import { QuestionSchema } from '../../../ask-question/schema/questionSchema';
-import { questionSchema } from '../schema/questionSchema';
-import { uploadImages } from '@/utils/uploadUtils';
 import ImageRender from '../../../partials/ImageRender';
+import ModalError from '../../../partials/ModalError';
+import { questionSchema } from '../schema/questionSchema';
 
 type AnswerSectionProps = {
   questionId: string;
@@ -29,13 +30,14 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
   const [hasCode, setHasCode] = useState(false); // State để kiểm tra có code không
   const [visibleComments, setVisibleComments] = useState(4);
   const [images, setImages] = useState<File[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
 
   const { data } = useAnswerQuery(questionId);
-  console.log('hehehehehe', data);
 
   const handleShowMore = () => {
     setVisibleComments((prev) => prev + 4); // Hiển thị thêm 4 bình luận
@@ -55,9 +57,19 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     input.multiple = true;
     input.click();
     input.onchange = (e: Event) => {
-      const files = e.target?.files as FileList;
-      if (!files) return;
-      setImages(Array.from(files));
+      const files = (e.target as HTMLInputElement)?.files;
+      if (files) {
+        const fileArray = Array.from(files);
+
+        if (fileArray.length + images.length > 5) {
+          setErrorMessage('Bạn chỉ được upload tối đa 5 ảnh.');
+          setIsErrorModalOpen(true);
+          return;
+        }
+
+        setImages((prev) => [...prev, ...fileArray]);
+        setErrorMessage(null);
+      }
     };
   };
 
@@ -122,7 +134,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
   };
 
   return (
-    <div className='mt-4'>
+    <div>
       {data?.slice(0, visibleComments).map((item) => (
         <div key={item._id} className='mt-5 pl-6 border-l-2 border-gray-200'>
           <div className='flex items-center gap-3'>
@@ -183,15 +195,35 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
               />
               {/* Nút xóa ảnh */}
               <button
-                className='absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 text-sm opacity-0 group-hover:opacity-100 transition'
-                onClick={() => setImages(images.filter((_, i) => i !== index))}
+                type='button'
+                className='absolute size-7 top-1 right-1 bg-black/70 text-white rounded-full p-1 text-xs'
+                onClick={() =>
+                  setImages((prev) => prev.filter((_, i) => i !== index))
+                }
               >
                 ✕
               </button>
             </div>
           ))}
+
+          {/* Nếu số lượng ảnh nhỏ hơn 5, hiển thị nút thêm ảnh */}
+          {images.length < 5 && (
+            <button
+              type='button'
+              onClick={handleUploadIamges}
+              className='flex items-center justify-center size-28 border-2 border-dashed border-gray-400 rounded-lg hover:bg-gray-100'
+            >
+              <span className='text-2xl text-gray-500'>+</span>
+            </button>
+          )}
         </div>
       )}
+
+      <ModalError
+        isOpen={isErrorModalOpen}
+        onClose={() => setIsErrorModalOpen(false)}
+        message={errorMessage || ''}
+      />
 
       <div className='mt-4 flex items-center gap-2'>
         <Avatar

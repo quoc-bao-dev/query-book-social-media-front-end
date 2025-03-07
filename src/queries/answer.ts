@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 type AnswerPayload = { content: string };
 
-const getAnswerByQuestion = (questionId: string) =>
+const postSaveQuestion = (questionId: string) =>
   axiosClient
     .get<HttpResponse<any[]>>(`/answers/${questionId}`)
     .then((respone) => respone.data.data);
@@ -12,7 +12,7 @@ const getAnswerByQuestion = (questionId: string) =>
 export const useAnswerQuery = (questionId: string) => {
   return useQuery({
     queryKey: ['answers', questionId],
-    queryFn: () => getAnswerByQuestion(questionId),
+    queryFn: () => postSaveQuestion(questionId),
   });
 };
 

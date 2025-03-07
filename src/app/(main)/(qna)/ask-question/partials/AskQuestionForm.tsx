@@ -1,20 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
+import { Button } from '@/components/common/Button';
+import ImageIcon from '@/components/icons/ImageIcon';
 import { useCreateQuestionMutation } from '@/queries/question';
+import { uploadImages } from '@/utils/uploadUtils'; // Hàm upload ảnh
 import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import ModalError from '../../partials/ModalError';
 import { QuestionSchema, questionSchema } from '../schema/questionSchema';
 import HashTagInput from './HashTagInput';
 import LanguageSeletor from './LanguageSeletor';
 import TopicSelect from './TopicSelect';
-import { Button } from '@/components/common/Button';
-import { uploadImages } from '@/utils/uploadUtils'; // Hàm upload ảnh
-import ImageIcon from '@/components/icons/ImageIcon';
-import Modal from '@/components/common/Modal';
-import ErrorIcon from '@/components/icons/ErrorIcon';
 
 export default function AskQuestionForm() {
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
@@ -156,9 +155,9 @@ export default function AskQuestionForm() {
         <label className='block font-medium mb-2'>Upload Image</label>
 
         {images.length > 0 ? (
-          <div className='relative w-full h-32 flex justify-center items-center gap-2'>
+          <div className='relative w-full h-32 flex gap-1'>
             {images.map((image, index) => (
-              <div key={index} className='relative flex-1 h-full'>
+              <div key={index} className='relative w-1/5 h-full'>
                 <img
                   className='w-full h-full object-cover rounded-lg'
                   src={URL.createObjectURL(image)}
@@ -166,7 +165,8 @@ export default function AskQuestionForm() {
                 />
                 {/* Nút Xóa ảnh riêng từng ảnh */}
                 <button
-                  className='absolute top-1 right-1 bg-black/70 text-white rounded-full p-1 text-xs'
+                  type='button'
+                  className='absolute size-7 top-1 right-1 bg-black/70 text-white rounded-full p-1 text-xs'
                   onClick={() =>
                     setImages((prev) => prev.filter((_, i) => i !== index))
                   }
@@ -175,6 +175,17 @@ export default function AskQuestionForm() {
                 </button>
               </div>
             ))}
+
+            {/* Nút thêm ảnh xuất hiện khi có ảnh bị xóa (ảnh < 5) */}
+            {images.length < 5 && (
+              <button
+                type='button'
+                onClick={handleUploadImages}
+                className='flex items-center justify-center size-32 border-2 border-dashed border-gray-400 rounded-lg hover:bg-gray-100'
+              >
+                <span className='text-2xl text-gray-500'>+</span>
+              </button>
+            )}
           </div>
         ) : (
           // Nếu chưa có ảnh, hiển thị vùng upload
@@ -186,31 +197,11 @@ export default function AskQuestionForm() {
           </div>
         )}
       </div>
-      <Modal
+      <ModalError
         isOpen={isErrorModalOpen}
         onClose={() => setIsErrorModalOpen(false)}
-      >
-        <div className='bg-white p-6 rounded-xl shadow-xl w-96 text-center'>
-          {/* Icon cảnh báo */}
-          <div className='flex justify-center'>
-            <ErrorIcon />
-          </div>
-
-          {/* Tiêu đề lỗi */}
-          <h2 className='text-xl font-semibold text-red-600 mt-4'>Lỗi</h2>
-
-          {/* Nội dung thông báo */}
-          <p className='mt-2 text-gray-600'>{errorMessage}</p>
-
-          {/* Nút đóng modal */}
-          <button
-            className='mt-6 px-5 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-all'
-            onClick={() => setIsErrorModalOpen(false)}
-          >
-            OK
-          </button>
-        </div>
-      </Modal>
+        message={errorMessage || ''}
+      />
 
       <Button
         type='submit'
