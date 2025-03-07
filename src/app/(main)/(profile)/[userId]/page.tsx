@@ -21,6 +21,7 @@ const Page = async ({ params }: PageProps) => {
       `${config.BASE_URL}/users/profile/${userId}`,
     )
   ).data;
+  console.log('[user]', user);
 
   return (
     <div className='block md:flex md:justify-between md:gap-4 px-4 md:px-0'>

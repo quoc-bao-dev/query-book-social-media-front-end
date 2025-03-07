@@ -12,7 +12,7 @@ const layout = ({ children }: PropsWithChildren) => {
   return (
     <div className='block md:flex md:justify-between md:gap-4 px-4 md:px-0'>
       {/* About */}
-      <div className='w-full space-y-4 md:w-[310px] md:flex-col'>
+      <div className='w-full space-y-3 md:w-[310px] md:flex-col'>
         <SetCurUserProfileSignal user={user} />
 
         {/* FollowFollow */}
@@ -35,7 +35,7 @@ const layout = ({ children }: PropsWithChildren) => {
         {/* Follow */}
 
         {/**/}
-        <div className='rounded-2xl overflow-hidden relative border-b border p-4 pt-4 h-auto bg-card '>
+        <div className='rounded-2xl overflow-hidden relative border-b border p-4 pt-3 h-auto bg-card '>
           <div className='px-2 block '>
             <span className='text-xl text-neutral-900 font-semibold'>
               Giới thiệu

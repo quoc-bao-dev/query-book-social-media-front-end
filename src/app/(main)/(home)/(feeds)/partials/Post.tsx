@@ -69,7 +69,7 @@ const Post = ({ post, mode = 'onPage' }: PostProps) => {
   };
   return (
     <>
-      <div className='w-full gap-5 border rounded-xl py-4 bg-card'>
+      <div className='w-full gap-5 border rounded-xl py-4 bg-black'>
         <div className='px-4 pb-4'>
           <div className='flex justify-between'>
             <div className=''>

@@ -1,6 +1,7 @@
 import axiosClient from '@/httpClient';
 import { HttpResponse } from '@/types/common';
 import { UserRequestResponse, UserResponse } from '@/types/user';
+import { swal } from '@/utils/swal';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 // get list friend
@@ -52,6 +53,13 @@ export const useSendRequestMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['friend_suggest'] });
       queryClient.invalidateQueries({ queryKey: ['send_requests'] });
+      swal.fire({
+        icon:'success',
+        title:'Kết bạn thành công',
+        timer:2000,
+        
+
+      })
     },
   });
 };

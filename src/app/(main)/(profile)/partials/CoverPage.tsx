@@ -2,6 +2,7 @@
 
 import Camera from '@/components/icons/Camera';
 import {
+  useFriendsQuery,
   useRemoveRequestMutation,
   useSendRequestMutation,
   useSendRequestsQuery,
@@ -21,25 +22,28 @@ import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 import AvatarModalUser from './AvatarModalUser';
 import Friended from '../[userId]/partials/Friended';
 import { Button } from '@/components/common/Button';
+import Avatar from '@/components/common/Avatar';
 
 const CoverPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCoveModalOpen, setIsCoveModalOpen] = useState(false);
+  const [isModalOpenAvtUserId, setIsModalOpenAvtUserId] = useState(false);
+
   const { user: userMe } = useAuth();
   const { user } = sCurUserProfileSignal.use();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const { data: friendUser } = useFriendsQuery();
 
-  const maxFriendsToShow = 4;
-  const friends = user?.friends || [];
-  const displayedFriends = friends.slice(0, maxFriendsToShow);
+  const isMe = user && userMe && user.id === userMe.id;
+
+  const friends = isMe ? friendUser?.data?.data || [] : user?.friends || [];
 
   const { mutateAsync, isPending: isSendRequestPending } =
     useSendRequestMutation();
 
   const { mutateAsync: removeRequest, isPending: isRemoveRequestPending } =
     useRemoveRequestMutation();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isCoveModalOpen, setIsCoveModalOpen] = useState(false);
-  const [isModalOpenAvtUserId, setIsModalOpenAvtUserId] = useState(false);
 
   const { data } = useSendRequestsQuery();
 
@@ -56,27 +60,16 @@ const CoverPage = () => {
   const handleSendRequest = useCallback(() => {
     if (!user || isLoading) return;
 
-    setIsLoading(true); // Bật trạng thái loading
-    mutateAsync(user.id)
-      .then(() => {
-        alert('Đã gửi yêu cầu kết bạn!');
-      })
-      .catch((error) => {
-        console.error('Lỗi khi gửi yêu cầu kết bạn:', error);
-        alert('Lỗi: ' + error.message);
-      })
-      .finally(() => {
-        setIsLoading(false); // Tắt trạng thái loading
-      });
+    setIsLoading(true);
+    mutateAsync(user.id).finally(() => {
+      setIsLoading(false);
+    });
   }, [user, mutateAsync, isLoading]);
 
   const handleRemoveRequest = () => {
-    console.log(user?.id);
     if (!user || isRemoveRequestPending) return;
     removeRequest(user?.id);
   };
-
-  const isMe = user && userMe && user.id === userMe.id;
 
   const targetLink = isMe ? '/me' : `/${user?.id || ''}`;
   const profileLink = isMe ? '/me/profile' : `/${user?.id || ''}/profile`;
@@ -120,21 +113,27 @@ const CoverPage = () => {
 
                 <div className='flex gap-1 mt-2 justify-center md:justify-start'>
                   <div className='flex items-center'>
-                    {displayedFriends.map((friend) => (
+                    {friends.slice(0, 4).map((friend, index) => (
                       <div
                         key={friend.id}
                         className={`friend-item w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-white ${
-                          displayedFriends.indexOf(friend) !== 0 ? '-ml-2' : ''
+                          index !== 0 ? '-ml-2' : ''
                         }`}
                       >
-                        <img
-                          src={friend?.avatarUrl || '/images/git.png'}
-                          alt={`Avatar của ${friend.fullName}`}
+                        <Avatar
+                          src={friend?.avatarUrl}
                           className='w-full h-full object-cover'
-                          title={friend.fullName}
+                          fallBack={friend?.fullName}
                         />
                       </div>
                     ))}
+
+                    {/* Nếu có hơn 5 bạn, hiển thị dấu "+x" */}
+                    {friends.length > 5 && (
+                      <div className='w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-gray-300 border-2 border-white text-xs font-bold -ml-2'>
+                        +{friends.length - 4}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -252,21 +251,27 @@ const CoverPage = () => {
             {/* Danh sách bạn bè */}
             <div className='flex gap-1 justify-center p-2'>
               <div className='flex items-center'>
-                {displayedFriends.map((friend) => (
+                {friends.slice(0, 4).map((friend, index) => (
                   <div
                     key={friend.id}
-                    className={`friend-item w-8 h-8 rounded-full overflow-hidden border-2 border-white ${
-                      displayedFriends.indexOf(friend) !== 0 ? '-ml-2' : ''
+                    className={`friend-item w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-white ${
+                      index !== 0 ? '-ml-2' : ''
                     }`}
                   >
-                    <img
-                      src={friend?.avatarUrl || '/images/git.png'}
-                      alt={`Avatar của ${friend.fullName}`}
+                    <Avatar
+                      src={friend?.avatarUrl}
                       className='w-full h-full object-cover'
-                      title={friend.fullName}
+                      fallBack={friend?.fullName}
                     />
                   </div>
                 ))}
+
+                {/* Nếu có hơn 5 bạn, hiển thị dấu "+x" */}
+                {friends.length > 5 && (
+                  <div className='w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center bg-gray-300 border-2 border-white text-xs font-bold -ml-2'>
+                    +{friends.length - 4}
+                  </div>
+                )}
               </div>
             </div>
             {/* Danh sách bạn bè */}
