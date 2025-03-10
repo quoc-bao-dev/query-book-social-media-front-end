@@ -28,7 +28,7 @@ const PostCreate = () => {
           <div className='flex gap-4'>
             <div className='flex gap-2'>
               <div className=''>
-                <MediaIcon className='fill-primary-500' />
+                <MediaIcon className='size-6 fill-primary-500' />
               </div>
               <p>Image</p>
             </div>

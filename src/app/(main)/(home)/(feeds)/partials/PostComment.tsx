@@ -5,31 +5,47 @@ import LoadingIcon from '@/components/icons/LoadingIcon';
 import MediaIcon from '@/components/icons/MediaIcon';
 import SendIcon from '@/components/icons/SendIcon';
 import { cn } from '@/lib/utils';
-import { useCommentMutation } from '@/queries/comment';
+import { useCommentMutation, useReplyCommentMutation } from '@/queries/comment';
 import { useAuth } from '@/store/authSignal';
+import { swal } from '@/utils/swal';
 import { uploadImages } from '@/utils/uploadUtils';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useListImageDetail } from '../signal/listImageDetail';
 
-const PostComment = ({ postId }: { postId: string }) => {
-  const [images, setImages] = useState<File[]>([]);
+const PostComment = ({ postId, mode }: { postId: string; mode: string }) => {
+  const [images, setImage] = useState<File[]>([]);
   const [errorComment, setErrorComment] = useState('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutateAsync: comment } = useCommentMutation(postId);
+  const { mutateAsync: replyComment } = useReplyCommentMutation(postId);
+
+  const { setImages } = useListImageDetail();
 
   const handleImageChange = (event: any) => {
     const files = event.target.files;
     if (files) {
       const newImages = Array.from(files);
-      setImages((pre) => [...pre, ...newImages]);
+      setImage(newImages);
+      if (newImages.length >= 2) {
+        swal.fire({
+          icon: 'error',
+          title: 'Lỗi',
+          text: 'Chỉ được upload tối đa 1 ảnh',
+          confirmButtonColor: '#0abf7e',
+        });
+      }
     }
   };
 
+  useEffect(() => {
+    setImages(images);
+  }, [images]);
+
   const handleRemoveImage = (index: number) => () => {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
+    const newImages = [];
+    setImage(newImages);
   };
 
   const handleUploadImage = () => {
@@ -43,11 +59,11 @@ const PostComment = ({ postId }: { postId: string }) => {
   const { user } = useAuth();
 
   const handleComment = async () => {
-    if (!inputRef.current?.value) {
+    setIsLoading(true);
+    if (!inputRef.current?.value || isLoading) {
       return;
     }
 
-    setIsLoading(true);
     const payload = {
       content: inputRef.current?.value,
     };
@@ -64,39 +80,30 @@ const PostComment = ({ postId }: { postId: string }) => {
       }
     }
 
-    await comment(payload);
+    if (mode === 'onPage') {
+      await comment(payload);
+    }
+    if (mode === 'repLy') {
+      await replyComment(payload);
+      swal.fire({
+        icon: 'success',
+        title: 'Thành công',
+        text: 'Trả lời bình luận thành công',
+        confirmButtonColor: '#0abf7e',
+      });
+    }
 
     setIsLoading(false);
-    setImages([]);
+    setImage([]);
 
     if (inputRef.current) {
       inputRef.current.value = '';
     }
-
     setErrorComment('');
   };
 
   return (
     <>
-      {/* Hiện images trong comment */}
-      {images.map((image, index) => (
-        <div key={index} className='relative flex pl-[52px] w-[250px]'>
-          <Image
-            src={URL.createObjectURL(image)}
-            alt=''
-            className='w-full h-auto rounded-lg'
-            width={1000}
-            height={1000}
-          />
-          <div
-            className='absolute top-1 right-1 cursor-pointer p-[2px] rounded-full bg-gray-200/60 text-gray-700'
-            onClick={handleRemoveImage(index)}
-          >
-            <DeleteIcon className='size-[18px]' />
-          </div>
-        </div>
-      ))}
-
       <div className='flex py-1'>
         <div className='flex justify-center'>
           <Avatar
@@ -137,6 +144,29 @@ const PostComment = ({ postId }: { postId: string }) => {
           </div>
         </div>
       </div>
+
+      {/* Hiện images trong comment */}
+
+      {images.slice(0, 1).map((image, index) => (
+        <div
+          key={index}
+          className='relative flex ml-[52px] border rounded-lg max-w-[150px] h-[145px] '
+        >
+          <Image
+            src={URL.createObjectURL(image)}
+            alt=''
+            className='object-contain rounded-lg '
+            width={1000}
+            height={1000}
+          />
+          <div
+            className='absolute top-1 right-1 cursor-pointer p-[2px] rounded-full bg-gray-200/60 text-gray-700'
+            onClick={handleRemoveImage(index)}
+          >
+            <DeleteIcon className='size-4' />
+          </div>
+        </div>
+      ))}
     </>
   );
 };

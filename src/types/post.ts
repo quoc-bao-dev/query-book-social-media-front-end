@@ -32,6 +32,7 @@ type Like = {
   handle: string;
 };
 type Author = {
+  id: string;
   name: string;
   email: string;
   avatar?: string;
@@ -39,20 +40,30 @@ type Author = {
   fullName: string;
 };
 
+type Replies = {
+  id: string;
+  author: Author;
+  content: string;
+  isReply: boolean
+}
+
 type Comment = {
   id: string;
+  author: Author;
   username: string;
   fullName: string;
   avatarUrl?: string;
   content: string;
   likes: any[];
-  replies: any[];
+  replies: Replies[];
   media?: Media;
   mediaUrl?: string;
   createdAt: string;
   updatedAt: string;
   userId: string;
 };
+
+
 
 export type Feed = {
   id: string;
