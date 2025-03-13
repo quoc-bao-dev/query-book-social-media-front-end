@@ -9,6 +9,7 @@ import SetCurUserProfileSignal from '../../partials/SetCurUserProfileSignal';
 
 const layout = ({ children }: PropsWithChildren) => {
   const { user } = useAuth();
+
   return (
     <div className='block md:flex md:justify-between md:gap-4 px-4 md:px-0'>
       {/* About */}
@@ -53,27 +54,49 @@ const layout = ({ children }: PropsWithChildren) => {
           <div className='flex items-center mt-4 px-4 space-x-3 group relative'>
             <MapPin />
             <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
-              Binh Tan, Ho Chi Minh City
+              {Array.isArray(user?.address) && user.address.length > 0 ? (
+                user.address.join(', ') // Chuyển mảng thành chuỗi, cách nhau bởi dấu phẩy
+              ) : (
+                <span className='flex justify-center items-center text-neutral-400 italic opacity-50'>
+                  Chưa có địa chỉ
+                </span>
+              )}
             </span>
           </div>
 
           <div className='flex items-center mt-4 px-4 space-x-3 group relative'>
             <Inbox />
             <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
-              jaydondev@gmail.com
-            </span>
-          </div>
-          <div className='flex items-center mt-4 px-4 space-x-3 group relative'>
-            <Phone />
-            <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
-              0919 616 224
+              {user?.email || (
+                <span className='flex justify-center items-center text-neutral-400 italic opacity-50'>
+                  Chưa có Email
+                </span>
+              )}
             </span>
           </div>
           <div className='flex items-center mt-4 px-4 space-x-3 group relative'>
             <GlobeAlt />
-            <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
-              jaydon.dev
-            </span>
+            <div className='text-sm text-neutral-800'>
+              {Array.isArray(user?.links) && user.links.length > 0 ? (
+                user.links.map((link, index) => (
+                  <span key={index}>
+                    <a
+                      href={link.url}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className="relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 hover:after:w-full"
+                    >
+                      {link.title}
+                    </a>
+                    {index < user.links.length - 1 ? ', ' : ''}
+                  </span>
+                ))
+              ) : (
+                <span className='flex justify-center items-center text-neutral-400 italic opacity-50'>
+                  Chưa có liên kết
+                </span>
+              )}
+            </div>
           </div>
         </div>
         {/**/}
