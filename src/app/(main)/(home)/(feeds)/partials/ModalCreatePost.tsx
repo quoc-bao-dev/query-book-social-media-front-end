@@ -22,6 +22,7 @@ import { config } from '@/config';
 import axiosClient from '@/httpClient';
 import { useCreatePostMutation } from '@/queries/post';
 import { useAuth } from '@/store/authSignal';
+import { PostResponse } from '@/types/post';
 import { extractHashtags } from '@/utils/hashtagUtils';
 import { getFirstCharacter } from '@/utils/nameUtilts';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -35,38 +36,47 @@ import CreatePostImage from './CreatePostImage';
 
 type ModalCreatePostSignal = {
   isOpen: boolean;
+  curPost: Pick<
+    PostResponse,
+    'id' | 'author' | 'content' | 'hashTags' | 'media' | 'mediaUrls'
+  >;
 };
 
 export const sModalCreatePost = signify<ModalCreatePostSignal>({
   isOpen: false,
+  curPost: {
+    id: '',
+    author: {
+      id: '',
+      name: '',
+      email: '',
+      avatar: '',
+      avatarUrl: '',
+      fullName: '',
+    },
+    content: '',
+    media: [],
+    mediaUrls: [],
+    hashTags: [],
+  },
 });
 
-export const useModalCreatePost = sModalCreatePost.use;
+export const useModalCreatePost = () => ({
+  setEditCurPost: (post: PostResponse) =>
+    sModalCreatePost.set((n) => (n.value.curPost = post)),
+});
 
-const ssOpenFormModal = sModalCreatePost.slice((s) => s.isOpen);
-
-const ModalCreatePost = () => {
+const ModalCreatePost = ({ onClick }: { onClick: () => void }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const { isOpen, curPost } = sModalCreatePost.use();
   const queryClient = useQueryClient();
-
   const { user } = useAuth();
-
   const name = getFirstCharacter(user?.fullName || '');
-
-  const isShow = ssOpenFormModal.use();
-
   const { mutateAsync } = useCreatePostMutation();
 
   const onModalChange = (isOpen: boolean) => {
     sModalCreatePost.set((n) => (n.value.isOpen = isOpen));
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFiles(Array.from(event.target.files)); // Chuyển FileList thành mảng
-    }
   };
 
   const uploadFile = async () => {
@@ -97,6 +107,19 @@ const ModalCreatePost = () => {
     }
   };
 
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (event.target.files) {
+      setFiles((prevFiles) => [
+        ...prevFiles,
+        ...Array.from(event.target.files!),
+      ]); // Giữ lại ảnh cũ và thêm ảnh mới
+    }
+  };
+
+  console.log('File', files);
+
   //handle form
   const {
     // Bắt lỗi form
@@ -125,6 +148,8 @@ const ModalCreatePost = () => {
         sourceType: 'file',
       }));
 
+    console.log('medias', medias);
+
     const payload = {
       content: data.content,
       status: data.status,
@@ -145,10 +170,16 @@ const ModalCreatePost = () => {
     setFiles([]);
     sModalCreatePost.set((n) => (n.value.isOpen = false));
     reset();
+    sModalCreatePost.reset();
   };
 
   return (
-    <Modal isOpen={isShow} onClose={() => closeAllFiles()}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        closeAllFiles();
+      }}
+    >
       <div className='w-[500px] relative'>
         <form
           className='w-full bg-card rounded-lg'
@@ -156,7 +187,12 @@ const ModalCreatePost = () => {
         >
           <div>
             <div className='py-4 text-xl'>
-              <p className='text-center font-semibold'>Tạo bài viết</p>
+              {curPost.id && (
+                <p className='text-center font-semibold'>Chỉnh sửa bài viết</p>
+              )}
+              {!curPost.id && (
+                <p className='text-center font-semibold'>Tạo bài viết</p>
+              )}
             </div>
           </div>
 
@@ -201,7 +237,10 @@ const ModalCreatePost = () => {
                 control={control}
                 name='content'
                 render={({ field }) => (
-                  <AutoResizeTextarea onchange={field.onChange} />
+                  <AutoResizeTextarea
+                    defaultValue={curPost.content}
+                    onchange={field.onChange}
+                  />
                 )}
               />
 

@@ -1,13 +1,15 @@
 'use client';
 import { useAuth } from '@/store/authSignal';
-import { use, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 type AutoResizeTextareaProps = {
   onchange: () => void;
+  defaultValue?: string;
 };
 
 const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = ({
   onchange,
+  defaultValue,
 }) => {
   const { user } = useAuth();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -37,6 +39,7 @@ const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = ({
       placeholder={`${user?.lastName} ơi, bạn đang nghĩ gì thế?`}
       onInput={handleInput}
       onChange={onchange}
+      defaultValue={defaultValue}
     ></textarea>
   );
 };

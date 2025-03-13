@@ -8,7 +8,6 @@ type Props = {
 };
 const CreatePostImage = ({ lsImage }: Props) => {
   const { showModal, setImages, setCurIndex } = useListImageDetail();
-  console.log('sssss', lsImage);
 
   const [File, setFiles] = useState(lsImage);
 

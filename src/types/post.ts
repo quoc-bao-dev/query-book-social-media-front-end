@@ -40,14 +40,16 @@ type Author = {
   fullName: string;
 };
 
-type Replies = {
+export type Replies = {
   id: string;
   author: Author;
   content: string;
   isReply: boolean
+  media?: Media;
+  mediaUrl: string;
 }
 
-type Comment = {
+export type Comment = {
   id: string;
   author: Author;
   username: string;

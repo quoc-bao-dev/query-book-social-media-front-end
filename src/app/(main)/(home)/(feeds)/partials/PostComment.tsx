@@ -13,13 +13,26 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useListImageDetail } from '../signal/listImageDetail';
 
-const PostComment = ({ postId, mode }: { postId: string; mode: string }) => {
+const PostComment = ({
+  postId,
+  idComment,
+  mode,
+  onReply,
+}: {
+  postId: string;
+  mode: string;
+  idComment: string;
+  onReply?: () => void;
+}) => {
   const [images, setImage] = useState<File[]>([]);
   const [errorComment, setErrorComment] = useState('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutateAsync: comment } = useCommentMutation(postId);
-  const { mutateAsync: replyComment } = useReplyCommentMutation(postId);
+  const { mutateAsync: replyComment } = useReplyCommentMutation(
+    postId,
+    idComment,
+  );
 
   const { setImages } = useListImageDetail();
 
@@ -27,6 +40,7 @@ const PostComment = ({ postId, mode }: { postId: string; mode: string }) => {
     const files = event.target.files;
     if (files) {
       const newImages = Array.from(files);
+
       setImage(newImages);
       if (newImages.length >= 2) {
         swal.fire({
@@ -71,6 +85,8 @@ const PostComment = ({ postId, mode }: { postId: string; mode: string }) => {
     if (images.length > 0) {
       const media = (await uploadImages(images))?.files?.[0];
 
+      console.log('media:', media);
+
       if (media) {
         payload.media = {
           fileName: media.filename,
@@ -83,14 +99,9 @@ const PostComment = ({ postId, mode }: { postId: string; mode: string }) => {
     if (mode === 'onPage') {
       await comment(payload);
     }
+
     if (mode === 'repLy') {
       await replyComment(payload);
-      swal.fire({
-        icon: 'success',
-        title: 'Thành công',
-        text: 'Trả lời bình luận thành công',
-        confirmButtonColor: '#0abf7e',
-      });
     }
 
     setIsLoading(false);
@@ -98,6 +109,10 @@ const PostComment = ({ postId, mode }: { postId: string; mode: string }) => {
 
     if (inputRef.current) {
       inputRef.current.value = '';
+    }
+
+    if (onReply) {
+      onReply();
     }
     setErrorComment('');
   };
@@ -117,6 +132,11 @@ const PostComment = ({ postId, mode }: { postId: string; mode: string }) => {
             ref={inputRef}
             readOnly={false}
             onChange={(e) => setErrorComment(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !isLoading) {
+                handleComment();
+              }
+            }}
             type='text'
             className='w-full h-[40px] border px-2 rounded-lg focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500'
             placeholder='Write a comment'
