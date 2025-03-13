@@ -12,7 +12,7 @@ const SearchBarMySave = ({
   return (
     <div className='mb-6 relative'>
       <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-        <MagnifyingGlassIcon className='h-5 w-5 text-[#00A76F]' />
+        <MagnifyingGlassIcon className='h-5 w-5 text-primary-600' />
       </div>
       <input
         type='text'

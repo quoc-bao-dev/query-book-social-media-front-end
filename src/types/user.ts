@@ -13,7 +13,7 @@ export type UserResponse = {
   followingCount: number;
   role: string;
   isBlock: boolean;
-  createdAt: string;
+  createdAt?: string;
 };
 
 export type UserProfileResponse = {

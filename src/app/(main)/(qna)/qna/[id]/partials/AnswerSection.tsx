@@ -2,7 +2,9 @@
 'use client';
 
 import Avatar from '@/components/common/Avatar';
+import ChatBubbleOvalLeftIcon from '@/components/icons/ChatBubbleOvalLeftIcon';
 import CodeIcon from '@/components/icons/CodeIcon';
+import HeartIcon from '@/components/icons/HeartIcon';
 import SendIcon from '@/components/icons/SendIcon';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useAnswerMutation, useAnswerQuery } from '@/queries/answer';
@@ -19,6 +21,7 @@ import { QuestionSchema } from '../../../ask-question/schema/questionSchema';
 import ImageRender from '../../../partials/ImageRender';
 import ModalError from '../../../partials/ModalError';
 import { questionSchema } from '../schema/questionSchema';
+import Vote from '../../../partials/Vote';
 
 type AnswerSectionProps = {
   questionId: string;
@@ -56,10 +59,12 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     input.accept = 'image/*';
     input.multiple = true;
     input.click();
+
     input.onchange = (e: Event) => {
       const files = (e.target as HTMLInputElement)?.files;
       if (files) {
         const fileArray = Array.from(files);
+        console.log('Selected Files:', fileArray); // Kiểm tra xem file có đúng không
 
         if (fileArray.length + images.length > 5) {
           setErrorMessage('Bạn chỉ được upload tối đa 5 ảnh.');
@@ -67,7 +72,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           return;
         }
 
-        setImages((prev) => [...prev, ...fileArray]);
+        setImages((prev) => [...prev, ...fileArray]); // Cập nhật state
         setErrorMessage(null);
       }
     };
@@ -133,45 +138,89 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     }
   };
 
+  console.log('Cấu trúc của data:', data);
+  data?.forEach((item) => {
+    if (Array.isArray(item.votes)) {
+      console.log(`Cấu trúc votes tại item:`, item.votes);
+    }
+  });
+
+  const sortedData = data
+    ?.map((item) => {
+      const votes = item.votes || []; // Đảm bảo votes luôn là mảng
+      const totalVotes =
+        votes.filter((v) => v.voteType === 'up').length -
+        votes.filter((v) => v.voteType === 'down').length;
+
+      return { ...item, totalVotes };
+    })
+    .sort((a, b) => b.totalVotes - a.totalVotes);
+
   return (
     <div>
-      {data?.slice(0, visibleComments).map((item) => (
-        <div key={item._id} className='mt-5 pl-6 border-l-2 border-gray-200'>
-          <div className='flex items-center gap-3'>
-            <Avatar
-              src={item.userId.avatarUrl!}
-              className='w-10 h-10 rounded-full'
-              fallBack={`${item.userId.firstName} ${item.userId.lastName}`}
+      {sortedData?.slice(0, visibleComments).map((item) => (
+        <div
+          key={item._id}
+          className='relative mt-5 pl-6 border-l-2 border-neutral-100'
+        >
+          {item.votes ? (
+            <Vote
+              questionId={questionId}
+              answerId={item._id}
+              votes={item.votes}
             />
-            <p className='font-semibold'>
-              {item.userId.firstName} {item.userId.lastName}
-            </p>
-            <p className='text-2xl text-neutral-500'>•</p>
-            <p className='text-sm text-gray-500'>
-              {item.createdAt &&
-                formatDistanceToNow(item.createdAt, { addSuffix: true })}
-            </p>
-          </div>
-
-          <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
-          {item.images && <ImageRender images={item.images} />}
-
-          {item.code?.code && (
-            <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
-              <MonacoEditor
-                className='h-[300px]'
-                value={item.code.code}
-                theme='vs-dark'
-                language={item.code.fileType || 'javascript'}
-                options={{
-                  readOnly: true,
-                  domReadOnly: true,
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: false,
-                }}
-              />
-            </div>
+          ) : (
+            <>placehodle</>
           )}
+
+          <div className='mb-14'>
+            <div className='flex items-center gap-3'>
+              <Avatar
+                src={item.userId.avatarUrl!}
+                className='w-10 h-10 rounded-full'
+                fallBack={`${item.userId.firstName} ${item.userId.lastName}`}
+              />
+              <p className='font-semibold'>
+                {item.userId.firstName} {item.userId.lastName}
+              </p>
+            </div>
+            <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
+
+            {item.images && <ImageRender images={item.images} />}
+            {item.code?.code && (
+              <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
+                <MonacoEditor
+                  className='h-[300px]'
+                  value={item.code.code}
+                  theme='vs-dark'
+                  language={item.code.fileType || 'javascript'}
+                  options={{
+                    readOnly: true,
+                    domReadOnly: true,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                  }}
+                />
+              </div>
+            )}
+            <div className='mt-2 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
+              <p>
+                {item.createdAt &&
+                  formatDistanceToNow(item.createdAt, { addSuffix: true })}
+              </p>
+              <p className='text-2xl text-neutral-500'>•</p>
+
+              <button className='flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
+                <HeartIcon className='w-4 h-4' />
+                <span>Like</span>
+              </button>
+
+              <button className='flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
+                <ChatBubbleOvalLeftIcon className='w-4 h-4' />
+                <span>Reply</span>
+              </button>
+            </div>
+          </div>
         </div>
       ))}
 
@@ -185,28 +234,33 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
       )}
 
       {images.length > 0 && (
-        <div className='flex gap-2 py-2'>
-          {images.map((image, index) => (
-            <div key={index} className='relative group'>
-              <img
-                className='size-28 rounded-lg object-cover'
-                src={URL.createObjectURL(image)}
-                alt='preview'
-              />
-              {/* Nút xóa ảnh */}
-              <button
-                type='button'
-                className='absolute size-7 top-1 right-1 bg-black/70 text-white rounded-full p-1 text-xs'
-                onClick={() =>
-                  setImages((prev) => prev.filter((_, i) => i !== index))
-                }
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-
-          {/* Nếu số lượng ảnh nhỏ hơn 5, hiển thị nút thêm ảnh */}
+        <div className='flex gap-2 py-2 z-50'>
+          {images.map((image, index) => {
+            const imageUrl =
+              image instanceof File ? URL.createObjectURL(image) : '';
+            return (
+              <div key={index} className='relative group'>
+                {imageUrl && (
+                  <img
+                    className='size-28 rounded-lg object-cover'
+                    src={imageUrl}
+                    alt='preview'
+                  />
+                )}
+                {/* Nút xóa ảnh */}
+                <button
+                  type='button'
+                  className='absolute size-7 top-1 right-1 bg-black/70 text-white rounded-full p-1 text-xs'
+                  onClick={() =>
+                    setImages((prev) => prev.filter((_, i) => i !== index))
+                  }
+                >
+                  ✕
+                </button>
+              </div>
+            );
+          })}
+          {/* Nút thêm ảnh nếu chưa đủ 5 ảnh */}
           {images.length < 5 && (
             <button
               type='button'

@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { BookmarkIcon } from 'lucide-react';
+import { useState } from 'react';
 
 import ArrowDown from '@/components/icons/ArrowDown';
 import ArrowUp from '@/components/icons/ArrowUp';
@@ -9,12 +9,18 @@ import { useAnswerQuery } from '@/queries/answer';
 import {
   useGetMySaveQuestionQuery,
   useSaveQuestionMutation,
-  useUnsaveQuestionMutation,
 } from '@/queries/question';
 import ModalComment from './ModalComment';
 
 type ActionBarProps = {
   id: string;
+  countComment: number;
+};
+
+type SavedQuestion = {
+  questionId: {
+    _id: string;
+  };
 };
 
 const ActionBar = ({ id }: ActionBarProps) => {
@@ -22,26 +28,36 @@ const ActionBar = ({ id }: ActionBarProps) => {
   const { data: answerData } = useAnswerQuery(id);
   const countComment = answerData?.length || 0;
 
-  const { data } = useGetMySaveQuestionQuery();
+  const { data: savedQuestions } = useGetMySaveQuestionQuery();
   const saveMutation = useSaveQuestionMutation();
-  const unsaveMutation = useUnsaveQuestionMutation();
 
-  const isSaved = data?.some((_item) => _item.questionId._id === id);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const isSaved = savedQuestions?.some((item) => item.questionId._id === id);
+
   const handleSaveQuestion = async () => {
+    if (saveMutation.isPending) return;
+
+    queryClient.setQueryData<SavedQuestion[]>(
+      ['my-save-question'],
+      (oldData) => {
+        if (!oldData) return [];
+        return isSaved
+          ? oldData.filter((item) => item.questionId._id !== id)
+          : [...oldData, { questionId: { _id: id } }];
+      },
+    );
+
     try {
-      if (isSaved) {
-        await unsaveMutation.mutateAsync(id);
-      } else {
-        await saveMutation.mutateAsync(id);
-      }
+      await saveMutation.mutateAsync(id);
       queryClient.invalidateQueries({ queryKey: ['my-save-question'] });
     } catch (error) {
-      console.error('Error toggling save state:', error);
+      console.error('Lỗi khi lưu câu hỏi:', error);
+
+      //return if error
+      queryClient.setQueryData(['my-save-question'], savedQuestions);
     }
   };
-  console.log('id', id);
 
   return (
     <>
@@ -60,18 +76,23 @@ const ActionBar = ({ id }: ActionBarProps) => {
           <span className='font-semibold'>{countComment}</span>
         </button>
 
-        {/* Nút lưu bài viết */}
-        <button onClick={handleSaveQuestion} className='flex items-center'>
+        {/* save  */}
+        <button
+          onClick={handleSaveQuestion}
+          className='flex items-center gap-1 disabled:opacity-50'
+          disabled={saveMutation.isPending}
+        >
           <BookmarkIcon
             className={`w-5 h-5 transition ${
               isSaved ? 'fill-info-500 text-info-200' : 'text-gray-600'
             }`}
           />
-          <span>{isSaved ? 'Saved' : 'Save'}</span>
+          <span>
+            {saveMutation.isPending ? 'Saving...' : isSaved ? 'Saved' : 'Save'}
+          </span>
         </button>
       </div>
 
-      {/* Modal hiển thị bình luận */}
       <ModalComment
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

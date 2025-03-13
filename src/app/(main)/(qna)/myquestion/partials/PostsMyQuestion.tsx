@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-
 'use client';
 import { UserResponse } from '@/types/user';
 
@@ -11,12 +9,11 @@ import ImageRender from '../../partials/ImageRender';
 import QuestionContent from '../../partials/QuestionContent';
 import QuestionTitle from '../../partials/QuestionTitle';
 import PostUserInfoMyQuestion from './PostUserInfoMyQuestion';
-import Link from 'next/link';
 interface Post {
   _id: string;
   title: string;
   question: string;
-  createdAt: string;
+  createdAt?: string;
   code?: {
     code?: string;
     fileType?: string;
@@ -24,9 +21,10 @@ interface Post {
   imageUrl?: string;
   images?: string[];
   hashtags: { name: string }[];
-  likes: number;
-  comments: number;
+  likes?: number;
+  comments?: string[];
 }
+
 const isValidCode = (code: string | undefined) => {
   if (!code) return false; // Không có dữ liệu
   const trimmedCode = code.trim();
@@ -39,9 +37,11 @@ const isValidCode = (code: string | undefined) => {
 const PostsMyQuestion = ({
   post,
   user,
+  searchTerm,
 }: {
   post: Post;
   user: UserResponse;
+  searchTerm: string;
 }) => {
   return (
     <div className='rounded-lg shadow-lg p-4 mb-6 border border-border bg-card'>
@@ -49,13 +49,15 @@ const PostsMyQuestion = ({
       <PostUserInfoMyQuestion
         avatarUrl={user?.avatarUrl}
         fullName={user?.fullName}
-        createdAt={post?.createdAt}
+        createdAt={post?.createdAt ?? ''}
       />
 
       {/* Title */}
-      <Link href={`/qna/${post._id}`}>
-        <QuestionTitle title={post.title} />
-      </Link>
+      <QuestionTitle
+        postId={post._id}
+        title={post.title}
+        searchTerm={searchTerm}
+      />
 
       {/* Content */}
       <QuestionContent content={post.question} />
@@ -74,7 +76,7 @@ const PostsMyQuestion = ({
 
       {/* Actions */}
       <div className='flex justify-between items-center'>
-        <ActionBar id={post._id} />
+        <ActionBar id={post._id} countComment={post.comments?.length || 0} />
         {isValidCode(post.code?.code) && (
           <FileType fileType={post.code?.fileType || 'plaintext'} />
         )}

@@ -1,7 +1,7 @@
-import Avatar from '@/components/common/Avatar';
 import { QuestionResponse } from '@/types/question';
 import { formatDistanceToNow } from 'date-fns';
 import ActionBar from '../../../detail-qna/partials/ActionBar';
+import AvatarUser from '../../../partials/AvatarUser';
 import ButtonBack from '../../../partials/ButtonBack';
 import CodeEditor from '../../../partials/CodeEditor';
 import FileType from '../../../partials/FileType';
@@ -9,8 +9,6 @@ import HashTagPost from '../../../partials/HashTagPost';
 import ImageRender from '../../../partials/ImageRender';
 import QuestionContent from '../../../partials/QuestionContent';
 import QuestionTitle from '../../../partials/QuestionTitle';
-import AvatarUser from '../../../partials/AvatarUser';
-// import ImageRender from '../../../partials/ImageRender';
 
 const QuestionSection = ({ question }: { question: QuestionResponse }) => {
   console.log('question section', question);
@@ -53,7 +51,7 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
       </div>
 
       {/* Question Title */}
-      <QuestionTitle title={question.title} />
+      <QuestionTitle postId={question._id} title={question.title} />
 
       {/* Question Content */}
       <QuestionContent content={question.question} />

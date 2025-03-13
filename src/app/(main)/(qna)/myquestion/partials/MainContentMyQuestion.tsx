@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-// import AskQuestionModal from "../../partials/AskQuestionModal";
 import SetCurUserProfileSignal from '@/app/(main)/(profile)/partials/SetCurUserProfileSignal';
 import { useGetMyQuestion } from '@/queries/question';
 import { useAuth } from '@/store/authSignal';
@@ -12,23 +11,12 @@ import SearchBarMyQuestion from './SearchBarMyQuestion';
 
 const MainContentMyQuestion = () => {
   const { user } = useAuth();
-  // const [curPage, setCurPage] = useState(1);
 
   const param = useSearchParams();
   const mode = param.get('mode');
   const [searchTerm, setSearchTerm] = useState('');
 
   const { data } = useGetMyQuestion();
-  // const { data: questionResponse } = useQuestionQuery({
-  //   limit: 10,
-  //   page: curPage,
-  //   search: searchTerm,
-  // });
-
-  // const { data, paginnation } = questionResponse;
-
-  // const lsQuestions = questionResponse?.data;
-  // const pagination = questionResponse?.pagination;
 
   const filteredPosts =
     data?.filter((post) =>
@@ -60,20 +48,16 @@ const MainContentMyQuestion = () => {
           .reverse()
           .slice()
           .map((post) => (
-            <PostsMyQuestion key={post._id} post={post} user={user} />
+            <PostsMyQuestion
+              key={post._id}
+              post={post}
+              user={user}
+              searchTerm={searchTerm}
+            />
           ))
       ) : (
         <p className='text-center text-neutral-500 mt-4'>No results found</p>
       )}
-      {/* {filteredPosts.length > 0 && pagination && (
-        <Pagination
-          currentPage={pagination.page}
-          totalPage={pagination.totalPage}
-          hasPreviousPage={pagination.hasPreviousPage}
-          hasNextPage={pagination.hasNextPage}
-          onPageChange={setCurPage}
-        />
-      )} */}
     </div>
   );
 };

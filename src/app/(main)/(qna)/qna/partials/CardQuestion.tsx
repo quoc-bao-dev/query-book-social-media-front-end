@@ -1,10 +1,10 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAnswerQuery } from '@/queries/answer';
 import { getFirstCharacter } from '@/utils/nameUtilts';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import Avatar from '@/components/common/Avatar';
 
 type Props = {
   id: string;
@@ -64,10 +64,12 @@ const CardQuestion = ({
 
           {/* Avatar và thông tin người đăng */}
           <div className='flex items-center space-x-2 mt-1'>
-            <Avatar className='w-10 h-10 rounded-full'>
-              <AvatarImage src={avatar} />
-              <AvatarFallback>{getFirstCharacter(name)}</AvatarFallback>
-            </Avatar>
+            <Avatar
+              className='w-10 h-10 rounded-full'
+              src={avatar}
+              fallBack={getFirstCharacter(name)}
+            />
+
             <div className='flex justify-around items-center gap-1'>
               <p className='text-sm text-neutral-500'>by {name}</p>
               <p className='text-2xl text-neutral-500'>•</p>

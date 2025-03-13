@@ -17,7 +17,7 @@ const ImageRender = ({ images }: { images: string[] }) => {
 
   return (
     <div
-      className='relative flex w-24 items-center gap-2 p-2 border rounded-md bg-info-100 shadow-sm cursor-pointer hover:bg-[#374151]'
+      className='relative mt-1 flex w-24 items-center gap-2 p-2 border rounded-md bg-info-100 shadow-sm cursor-pointer hover:bg-[#374151]'
       onClick={ShowimageDetail}
     >
       {/* Chấm đỏ thông báo */}
