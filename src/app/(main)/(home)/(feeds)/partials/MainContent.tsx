@@ -80,8 +80,6 @@ const MainContent = () => {
       scrollTop + clientHeight < scrollHeight &&
       hasNextPage
     ) {
-      console.log(`Fetching more posts... Current post count: ${posts.length}`);
-
       // Xóa bài viết cũ (nếu cần)
       clearPost();
 

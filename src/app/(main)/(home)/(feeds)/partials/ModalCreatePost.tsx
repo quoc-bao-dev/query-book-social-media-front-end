@@ -18,82 +18,144 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { config } from '@/config';
-import axiosClient from '@/httpClient';
-import { useCreatePostMutation } from '@/queries/post';
+import { useCreatePostMutation, useUpdatePostMutation } from '@/queries/post';
 import { useAuth } from '@/store/authSignal';
+import { PostResponse } from '@/types/post';
 import { extractHashtags } from '@/utils/hashtagUtils';
+import { media } from '@/utils/mediaUtils';
 import { getFirstCharacter } from '@/utils/nameUtilts';
+import { uploadImages } from '@/utils/uploadUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { signify } from 'react-signify';
 import { createPost, CreatePostSchema } from '../schema/CreatePostSchema';
 import AutoResizeTextarea from './AutoResizeTextarea';
 import CreatePostImage from './CreatePostImage';
+import { Media, MediaUpload } from '@/types/common';
+import { set } from 'date-fns';
 
 type ModalCreatePostSignal = {
   isOpen: boolean;
+  curPost: Pick<
+    PostResponse,
+    'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls'
+  > & { media: MediaUpload[] };
 };
 
 export const sModalCreatePost = signify<ModalCreatePostSignal>({
   isOpen: false,
+  curPost: {
+    id: '',
+    author: {
+      id: '',
+      name: '',
+      email: '',
+      avatar: '',
+      avatarUrl: '',
+      fullName: '',
+    },
+    content: '',
+    mediaUrls: [],
+    hashTags: [],
+    media: [],
+  },
 });
 
-export const useModalCreatePost = sModalCreatePost.use;
-
-const ssOpenFormModal = sModalCreatePost.slice((s) => s.isOpen);
+export const useModalCreatePost = () => ({
+  setEditCurPost: (post: PostResponse) =>
+    sModalCreatePost.set((n) => (n.value.curPost = post)),
+});
 
 const ModalCreatePost = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const [imageReview, setImageReview] = useState<string[]>([]);
+  const [imageUpload, setImageUpload] = useState<MediaUpload[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const { isOpen, curPost } = sModalCreatePost.use();
   const queryClient = useQueryClient();
-
   const { user } = useAuth();
-
   const name = getFirstCharacter(user?.fullName || '');
-
-  const isShow = ssOpenFormModal.use();
-
   const { mutateAsync } = useCreatePostMutation();
+  const { mutateAsync: updatePost } = useUpdatePostMutation(curPost.id);
+
+  useEffect(() => {
+    const images = files.map((file) => URL.createObjectURL(file));
+
+    // Lọc những ảnh không phải remove thì lấy lại
+    const imagesInCurPost = curPost.media.map((img) => media.toImage(img)!);
+
+    // Gọp 2 mảng thành mảng mới để show ra giao diện
+    setImageReview([...imagesInCurPost, ...images]);
+  }, [files, curPost]);
+
+  console.log('imageUpload', imageUpload);
+  console.log('curPost', curPost.media);
+  console.log('imageReview', imageReview);
 
   const onModalChange = (isOpen: boolean) => {
     sModalCreatePost.set((n) => (n.value.isOpen = isOpen));
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFiles(Array.from(event.target.files)); // Chuyển FileList thành mảng
+  // Delete image
+  const onDeleteItem = (indexToRemove: number) => {
+    if (indexToRemove >= curPost.media.length) {
+      indexToRemove = indexToRemove - curPost.media.length;
+      setFiles((prevFiles) =>
+        // Lọc qua Image nào khác indexToRemove thì giữ lại không thì xóa đi
+        prevFiles.filter((_, index) => index !== indexToRemove),
+      );
+    }
+
+    if (indexToRemove < curPost.media.length) {
+      const tempRemove = curPost.media[indexToRemove];
+      setImageUpload((prev) => [...prev, { ...tempRemove, action: 'remove' }]);
+      sModalCreatePost.set((n) => {
+        n.value.curPost.media = n.value.curPost.media.filter(
+          (_, index) => index !== indexToRemove,
+        );
+      });
     }
   };
 
-  const uploadFile = async () => {
-    if (files.length === 0) {
-      return;
-    }
+  // const uploadFile = async () => {
+  //   if (imageReview.length === 0) {
+  //     return;
+  //   }
+  //   const formData = new FormData();
 
-    const formData = new FormData();
+  //   for (let i = 0; i < imageReview.length; i++) {
+  //     formData.append('files', imageReview[i]);
+  //   }
 
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
-    }
+  //   console.log('imageReview', imageReview);
 
-    try {
-      const response = await axiosClient.post(
-        `${config.IMAGE_SERVER_URL}/uploads`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'x-api-key': config.IMAGE_API_KEY,
-          },
-        },
-      );
-      return response.data;
-    } catch (error) {
-      console.log(error);
+  //   try {
+  //     const response = await axiosClient.post(
+  //       `${config.IMAGE_SERVER_URL}/uploads`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data',
+  //           'x-api-key': config.IMAGE_API_KEY,
+  //         },
+  //       },
+  //     );
+  //     return response.data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (event.target.files) {
+      setFiles((prevFiles) => [
+        ...prevFiles,
+        ...Array.from(event.target.files!),
+      ]); // Giữ lại ảnh cũ và thêm ảnh mới
     }
   };
 
@@ -114,24 +176,38 @@ const ModalCreatePost = () => {
     const hashTags = extractHashtags(data.content);
     // Set loading cho người dùng chờ
     setIsLoading(true);
-    const mediasRes = await uploadFile();
+
+    // Gửi file image từ Ram to Server
+    const mediasRes = files.length > 0 ? await uploadImages(files) : [];
 
     const medias =
-      mediasRes?.files &&
-      mediasRes.files.map((media: { filename: string }) => ({
-        fileName: media.filename,
-        type: 'image',
-        sourceType: 'file',
-      }));
+      (mediasRes?.files &&
+        mediasRes.files.map((media: { filename: string }) => ({
+          action: 'add',
+          fileName: media.filename,
+          type: 'image',
+          sourceType: 'file',
+        }))) ??
+      [];
+
+    // Gọp image của Files và curPost.media
+    const lsMedias = [...imageUpload, ...medias!];
 
     const payload = {
       content: data.content,
       status: data.status,
       hashTags,
-      media: medias,
+      media: lsMedias,
     };
 
-    await mutateAsync(payload);
+    console.log('payload', payload);
+
+    if (!curPost.id) {
+      await mutateAsync(payload);
+    } else {
+      await updatePost(payload);
+    }
+
     // set loading
     setIsLoading(false);
     queryClient.invalidateQueries({ queryKey: ['post', user?.id] });
@@ -142,10 +218,18 @@ const ModalCreatePost = () => {
 
   const closeAllFiles = () => {
     setFiles([]);
+    sModalCreatePost.set((n) => (n.value.isOpen = false));
+    reset();
+    sModalCreatePost.reset();
   };
 
   return (
-    <Modal isOpen={isShow} onClose={() => onModalChange(false)}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        closeAllFiles();
+      }}
+    >
       <div className='w-[500px] relative'>
         <form
           className='w-full bg-card rounded-lg'
@@ -153,7 +237,12 @@ const ModalCreatePost = () => {
         >
           <div>
             <div className='py-4 text-xl'>
-              <p className='text-center font-semibold'>Tạo bài viết</p>
+              {curPost.id && (
+                <p className='text-center font-semibold'>Chỉnh sửa bài viết</p>
+              )}
+              {!curPost.id && (
+                <p className='text-center font-semibold'>Tạo bài viết</p>
+              )}
             </div>
           </div>
 
@@ -173,7 +262,7 @@ const ModalCreatePost = () => {
                       defaultValue={field.value}
                     >
                       <SelectTrigger className='w-[180px] h-6'>
-                        <SelectValue placeholder='Select post status' />
+                        <SelectValue placeholder='Public' />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
@@ -198,19 +287,28 @@ const ModalCreatePost = () => {
                 control={control}
                 name='content'
                 render={({ field }) => (
-                  <AutoResizeTextarea onchange={field.onChange} />
+                  <AutoResizeTextarea
+                    defaultValue={curPost.content}
+                    onchange={field.onChange}
+                  />
                 )}
               />
 
+              {/* Báo lỗi cho người dùng */}
+              <div className='text-center'>
+                {errors.content && (
+                  <p className='text-error-500'>{errors.content.message}</p>
+                )}
+              </div>
+
+              {/* Show image */}
               <div className='mt-5 flex gap-2 justify-center'>
                 <CreatePostImage
-                  lsImage={files.map((file) => URL.createObjectURL(file))}
+                  onDelete={onDeleteItem}
+                  lsImage={imageReview}
                 />
               </div>
             </div>
-            {errors.content && (
-              <p className='text-error-500'>{errors.content.message}</p>
-            )}
           </div>
 
           <div className='w-[476px] border-[0.5px] border-gray-300 h-[50px] mx-auto rounded-md px-2 py-2 grid grid-cols-2 mt-5'>
@@ -247,8 +345,10 @@ const ModalCreatePost = () => {
                   <LoadingIcon />
                   <span className='ml-2'>Loading...</span>
                 </div>
+              ) : curPost.id ? (
+                'Lưu'
               ) : (
-                <p>Đăng</p>
+                'Đăng'
               )}
             </Button>
           </div>

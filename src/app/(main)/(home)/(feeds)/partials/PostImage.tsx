@@ -21,13 +21,13 @@ const PostImage = ({ lsImage }: Props) => {
   if (lsImage.length === 1) {
     return (
       <div>
-        <div className='absolute bg-gray-200 inset-0 overflow-hidden rounded-md'>
+        <div className='absolute inset-0 overflow-hidden rounded-md'>
           {lsImage.map((mediaUrl, index) => (
             <Image
               onClick={showDetail(index)}
               key={index}
               src={`${mediaUrl}`}
-              className='rounded-md text-center w-full h-auto opacity-50 blur-sm object-contain'
+              className='rounded-md w-full h-full object-cover opacity-50 blur-sm'
               alt=''
               width={1000}
               height={1000}
