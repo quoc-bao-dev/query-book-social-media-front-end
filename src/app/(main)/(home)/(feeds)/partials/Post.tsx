@@ -18,6 +18,7 @@ import {
   useGetCommentQuery,
 } from '@/queries/comment';
 import { useLikeMutation } from '@/queries/like';
+import { useDeletePostMutation } from '@/queries/post';
 import { useAuth } from '@/store/authSignal';
 import { Comment, PostResponse } from '@/types/post';
 import { formatDistanceToNow, parseISO } from 'date-fns';
@@ -80,6 +81,7 @@ const Post = ({ post, mode }: PostProps) => {
 
   const { mutateAsync: likePost, isPending } = useLikeMutation();
   const { mutateAsync: deleteComment } = useDeleteCommentMutation(post.id);
+  const { mutateAsync: deletePost } = useDeletePostMutation();
 
   // Chuyển đổi chuỗi thành đối tượng Date
   const date = parseISO(post.createdAt);
@@ -156,10 +158,15 @@ const Post = ({ post, mode }: PostProps) => {
     sModalCreatePost.set((n) => (n.value.isOpen = true));
   };
 
+  // Xóa bài post
+  const handleDeletePost = async () => {
+    await deletePost(post.id);
+  };
+
   return (
     <>
       <div
-        className={cn('w-full gap-5 border rounded-xl py-4 bg-card', {
+        className={cn('w-full gap-5 rounded-xl py-4 bg-card', {
           'pb-24': mode === 'onModal',
         })}
       >
@@ -202,28 +209,35 @@ const Post = ({ post, mode }: PostProps) => {
                 },
               )}
             >
-              <div
-                onClick={showEditPost}
-                className='py-1  pl-2 flex items-center hover:bg-gray-100 hover:rounded-md'
-              >
-                <EditIcon className='size-6 fill-slate-500' />
-                <button className='text-left pl-3'>
-                  <div className=''>Chỉnh sửa bài viết</div>
-                  <div className='text-slate-300 text-[12px] '>
-                    Bạn có thể chỉnh sửa bài viết của mình!
+              {post.author.id === user?.id && (
+                <>
+                  <div
+                    onClick={showEditPost}
+                    className='py-1  pl-2 flex items-center hover:bg-gray-100 hover:rounded-md'
+                  >
+                    <EditIcon className='size-6 fill-slate-500' />
+                    <button className='text-left pl-3'>
+                      <div className=''>Chỉnh sửa bài viết</div>
+                      <div className='text-slate-300 text-[12px] '>
+                        Bạn có thể chỉnh sửa bài viết của mình!
+                      </div>
+                    </button>
                   </div>
-                </button>
-              </div>
+                  <div
+                    onClick={handleDeletePost}
+                    className='py-1 flex pl-2 items-center hover:bg-gray-100 hover:rounded-md'
+                  >
+                    <DeleteIcon className='size-6 fill-slate-500' />
+                    <button className='text-left pl-3'>
+                      <div className=''>Xóa bài viết</div>
+                      <div className='text-slate-300 text-[12px] '>
+                        Bài viết này sẽ xóa khỏi trang cá nhân của bạn?
+                      </div>
+                    </button>
+                  </div>
+                </>
+              )}
 
-              <div className='py-1 flex pl-2 items-center hover:bg-gray-100 hover:rounded-md'>
-                <DeleteIcon className='size-6 fill-slate-500' />
-                <button className='text-left pl-3'>
-                  <div className=''>Xóa bài viết</div>
-                  <div className='text-slate-300 text-[12px] '>
-                    Bài viết này sẽ xóa khỏi trang cá nhân của bạn?
-                  </div>
-                </button>
-              </div>
               <div className='py-1 flex pl-2 items-center hover:bg-gray-100 hover:rounded-md'>
                 <ReportIcon className='size-6 fill-slate-500' />
                 <button className='text-left pl-3'>
@@ -388,7 +402,9 @@ const Post = ({ post, mode }: PostProps) => {
               {mode === 'onPage' && (
                 <div className='text-gray-600 ml-14'>
                   {_comment.replies.length > 0 && (
-                    <button>{_comment.replies.length} câu trả lời</button>
+                    <button onClick={() => showCommentDetail()}>
+                      {_comment.replies.length} câu trả lời
+                    </button>
                   )}
                 </div>
               )}

@@ -18,28 +18,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { config } from '@/config';
-import axiosClient from '@/httpClient';
-import { useCreatePostMutation } from '@/queries/post';
+import { useCreatePostMutation, useUpdatePostMutation } from '@/queries/post';
 import { useAuth } from '@/store/authSignal';
 import { PostResponse } from '@/types/post';
 import { extractHashtags } from '@/utils/hashtagUtils';
+import { media } from '@/utils/mediaUtils';
 import { getFirstCharacter } from '@/utils/nameUtilts';
+import { uploadImages } from '@/utils/uploadUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { signify } from 'react-signify';
 import { createPost, CreatePostSchema } from '../schema/CreatePostSchema';
 import AutoResizeTextarea from './AutoResizeTextarea';
 import CreatePostImage from './CreatePostImage';
+import { Media, MediaUpload } from '@/types/common';
+import { set } from 'date-fns';
 
 type ModalCreatePostSignal = {
   isOpen: boolean;
   curPost: Pick<
     PostResponse,
-    'id' | 'author' | 'content' | 'hashTags' | 'media' | 'mediaUrls'
-  >;
+    'id' | 'author' | 'content' | 'hashTags' | 'mediaUrls'
+  > & { media: MediaUpload[] };
 };
 
 export const sModalCreatePost = signify<ModalCreatePostSignal>({
@@ -55,9 +57,9 @@ export const sModalCreatePost = signify<ModalCreatePostSignal>({
       fullName: '',
     },
     content: '',
-    media: [],
     mediaUrls: [],
     hashTags: [],
+    media: [],
   },
 });
 
@@ -66,46 +68,85 @@ export const useModalCreatePost = () => ({
     sModalCreatePost.set((n) => (n.value.curPost = post)),
 });
 
-const ModalCreatePost = ({ onClick }: { onClick: () => void }) => {
+const ModalCreatePost = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const [imageReview, setImageReview] = useState<string[]>([]);
+  const [imageUpload, setImageUpload] = useState<MediaUpload[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, curPost } = sModalCreatePost.use();
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const name = getFirstCharacter(user?.fullName || '');
   const { mutateAsync } = useCreatePostMutation();
+  const { mutateAsync: updatePost } = useUpdatePostMutation(curPost.id);
+
+  useEffect(() => {
+    const images = files.map((file) => URL.createObjectURL(file));
+
+    // Lọc những ảnh không phải remove thì lấy lại
+    const imagesInCurPost = curPost.media.map((img) => media.toImage(img)!);
+
+    // Gọp 2 mảng thành mảng mới để show ra giao diện
+    setImageReview([...imagesInCurPost, ...images]);
+  }, [files, curPost]);
+
+  console.log('imageUpload', imageUpload);
+  console.log('curPost', curPost.media);
+  console.log('imageReview', imageReview);
 
   const onModalChange = (isOpen: boolean) => {
     sModalCreatePost.set((n) => (n.value.isOpen = isOpen));
   };
 
-  const uploadFile = async () => {
-    if (files.length === 0) {
-      return;
-    }
-
-    const formData = new FormData();
-
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
-    }
-
-    try {
-      const response = await axiosClient.post(
-        `${config.IMAGE_SERVER_URL}/uploads`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'x-api-key': config.IMAGE_API_KEY,
-          },
-        },
+  // Delete image
+  const onDeleteItem = (indexToRemove: number) => {
+    if (indexToRemove >= curPost.media.length) {
+      indexToRemove = indexToRemove - curPost.media.length;
+      setFiles((prevFiles) =>
+        // Lọc qua Image nào khác indexToRemove thì giữ lại không thì xóa đi
+        prevFiles.filter((_, index) => index !== indexToRemove),
       );
-      return response.data;
-    } catch (error) {
-      console.log(error);
+    }
+
+    if (indexToRemove < curPost.media.length) {
+      const tempRemove = curPost.media[indexToRemove];
+      setImageUpload((prev) => [...prev, { ...tempRemove, action: 'remove' }]);
+      sModalCreatePost.set((n) => {
+        n.value.curPost.media = n.value.curPost.media.filter(
+          (_, index) => index !== indexToRemove,
+        );
+      });
     }
   };
+
+  // const uploadFile = async () => {
+  //   if (imageReview.length === 0) {
+  //     return;
+  //   }
+  //   const formData = new FormData();
+
+  //   for (let i = 0; i < imageReview.length; i++) {
+  //     formData.append('files', imageReview[i]);
+  //   }
+
+  //   console.log('imageReview', imageReview);
+
+  //   try {
+  //     const response = await axiosClient.post(
+  //       `${config.IMAGE_SERVER_URL}/uploads`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           'Content-Type': 'multipart/form-data',
+  //           'x-api-key': config.IMAGE_API_KEY,
+  //         },
+  //       },
+  //     );
+  //     return response.data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -117,8 +158,6 @@ const ModalCreatePost = ({ onClick }: { onClick: () => void }) => {
       ]); // Giữ lại ảnh cũ và thêm ảnh mới
     }
   };
-
-  console.log('File', files);
 
   //handle form
   const {
@@ -138,26 +177,37 @@ const ModalCreatePost = ({ onClick }: { onClick: () => void }) => {
     // Set loading cho người dùng chờ
     setIsLoading(true);
 
-    const mediasRes = await uploadFile();
+    // Gửi file image từ Ram to Server
+    const mediasRes = files.length > 0 ? await uploadImages(files) : [];
 
     const medias =
-      mediasRes?.files &&
-      mediasRes.files.map((media: { filename: string }) => ({
-        fileName: media.filename,
-        type: 'image',
-        sourceType: 'file',
-      }));
+      (mediasRes?.files &&
+        mediasRes.files.map((media: { filename: string }) => ({
+          action: 'add',
+          fileName: media.filename,
+          type: 'image',
+          sourceType: 'file',
+        }))) ??
+      [];
 
-    console.log('medias', medias);
+    // Gọp image của Files và curPost.media
+    const lsMedias = [...imageUpload, ...medias!];
 
     const payload = {
       content: data.content,
       status: data.status,
       hashTags,
-      media: medias,
+      media: lsMedias,
     };
 
-    await mutateAsync(payload);
+    console.log('payload', payload);
+
+    if (!curPost.id) {
+      await mutateAsync(payload);
+    } else {
+      await updatePost(payload);
+    }
+
     // set loading
     setIsLoading(false);
     queryClient.invalidateQueries({ queryKey: ['post', user?.id] });
@@ -254,7 +304,8 @@ const ModalCreatePost = ({ onClick }: { onClick: () => void }) => {
               {/* Show image */}
               <div className='mt-5 flex gap-2 justify-center'>
                 <CreatePostImage
-                  lsImage={files.map((file) => URL.createObjectURL(file))}
+                  onDelete={onDeleteItem}
+                  lsImage={imageReview}
                 />
               </div>
             </div>
@@ -294,8 +345,10 @@ const ModalCreatePost = ({ onClick }: { onClick: () => void }) => {
                   <LoadingIcon />
                   <span className='ml-2'>Loading...</span>
                 </div>
+              ) : curPost.id ? (
+                'Lưu'
               ) : (
-                <p>Đăng</p>
+                'Đăng'
               )}
             </Button>
           </div>

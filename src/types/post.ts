@@ -9,7 +9,7 @@ export type PostResponse = {
   commentsCount: number;
   comments: Comment[];
   hashTags: string[];
-  media: string[];
+  media: Media[];
   mediaUrls: string[];
   status: string;
   createdAt: string;
