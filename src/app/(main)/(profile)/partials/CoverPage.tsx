@@ -3,13 +3,14 @@
 import Camera from '@/components/icons/Camera';
 import {
   useFriendsQuery,
+  useRemoveFriendMutation,
   useRemoveRequestMutation,
   useSendRequestMutation,
   useSendRequestsQuery,
 } from '@/queries/friend';
 import { useAuth } from '@/store/authSignal';
 import Link from 'next/link';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import FollowButton from '../[userId]/partials/FollowButton';
 import FollowedButton from '../[userId]/partials/FollowedButton';
 import FriendButton from '../[userId]/partials/FriendButton';
@@ -23,6 +24,7 @@ import AvatarModalUser from './AvatarModalUser';
 import Friended from '../[userId]/partials/Friended';
 import { Button } from '@/components/common/Button';
 import Avatar from '@/components/common/Avatar';
+import CancelinvitationButton from '../[userId]/partials/CancelinvitationButton';
 
 const CoverPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +46,8 @@ const CoverPage = () => {
 
   const { mutateAsync: removeRequest, isPending: isRemoveRequestPending } =
     useRemoveRequestMutation();
+  const { mutateAsync: removeFriend, isPending: isRemoveFriendPending } =
+    useRemoveFriendMutation();
 
   const { data } = useSendRequestsQuery();
 
@@ -70,6 +74,17 @@ const CoverPage = () => {
     if (!user || isRemoveRequestPending) return;
     removeRequest(user?.id);
   };
+  const handleRemoveFriends = async (id: string) => {
+    if (!user || isRemoveFriendPending) return;
+
+    try {
+      console.log('Đang xóa bạn:', id);
+      await removeFriend;
+      console.log('Xóa bạn bè thành công:', id);
+    } catch (error) {
+      console.error('Lỗi khi xóa bạn bè:', error);
+    }
+  };
 
   const targetLink = isMe ? '/me' : `/${user?.id || ''}`;
   const profileLink = isMe ? '/me/profile' : `/${user?.id || ''}/profile`;
@@ -77,6 +92,8 @@ const CoverPage = () => {
   const isSendRequest = data?.some((item) => item.id === user?.id) ?? false;
   const isFriend =
     userMe?.friends?.some((friend) => friend?.id === user?.id) ?? false;
+
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -144,20 +161,14 @@ const CoverPage = () => {
                   {user?.id !== userMe?.id && (
                     <>
                       {isSendRequest ? (
-                        <Button
-                          variant='lighten'
-                          className='h-full'
-                          onClick={handleRemoveRequest}
-                        >
-                          Remove Request
-                        </Button>
+                        <CancelinvitationButton onClick={handleRemoveRequest} />
                       ) : !isFriend ? (
                         <FriendButton
                           onClick={handleSendRequest}
                           disabled={isSendRequestPending}
                         />
                       ) : (
-                        <FriendStatusButton />
+                        <FriendStatusButton onClick={handleRemoveFriends} />
                       )}
                     </>
                   )}

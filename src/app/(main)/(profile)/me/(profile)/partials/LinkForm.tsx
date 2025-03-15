@@ -89,7 +89,7 @@ const LinkForm = ({ onClose }: LinkFormProps) => {
         <button
           type='submit'
           disabled={isPending}
-          className='px-3 py-1 bg-blue-600 text-white text-base rounded-lg hover:bg-blue-700 disabled:opacity-50'
+          className='px-3 py-1 bg-primary-500 text-white text-base rounded-lg disabled:opacity-50'
         >
           {isPending ? 'Đang lưu...' : 'Thêm liên kết'}
         </button>

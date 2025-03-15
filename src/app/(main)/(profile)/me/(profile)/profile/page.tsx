@@ -13,11 +13,11 @@ import SetCurUserProfileSignal from '../../../partials/SetCurUserProfileSignal';
 import MapPin from '@/components/icons/Map-pin';
 import Fire from '@/components/icons/Fire';
 import Document from '@/components/icons/Document';
+import { useAddressQuery } from '@/queries/address';
+import { AddressRes } from '@/types/address';
 
 const Page = () => {
   const { user } = useAuth();
-  console.log('User Data:', user);
-
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingHandle, setEditingHandl] = useState(false);
   const [isEditingBio, setEditingBio] = useState(false);
@@ -28,6 +28,21 @@ const Page = () => {
   const [bio, setBio] = useState(user?.bio || '');
 
   const { mutateAsync, isError } = useUpdateUserProfileMutation();
+
+  const [province, setProvince] = useState<AddressRes | null>();
+  const [district, setDistrict] = useState<AddressRes | null>();
+  const [ward, setWard] = useState<AddressRes | null>();
+
+  const { data: provinces } = useAddressQuery({ mode: 'provinces' });
+  const { data: districts } = useAddressQuery({
+    mode: 'provinces',
+    code: province?.code,
+  });
+  const { data: wards } = useAddressQuery({
+    mode: 'provinces',
+    code: district?.code,
+  });
+  console.log('Tinh', provinces);
 
   const toggleEditing = () => {
     setIsEditing(!isEditing);
@@ -374,6 +389,11 @@ const Page = () => {
           <div className='grid grid-cols-2 gap-4 mb-4 pt-4'>
             <div>
               <FloatInput label='Tỉnh/Thành phố *' />
+              <select>
+                {provinces?.map((province: { code: string; name: string }) => (
+                  <option key={province.code}>{province.name}</option>
+                ))}
+              </select>
             </div>
 
             <div>

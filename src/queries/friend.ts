@@ -54,10 +54,10 @@ export const useSendRequestMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['friend_suggest'] });
       queryClient.invalidateQueries({ queryKey: ['send_requests'] });
       swal.fire({
-        icon:'success',
-        title:'Kết bạn thành công',
-        timer:2000,
-        
+        icon: 'success',
+        title: 'Kết bạn thành công',
+        timer: 2000,
+
 
       })
     },
@@ -90,6 +90,19 @@ export const useRemoveRequestMutation = () => {
     mutationFn: (userId: string) => postRemoveRequest(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['send_requests'] });
+    },
+  });
+};
+
+const postRemoveFriend = async (userId: string) =>
+  axiosClient.delete(`/friends/remove-friend/${userId}`);
+
+export const useRemoveFriendMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => postRemoveFriend(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['friends'] });
     },
   });
 };

@@ -53,19 +53,15 @@ const Layout = async ({ params, children }: PageProps) => {
               <div className='h-10 md:w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto hover:bg-primary-100/50 hover:text-primary-500 rounded-md text-neutral-800 '>
                 <Academic />
                 <span className='lg:block font-semibold text-sm '>
-                  Công việc học vấn
+                  Công việc
                 </span>
               </div>
             </Link>
 
-            <div className='h-10 md:w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto hover:bg-primary-100/50 hover:text-primary-500 rounded-md text-sm text-neutral-800'>
-              <Maill />
-              <span className='lg:block font-semibold '>Thông tin liên hệ</span>
-            </div>
             <div className='h-10 md:w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto hover:bg-primary-100/50 hover:text-primary-500 rounded-md text-neutral-800'>
               <Document />
               <span className='lg:block font-semibold text-sm '>
-                Chi tiết về bạn
+                Các link liên kết và mạng xã hội
               </span>
             </div>
           </div>

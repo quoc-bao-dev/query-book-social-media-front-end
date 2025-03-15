@@ -113,7 +113,7 @@ const LinkList = () => {
                     {/* Nút chỉnh sửa */}
                     <button
                       onClick={() => handleEditClick(index)}
-                      className='text-yellow-500 hover:text-yellow-700'
+                      className='text-neutral-900'
                       title='Chỉnh sửa'
                     >
                       <Pen />
@@ -121,7 +121,7 @@ const LinkList = () => {
                     {/* Nút xóa */}
                     <button
                       onClick={() => handleDeleteLink(index)}
-                      className='text-red-500 hover:text-red-700'
+                      className='text-red-500'
                       title='Xóa liên kết'
                     >
                       <Xmark />
