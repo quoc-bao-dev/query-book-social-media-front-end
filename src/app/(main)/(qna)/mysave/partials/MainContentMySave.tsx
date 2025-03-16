@@ -3,10 +3,12 @@ import { useGetMySaveQuestionQuery } from '@/queries/question';
 import { useEffect, useState } from 'react';
 import PostsMySave from './PostsMySave';
 import SearchBarMySave from './SearchBarMySave';
+import { useTranslations } from 'next-intl';
 
 const MainContentMySave = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { data } = useGetMySaveQuestionQuery();
+  const t = useTranslations('MainContentQnA');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -42,7 +44,7 @@ const MainContentMySave = () => {
             <PostsMySave key={post._id} post={post} searchTerm={searchTerm} />
           ))
       ) : (
-        <p className='text-center text-gray-500'>No saved questions found.</p>
+        <p className='text-center text-gray-500'>{t('noresultsfound')}</p>
       )}
     </div>
   );

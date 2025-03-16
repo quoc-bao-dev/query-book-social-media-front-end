@@ -14,6 +14,7 @@ import { QuestionSchema, questionSchema } from '../schema/questionSchema';
 import HashTagInput from './HashTagInput';
 import LanguageSeletor from './LanguageSeletor';
 import TopicSelect from './TopicSelect';
+import { useTranslations } from 'next-intl';
 
 export default function AskQuestionForm() {
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
@@ -21,6 +22,7 @@ export default function AskQuestionForm() {
   const [images, setImages] = useState<File[]>([]); // State lưu ảnh
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const t = useTranslations('AskQuestion');
 
   const {
     register,
@@ -45,7 +47,7 @@ export default function AskQuestionForm() {
         const fileArray = Array.from(files);
 
         if (fileArray.length + images.length > 5) {
-          setErrorMessage('Bạn chỉ được upload tối đa 5 ảnh.');
+          setErrorMessage(t('errortitle'));
           setIsErrorModalOpen(true);
           return;
         }
@@ -85,7 +87,7 @@ export default function AskQuestionForm() {
       await mutateAsync(payload);
       // console.log('upload', payload);
 
-      window.location.href = '/myquestion'; // Chuyển hướng sau khi gửi thành công
+      window.location.href = '/myquestion';
     } catch (error) {
       console.error('Error posting question:', error);
     }
@@ -95,21 +97,21 @@ export default function AskQuestionForm() {
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       <TopicSelect register={register} error={errors.topic?.message} />
       <div>
-        <label className='block font-medium mb-2'>Title</label>
+        <label className='block font-medium mb-2'>{t('title')}</label>
         <input
           {...register('title')}
           type='text'
           className='w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500'
-          placeholder='Write a title...'
+          placeholder={t('phtitle')}
         />
         {errors.title && <p className='text-red-500'>{errors.title.message}</p>}
       </div>
 
       <div>
-        <label className='block font-medium mb-2'>Content</label>
+        <label className='block font-medium mb-2'>{t('content')}</label>
         <textarea
           {...register('content')}
-          placeholder='Write something...'
+          placeholder={t('phcontent')}
           className='w-full p-3 border rounded-lg h-32 focus:ring-2 focus:ring-green-500'
         />
         {errors.content && (
@@ -118,7 +120,7 @@ export default function AskQuestionForm() {
       </div>
 
       <div>
-        <label className='block font-medium mb-2'>Have you code?</label>
+        <label className='block font-medium mb-2'>{t('code')}</label>
         <LanguageSeletor
           curLaguage={selectedLanguage}
           setCurlanguage={setSelectedLanguage}
@@ -139,7 +141,7 @@ export default function AskQuestionForm() {
       </div>
 
       <div>
-        <label className='block font-medium mb-2'>Hashtag</label>
+        <label className='block font-medium mb-2'>{t('hashtag')}</label>
         <Controller
           control={control}
           name='hashtags'
@@ -152,7 +154,7 @@ export default function AskQuestionForm() {
 
       {/* Upload Image Section */}
       <div>
-        <label className='block font-medium mb-2'>Upload Image</label>
+        <label className='block font-medium mb-2'>{t('image')}</label>
 
         {images.length > 0 ? (
           <div className='relative w-full h-32 flex gap-1'>
@@ -208,7 +210,7 @@ export default function AskQuestionForm() {
         disabled={isPending}
         className='w-full bg-primary-500 p-3 rounded-lg text-white font-semibold hover:bg-primary-700'
       >
-        {isPending ? 'Creating...' : 'Post'}
+        {isPending ? t('buttoncreating') : t('buttonpost')}
       </Button>
     </form>
   );

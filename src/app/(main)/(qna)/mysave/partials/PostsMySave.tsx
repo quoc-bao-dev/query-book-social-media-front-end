@@ -11,6 +11,8 @@ import HashTagPost from '../../partials/HashTagPost';
 import ImageRender from '../../partials/ImageRender';
 import QuestionContent from '../../partials/QuestionContent';
 import QuestionTitle from '../../partials/QuestionTitle';
+import { enUS, vi } from 'date-fns/locale';
+import { useTranslations } from 'next-intl';
 
 interface PostProps {
   post: SaveQuestionResponse;
@@ -30,6 +32,12 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
     return trimmedCode.length > 0; // Chỉ cần có nội dung là đủ
   };
 
+  const t = useTranslations('CardQuestion');
+  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
+  const getLocale = (locale: string) => {
+    return locale === 'vi' ? vi : enUS;
+  };
+
   return (
     <div className='rounded-lg shadow-lg p-4 mb-6 border border-border bg-card'>
       {/* Header */}
@@ -47,8 +55,9 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
           <p className='text-2xl text-neutral-500'>•</p>
           <p className='text-sm text-neutral-500'>
             {post.questionId.createdAt &&
-              formatDistanceToNow(post.questionId.createdAt, {
+              formatDistanceToNow(new Date(post.questionId.createdAt), {
                 addSuffix: true,
+                locale: getLocale(locale),
               })}
           </p>
         </div>

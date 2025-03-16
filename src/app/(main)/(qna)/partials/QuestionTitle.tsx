@@ -25,7 +25,7 @@ const QuestionTitle = ({ postId, title, searchTerm }: QuestionTitleProps) => {
   return (
     <Link href={`/qna/${postId}`}>
       <h2
-        className='text-xl font-semibold'
+        className='text-xl font-semibold hover:text-primary-500'
         dangerouslySetInnerHTML={{ __html: highlightedTitle }}
       />
     </Link>

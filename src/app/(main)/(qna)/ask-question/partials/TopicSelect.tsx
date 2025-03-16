@@ -2,6 +2,7 @@
 
 import { useGetAllTopic } from '@/queries/topic';
 import { TopicResponse } from '@/types/topic';
+import { useTranslations } from 'next-intl';
 import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 interface TopicSelectProps {
@@ -11,12 +12,15 @@ interface TopicSelectProps {
 
 export default function TopicSelect({ register, error }: TopicSelectProps) {
   const { data, isLoading, error: fetchError } = useGetAllTopic();
+  const t = useTranslations('AskQuestion');
 
   return (
     <div>
-      <label className='block text-neutral-900 font-medium mb-2'>Topic</label>
+      <label className='block text-neutral-900 font-medium mb-2'>
+        {t('topic')}
+      </label>
       {isLoading ? (
-        <p>Loading topics...</p>
+        <p>{t('loadtopic')}</p>
       ) : fetchError ? (
         <p className='text-red-500'>Failed to load topics</p>
       ) : (
@@ -25,7 +29,7 @@ export default function TopicSelect({ register, error }: TopicSelectProps) {
           className='w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-green-500'
         >
           <option value='' hidden>
-            Select a topic...
+            {t('select')}
           </option>
           {data?.map((topic: TopicResponse) => (
             <option key={topic._id} value={topic._id}>

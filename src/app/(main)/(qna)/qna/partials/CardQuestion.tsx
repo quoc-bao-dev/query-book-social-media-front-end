@@ -5,6 +5,8 @@ import { ArrowDown, ArrowUp } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import Avatar from '@/components/common/Avatar';
+import { enUS, vi } from 'date-fns/locale';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   id: string;
@@ -32,6 +34,11 @@ const CardQuestion = ({
   // Fetch số lượng bình luận từ API
   const { data: answerData } = useAnswerQuery(id);
   const countComment = answerData?.length || 0;
+  const t = useTranslations('CardQuestion');
+  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
+  const getLocale = (locale: string) => {
+    return locale === 'vi' ? vi : enUS;
+  };
 
   return (
     <div
@@ -71,11 +78,16 @@ const CardQuestion = ({
             />
 
             <div className='flex justify-around items-center gap-1'>
-              <p className='text-sm text-neutral-500'>by {name}</p>
+              <p className='text-sm text-neutral-500'>
+                {t('by')} {name}
+              </p>
               <p className='text-2xl text-neutral-500'>•</p>
               <p className='text-sm text-neutral-500'>
                 {createdAt &&
-                  formatDistanceToNow(createdAt, { addSuffix: true })}
+                  formatDistanceToNow(new Date(createdAt), {
+                    addSuffix: true,
+                    locale: getLocale(locale),
+                  })}
               </p>
             </div>
           </div>
@@ -97,7 +109,7 @@ const CardQuestion = ({
       {/* Hiển thị số lượng bình luận khi hover */}
       {isHovered && (
         <div className='absolute top-0 right-0 bg-info-100 text-info-500 font-semibold text-xs px-3 py-1 rounded-bl-lg'>
-          {countComment} Comment
+          {countComment} {t('comment')}
         </div>
       )}
     </div>

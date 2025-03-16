@@ -1,3 +1,4 @@
+'use client';
 import { QuestionResponse } from '@/types/question';
 import { formatDistanceToNow } from 'date-fns';
 import ActionBar from '../../../detail-qna/partials/ActionBar';
@@ -9,10 +10,10 @@ import HashTagPost from '../../../partials/HashTagPost';
 import ImageRender from '../../../partials/ImageRender';
 import QuestionContent from '../../../partials/QuestionContent';
 import QuestionTitle from '../../../partials/QuestionTitle';
+import { useTranslations } from 'next-intl';
+import { enUS, vi } from 'date-fns/locale';
 
 const QuestionSection = ({ question }: { question: QuestionResponse }) => {
-  console.log('question section', question);
-
   const isValidCode = (code: string | undefined) => {
     if (!code) return false; // Không có dữ liệu
     const trimmedCode = code.trim();
@@ -20,6 +21,11 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
     // Kiểm tra nếu code chỉ chứa comment hoặc khoảng trắng
     const isOnlyComment = /^(\s*\/\/.*|\s*)$/.test(trimmedCode);
     return trimmedCode.length > 0 && !isOnlyComment;
+  };
+  const t = useTranslations('CardQuestion');
+  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
+  const getLocale = (locale: string) => {
+    return locale === 'vi' ? vi : enUS;
   };
 
   return (
@@ -39,13 +45,14 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
           </p>
           <p className='text-2xl text-neutral-500 '>•</p>
           <p className='text-sm text-neutral-500 '>
-            {question.createdAt && (
-              <span>
-                {formatDistanceToNow(new Date(question.createdAt), {
-                  addSuffix: true,
-                })}
-              </span>
-            )}
+            {question.createdAt &&
+              (new Date().getTime() - new Date(question.createdAt).getTime() <
+              60000
+                ? t('justnow') // Hiển thị "Vừa xong" hoặc "Just now"
+                : formatDistanceToNow(new Date(question.createdAt), {
+                    addSuffix: true,
+                    locale: getLocale(locale),
+                  }))}
           </p>
         </div>
       </div>

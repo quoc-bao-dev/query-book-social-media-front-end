@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 
 type HashTagInputProps = {
@@ -6,6 +7,7 @@ type HashTagInputProps = {
 const HashTagInput = ({ onChange }: HashTagInputProps) => {
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [input, setInput] = useState('');
+  const t = useTranslations('AskQuestion');
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && input.trim() !== '') {
@@ -45,7 +47,7 @@ const HashTagInput = ({ onChange }: HashTagInputProps) => {
       <input
         type='text'
         className='w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
-        placeholder='Start by #...(ex: #cyber, #code,...)'
+        placeholder={t('phhashtag')}
         // value={hashtag}
         // onChange={handleChange}
         value={input}

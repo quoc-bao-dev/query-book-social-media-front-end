@@ -48,7 +48,7 @@ const Vote = ({ votes, answerId, questionId }: VoteProps) => {
       <button
         onClick={handleVote('down')}
         className={`p-2 rounded-full ${
-          downVoted ? 'bg-error-500/70' : 'bg-neutral-200'
+          downVoted ? 'bg-error-600' : 'bg-neutral-200'
         } hover:bg-error-500/70`}
       >
         <VoteDownIcon

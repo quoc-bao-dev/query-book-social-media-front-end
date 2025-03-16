@@ -1,5 +1,6 @@
 import Modal from '@/components/common/Modal';
 import ErrorIcon from '@/components/icons/ErrorIcon';
+import { useTranslations } from 'next-intl';
 
 type ModalErrorProps = {
   isOpen: boolean;
@@ -8,6 +9,8 @@ type ModalErrorProps = {
 };
 
 const ModalError = ({ isOpen, onClose, message }: ModalErrorProps) => {
+  const t = useTranslations('AskQuestion');
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className='bg-white p-6 rounded-xl shadow-xl w-96 text-center'>
@@ -17,7 +20,9 @@ const ModalError = ({ isOpen, onClose, message }: ModalErrorProps) => {
         </div>
 
         {/* Tiêu đề lỗi */}
-        <h2 className='text-xl font-semibold text-red-600 mt-4'>Lỗi</h2>
+        <h2 className='text-xl font-semibold text-red-600 mt-4'>
+          {t('error')}
+        </h2>
 
         {/* Nội dung thông báo */}
         <p className='mt-2 text-gray-600'>{message}</p>

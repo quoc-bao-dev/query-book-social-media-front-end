@@ -27,5 +27,85 @@
     "resource": "Resource",
     "request": "Request",
     "remove": "Remove"
+  },
+
+  "SidebarQnA": {
+    "qna": "Q&A",
+    "myquestion": "My Question",
+    "mysave": "My Save"
+  },
+  "MainContentQnA": {
+    "recentquestions": "Recent Questions",
+    "noresultsfound":"No results found"
+  },
+  "SearchBarQnA": {
+    "placeholder": "Search by title or content...",
+    "button":"Search"
+  },
+  "SearchBarMyQuestion": {
+    "placeholder": "Search by title..."
+  },
+  "AskQuestionButton": {
+    "button": "Ask a Question"
+  },
+  "ModalComment": {
+    "locale": "en",
+    "clearall": "Clear All",
+    "clear": "Clear Code",
+    "save": "Save",
+    "comment" : "Comment",
+    "like" : "Like",
+    "reply" : "Reply",
+    "nocomment": "No Comment !",
+    "error": "Error",
+    "errortitle": "You can only upload a maximum of 5 photos!",
+    "morecomment" : "View more comment",
+    "phinput" : "Write a comment..."
+  },
+  "ActionBar": {
+    "save": "Save",
+    "saved": "Saved",
+    "saving": "Saving...",
+    "unsaving": "Un-saving..."
+  },
+  "CardQuestion": {
+    "locale": "en",
+    "justnow": "Just now",
+    "by": "by",
+    "comment": "Comment"
+  },
+  "DropdownMenu": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "report": "Report"
+  },
+  
+  "AskQuestion": {
+
+    "codesnippet": "Code Snippet",
+    "selectlanguage": "Select Language",
+    "nolanguage": "No language found",
+    
+    "formname": "Ask a Question",
+    "topic": "Topic",
+    "loadtopic": "Loading topics...",
+    "select": "Select a topic",
+    "title": "Title",
+    "phtitle": "Write a Title",
+    "content": "Content",
+    "phcontent": "Write something...",
+    "code": "Have you code ?",
+    "searchlanguage": "Search the language",
+    "hashtag": "Hashtag",
+    "phhashtag": "(Ex: code, javascript, react,...)",
+    "image": "Upload Image",
+    "buttonpost": "Post",
+    "buttoncreating": "Creating...",
+    "error": "Error",
+    "errortitle": "You can only upload a maximum of 5 photos!"
+  },
+  "Layout": {
+    "topic": "Topic",
+    "title":"Ask questions, get answers, and engage with the community"
   }
 }

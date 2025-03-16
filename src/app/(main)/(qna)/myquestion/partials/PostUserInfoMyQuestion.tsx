@@ -1,8 +1,11 @@
+'use client';
 import { formatDistanceToNow } from 'date-fns';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import AvatarUser from '../../partials/AvatarUser';
 import DropdownMenu from '../../partials/DropdownMenu';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { enUS, vi } from 'date-fns/locale';
 
 interface PostUserInfoProps {
   avatarUrl?: string;
@@ -17,6 +20,11 @@ const PostUserInfoMyQuestion = ({
 }: PostUserInfoProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const toggleMenu = () => setShowMenu(!showMenu);
+  const t = useTranslations('CardQuestion');
+  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
+  const getLocale = (locale: string) => {
+    return locale === 'vi' ? vi : enUS;
+  };
 
   // Kiểm tra nếu fullName không rỗng trước khi tách chuỗi
   const nameParts = fullName ? fullName.split(' ') : [''];
@@ -33,9 +41,13 @@ const PostUserInfoMyQuestion = ({
           <p className='font-semibold text-neutral-900'>{fullName}</p>
           <p className='text-2xl text-neutral-500 '>•</p>
           <p className='text-sm text-neutral-500'>
-            {createdAt
-              ? formatDistanceToNow(new Date(createdAt), { addSuffix: true })
-              : 'Vừa xong'}
+            {createdAt &&
+              (new Date().getTime() - new Date(createdAt).getTime() < 60000
+                ? t('justnow') // Hiển thị "Vừa xong" hoặc "Just now"
+                : formatDistanceToNow(new Date(createdAt), {
+                    addSuffix: true,
+                    locale: getLocale(locale),
+                  }))}
           </p>
         </div>
       </div>

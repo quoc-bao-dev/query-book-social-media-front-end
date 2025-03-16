@@ -3,6 +3,7 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useRef } from 'react';
 import { Button } from '@/components/common/Button';
+import { useTranslations } from 'next-intl';
 
 interface SearchBarQnAProps {
   onSearch: (searchTerm: string) => void;
@@ -10,6 +11,7 @@ interface SearchBarQnAProps {
 
 const SearchBarQnA: React.FC<SearchBarQnAProps> = ({ onSearch }) => {
   const searchRef = useRef<HTMLInputElement>(null);
+  const t = useTranslations('SearchBarQnA');
 
   const handleClick = () => {
     const value = searchRef.current?.value;
@@ -23,11 +25,11 @@ const SearchBarQnA: React.FC<SearchBarQnAProps> = ({ onSearch }) => {
       </div>
       <input
         type='text'
-        placeholder='Search by author or tag...'
+        placeholder={t('placeholder')}
         ref={searchRef}
         className='w-full pl-10 px-4 py-2 placeholder-neutral-500 placeholder:opacity-70 border border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
       />
-      <Button onClick={handleClick}>Search</Button>
+      <Button onClick={handleClick}>{t('button')}</Button>
     </div>
   );
 };

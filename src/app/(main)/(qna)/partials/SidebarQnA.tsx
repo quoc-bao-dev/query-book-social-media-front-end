@@ -2,11 +2,14 @@
 
 import { cn } from '@/lib/utils';
 import { Home, Bookmark, User } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function SidebarQnA() {
   const pathname = usePathname();
+
+  const t = useTranslations('SidebarQnA');
 
   return (
     <div className=' bg-card h-full p-6 flex flex-col  '>
@@ -33,7 +36,7 @@ export default function SidebarQnA() {
                   : 'text-gray-700'
               }`}
             />
-            Q&A
+            {t('qna')}
           </Link>
           {/* Option My Question */}
           <Link
@@ -56,7 +59,7 @@ export default function SidebarQnA() {
                   : 'text-gray-700'
               }`}
             />
-            My Question
+            {t('myquestion')}
           </Link>
 
           {/* Option My Save */}
@@ -78,7 +81,7 @@ export default function SidebarQnA() {
                 pathname === '/mysave' ? 'text-primary-500 ' : 'text-gray-700'
               }`}
             />
-            My Save
+            {t('mysave')}
           </Link>
         </ul>
       </nav>

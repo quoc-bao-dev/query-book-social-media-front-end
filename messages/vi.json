@@ -27,5 +27,91 @@
     "resource": "Tài nguyên",
     "request": "Yêu cầu",
     "remove": "Gỡ bỏ"
+  },
+  "SidebarQnA": {
+    "qna": "Hỏi Đáp",
+    "myquestion": "Câu Hỏi Của Tôi",
+    "mysave": "Đã Lưu"
+  },
+
+"MainContentQnA": {
+    "recentquestions": "Câu Hỏi Gần Đây",
+    "noresultsfound":"Không tìm thấy kết quả nào"
+
+  },
+  
+  "SearchBarQnA": {
+    "placeholder": "Tìm kiếm theo tiêu đề hoặc nội dung...",
+    "button":"Tìm Kiếm"
+    
+  },
+  "SearchBarMyQuestion": {
+    "placeholder": "Tìm kiếm theo tiêu đề..."
+  },
+  "ModalComment": {
+    "locale": "vi",
+    "clearall": "Xóa Tất Cả",
+    "clear": "Xóa Code",
+    "save": "Lưu",
+    "comment" : "Bình Luận",
+    "like" : "Thích",
+    "reply" : "Trả lời",
+    "nocomment": "Không có bình luận nào !",
+    "error": "Lỗi",
+    "errortitle": "Bạn chỉ được upload tối đa 5 ảnh !",
+    "morecomment" : "Xem thêm bình luận",
+    "phinput" : "Viết một bình luận..."
+
+
+  },
+  "AskQuestionButton": {
+    "button": "Đặt Câu Hỏi"
+  },
+  "ActionBar": {
+    "save": "Lưu",
+    "saved": "Đã Lưu",
+    "saving": "Đang Lưu...",
+    "unsaving": "Đang Bỏ Lưu..."
+
+  },
+  "CardQuestion": {
+    "locale": "vi",
+    "justnow": "Vừa xong",
+    "by": "bởi",
+    "comment": "Bình Luận"
+  },
+  "DropdownMenu": {
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "report": "Báo Cáo"
+  },
+  
+  "AskQuestion": {
+    "codesnippet": "Code Mẫu",
+    "selectlanguage": "Lựa Chọn Ngôn Ngữ",
+    "nolanguage": "Không tìm thấy ngôn ngữ",
+    
+    "formname": "Đặt câu hỏi",
+    "topic": "Chủ đề",
+    "loadtopic": "Đang tải chủ đề...",
+    "select": "Chọn một chủ đề",
+    "title": "Tiêu đề",
+    "phtitle": "Viết tiêu đề",
+    "content": "Nội dung",
+    "phcontent": "Viết gì đó...",
+    "code": "Bạn có code không?",
+    "searchlanguage": "Tìm kiếm ngôn ngữ",
+    "hashtag": "Thẻ",
+    "phhashtag": "(Ví dụ: code, javascript, react,...)",
+    "image": "Tải lên hình ảnh",
+    "buttonpost": "Đăng",
+    "buttoncreating": "Đang tạo...",
+    "error": "Lỗi",
+    "errortitle": "Bạn chỉ được upload tối đa 5 ảnh !"
+},
+
+  "Layout": {
+    "topic": "Chủ Đề",
+    "title":"Đặt câu hỏi, nhận câu trả lời và tương tác với cộng đồng."
   }
 }

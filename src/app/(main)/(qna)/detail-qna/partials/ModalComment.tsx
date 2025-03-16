@@ -22,6 +22,8 @@ import ImageRender from '../../partials/ImageRender';
 import ModalError from '../../partials/ModalError';
 import { questionSchema } from '../../qna/[id]/schema/questionSchema';
 import Vote from '../../partials/Vote';
+import { useTranslations } from 'next-intl';
+import { enUS, vi } from 'date-fns/locale';
 
 type ModalCommentProps = {
   isOpen: boolean;
@@ -37,6 +39,11 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
   const [images, setImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const t = useTranslations('ModalComment');
+  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
+  const getLocale = (locale: string) => {
+    return locale === 'vi' ? vi : enUS;
+  };
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,7 +63,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
         const fileArray = Array.from(files);
 
         if (fileArray.length + images.length > 5) {
-          setErrorMessage('Bạn chỉ được upload tối đa 5 ảnh.');
+          setErrorMessage(t('errortitle'));
           setIsErrorModalOpen(true);
           return;
         }
@@ -152,7 +159,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
         {/* Header */}
         <div className='flex justify-between items-center border-b pb-4'>
           <h2 className='text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900'>
-            Bình luận
+            {t('comment')}
           </h2>
 
           <button
@@ -165,79 +172,91 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
 
         {/* Nội dung bình luận */}
         <div className='mt-4 space-y-4 overflow-y-auto max-h-[60vh] pr-2 scrollbar scrollbar-w-[4px] scrollbar-thumb-gray-400 scrollbar-track-transparent'>
-          {sortedData?.slice(0, visibleComments).map((item) => (
-            <div
-              key={item._id}
-              className='relative mt-5 ml-14 pl-6 border-l-2 border-neutral-100'
-            >
-              <div className='absolute left-[-5px] top-1/2 -translate-y-1/2'>
-                {item.votes ? (
-                  <Vote
-                    questionId={id}
-                    answerId={item._id}
-                    votes={item.votes}
-                  />
-                ) : (
-                  <>placehodle</>
-                )}
-              </div>
-
-              <div className='mb-14'>
-                <div className='flex items-center gap-3'>
-                  <Avatar
-                    src={item.userId.avatarUrl!}
-                    className='w-10 h-10 rounded-full'
-                    fallBack={`${item.userId.firstName} ${item.userId.lastName}`}
-                  />
-                  <p className='font-semibold'>
-                    {item.userId.firstName} {item.userId.lastName}
-                  </p>
-                </div>
-                <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
-
-                {item.images && <ImageRender images={item.images} />}
-                {item.code?.code && (
-                  <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
-                    <MonacoEditor
-                      className='h-[300px]'
-                      value={item.code.code}
-                      theme='vs-dark'
-                      language={item.code.fileType || 'javascript'}
-                      options={{
-                        readOnly: true,
-                        domReadOnly: true,
-                        minimap: { enabled: false },
-                        scrollBeyondLastLine: false,
-                      }}
+          {sortedData && sortedData.length > 0 ? (
+            sortedData.slice(0, visibleComments).map((item) => (
+              <div
+                key={item._id}
+                className='relative mt-5 ml-14 pl-6 border-l-2 border-neutral-100'
+              >
+                <div className='absolute left-[-5px] top-1/2 -translate-y-1/2'>
+                  {item.votes ? (
+                    <Vote
+                      questionId={id}
+                      answerId={item._id}
+                      votes={item.votes}
                     />
+                  ) : (
+                    <>placeholder</>
+                  )}
+                </div>
+
+                <div className='mb-14'>
+                  <div className='flex items-center gap-3'>
+                    <Avatar
+                      src={item.userId.avatarUrl!}
+                      className='w-10 h-10 rounded-full'
+                      fallBack={`${item.userId.firstName} ${item.userId.lastName}`}
+                    />
+                    <p className='font-semibold'>
+                      {item.userId.firstName} {item.userId.lastName}
+                    </p>
                   </div>
-                )}
-                <div className='mt-2 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
-                  <p>
-                    {item.createdAt &&
-                      formatDistanceToNow(item.createdAt, { addSuffix: true })}
+                  <p className='mt-1 text-lg text-neutral-600'>
+                    {item.content}
                   </p>
-                  <p className='text-2xl text-neutral-500'>•</p>
 
-                  <button className='flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
-                    <HeartIcon className='w-4 h-4' />
-                    <span>Like</span>
-                  </button>
+                  {item.images && <ImageRender images={item.images} />}
+                  {item.code?.code && (
+                    <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
+                      <MonacoEditor
+                        className='h-[300px]'
+                        value={item.code.code}
+                        theme='vs-dark'
+                        language={item.code.fileType || 'javascript'}
+                        options={{
+                          readOnly: true,
+                          domReadOnly: true,
+                          minimap: { enabled: false },
+                          scrollBeyondLastLine: false,
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className='mt-2 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
+                    <p>
+                      {item.createdAt &&
+                        formatDistanceToNow(new Date(item.createdAt), {
+                          addSuffix: true,
+                          locale: getLocale(locale),
+                        })}
+                    </p>
+                    <p className='text-2xl text-neutral-500'>•</p>
 
-                  <button className='flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
-                    <ChatBubbleOvalLeftIcon className='w-4 h-4' />
-                    <span>Reply</span>
-                  </button>
+                    <button className='flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
+                      <HeartIcon className='w-4 h-4' />
+                      <span>{t('like')}</span>
+                    </button>
+
+                    <button className='flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
+                      <ChatBubbleOvalLeftIcon className='w-4 h-4' />
+                      <span>{t('reply')}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className='text-center text-neutral-600 font-semibold text-lg mt-4'>
+              {t('nocomment')}
+            </p>
+          )}
+
           {data && visibleComments < data.length && (
             <button
               onClick={handleShowMore}
               className='mt-2 text-primary-600 hover:underline'
             >
-              Xem thêm bình luận
+              {t('morecomment')}
             </button>
           )}
           <ModalError
@@ -248,7 +267,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
 
           <div className='border-t pt-4 bg-card sticky bottom-0'>
             {images.length > 0 && (
-              <div className='flex gap-2 py-2 z-50'>
+              <div className='ml-12  flex gap-2 py-2 z-50'>
                 {images.map((image, index) => {
                   const imageUrl =
                     image instanceof File ? URL.createObjectURL(image) : '';
@@ -286,6 +305,12 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     <span className='text-2xl text-gray-500'>+</span>
                   </button>
                 )}
+                <button
+                  onClick={() => setImages([])}
+                  className='mt-2 text-primary-600 hover:underline'
+                >
+                  {t('clearall')}
+                </button>
               </div>
             )}
             <div className='sm:z-50 z-50 pb-1 flex items-center gap-2'>
@@ -297,7 +322,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
               <input
                 ref={inputRef}
                 type='text'
-                placeholder='Write a reply...'
+                placeholder={t('phinput')}
                 className='w-[80%]  p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
                 onKeyDown={handleKeyDown}
               />
@@ -327,12 +352,6 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     onOpenChange={setShowCodeEditor}
                   >
                     <DialogContent className='max-w-2xl bg-card p-5 rounded-lg'>
-                      <p className='text-xl font-semibold text-neutral-900'>
-                        Code Snippet
-                      </p>
-                      <p className='text-neutral-900 font-semibold'>
-                        Select Language
-                      </p>
                       <LanguageSeletor
                         curLaguage={selectedLanguage}
                         setCurlanguage={setSelectedLanguage}
@@ -360,14 +379,14 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                                 }}
                                 className='px-4 py-2 rounded-lg bg-error-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-error-200 hover:shadow-lg active:scale-95'
                               >
-                                Clear Code
+                                {t('clear')}
                               </button>
 
                               <button
                                 onClick={handleSave}
                                 className='px-4 py-2 rounded-lg bg-info-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-info-600 hover:shadow-lg active:scale-95'
                               >
-                                Save
+                                {t('save')}
                               </button>
                             </div>
                           </div>

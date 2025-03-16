@@ -22,6 +22,8 @@ import ImageRender from '../../../partials/ImageRender';
 import ModalError from '../../../partials/ModalError';
 import { questionSchema } from '../schema/questionSchema';
 import Vote from '../../../partials/Vote';
+import { useTranslations } from 'next-intl';
+import { enUS, vi } from 'date-fns/locale';
 
 type AnswerSectionProps = {
   questionId: string;
@@ -35,6 +37,11 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
   const [images, setImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const t = useTranslations('ModalComment');
+  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
+  const getLocale = (locale: string) => {
+    return locale === 'vi' ? vi : enUS;
+  };
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -67,7 +74,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
         console.log('Selected Files:', fileArray); // Kiểm tra xem file có đúng không
 
         if (fileArray.length + images.length > 5) {
-          setErrorMessage('Bạn chỉ được upload tối đa 5 ảnh.');
+          setErrorMessage(t('errortitle'));
           setIsErrorModalOpen(true);
           return;
         }
@@ -206,18 +213,24 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
             <div className='mt-2 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
               <p>
                 {item.createdAt &&
-                  formatDistanceToNow(item.createdAt, { addSuffix: true })}
+                  (new Date().getTime() - new Date(item.createdAt).getTime() <
+                  60000
+                    ? t('justnow') // Hiển thị "Vừa xong" hoặc "Just now"
+                    : formatDistanceToNow(new Date(item.createdAt), {
+                        addSuffix: true,
+                        locale: getLocale(locale),
+                      }))}
               </p>
               <p className='text-2xl text-neutral-500'>•</p>
 
               <button className='flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
                 <HeartIcon className='w-4 h-4' />
-                <span>Like</span>
+                <span>{t('like')}</span>
               </button>
 
               <button className='flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
                 <ChatBubbleOvalLeftIcon className='w-4 h-4' />
-                <span>Reply</span>
+                <span>{t('reply')}</span>
               </button>
             </div>
           </div>
@@ -229,12 +242,12 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           onClick={handleShowMore}
           className='mt-2 text-primary-600 hover:underline'
         >
-          Xem thêm bình luận
+          {t('morecomment')}
         </button>
       )}
 
       {images.length > 0 && (
-        <div className='flex gap-2 py-2 z-50'>
+        <div className='flex items-center gap-2 py-2 z-50'>
           {images.map((image, index) => {
             const imageUrl =
               image instanceof File ? URL.createObjectURL(image) : '';
@@ -270,6 +283,12 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
               <span className='text-2xl text-gray-500'>+</span>
             </button>
           )}
+          <button
+            onClick={() => setImages([])}
+            className='mt-2 text-primary-600 hover:underline'
+          >
+            {t('clearall')}
+          </button>
         </div>
       )}
 
@@ -288,7 +307,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
         <input
           ref={inputRef}
           type='text'
-          placeholder='Write a reply...'
+          placeholder={t('phinput')}
           className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
           onKeyDown={handleKeyDown}
         />
@@ -315,12 +334,6 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           {showCodeEditor && (
             <Dialog open={showCodeEditor} onOpenChange={setShowCodeEditor}>
               <DialogContent className='max-w-2xl bg-card p-5 rounded-lg'>
-                <p className='text-xl font-semibold text-neutral-900'>
-                  Code Snippet
-                </p>
-                <p className='text-neutral-900 font-semibold'>
-                  Select Language
-                </p>
                 <LanguageSeletor
                   curLaguage={selectedLanguage}
                   setCurlanguage={setSelectedLanguage}
@@ -348,14 +361,14 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
                           }}
                           className='px-4 py-2 rounded-lg bg-error-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-error-200 hover:shadow-lg active:scale-95'
                         >
-                          Clear Code
+                          {t('clear')}
                         </button>
 
                         <button
                           onClick={handleSave}
                           className='px-4 py-2 rounded-lg bg-info-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-info-600 hover:shadow-lg active:scale-95'
                         >
-                          Save
+                          {t('save')}
                         </button>
                       </div>
                     </div>

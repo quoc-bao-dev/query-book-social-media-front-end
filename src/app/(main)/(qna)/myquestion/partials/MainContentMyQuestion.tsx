@@ -8,6 +8,7 @@ import MainContentAskQuestion from '../../ask-question/partials/MainContentAskQu
 import AskQuestionButton from '../../partials/AskQuestionButton';
 import PostsMyQuestion from './PostsMyQuestion';
 import SearchBarMyQuestion from './SearchBarMyQuestion';
+import { useTranslations } from 'next-intl';
 
 const MainContentMyQuestion = () => {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ const MainContentMyQuestion = () => {
   const param = useSearchParams();
   const mode = param.get('mode');
   const [searchTerm, setSearchTerm] = useState('');
+  const t = useTranslations('MainContentQnA');
 
   const { data } = useGetMyQuestion();
 
@@ -56,7 +58,9 @@ const MainContentMyQuestion = () => {
             />
           ))
       ) : (
-        <p className='text-center text-neutral-500 mt-4'>No results found</p>
+        <p className='text-center text-neutral-500 mt-4'>
+          {t('noresultsfound')}
+        </p>
       )}
     </div>
   );

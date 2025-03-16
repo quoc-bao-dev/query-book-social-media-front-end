@@ -3,9 +3,11 @@ import Header from '@/components/Layout/Header';
 import ChevronRightIcon2 from '@/components/icons/ChevronRightIcon2';
 import { PropsWithChildren, useState } from 'react';
 import SidebarQnA from './partials/SidebarQnA';
+import { useTranslations } from 'next-intl';
 
 const Layout = ({ children }: PropsWithChildren) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const t = useTranslations('Layout');
 
   return (
     <div className='w-full max-w-[1200px] mx-auto relative'>
@@ -14,10 +16,8 @@ const Layout = ({ children }: PropsWithChildren) => {
 
       {/* Section Title */}
       <div className='pt-20 pb-3 px-8 bg-background'>
-        <h1 className='text-3xl font-extrabold'>Topic</h1>
-        <h2 className='text-accent-foreground'>
-          Ask questions, get answers, and engage with the community
-        </h2>
+        <h1 className='text-3xl font-extrabold'>{t('topic')}</h1>
+        <h2 className='text-accent-foreground'>{t('title')}</h2>
       </div>
 
       {/* Layout grid */}
