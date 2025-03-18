@@ -2,7 +2,7 @@ import Avatar from '@/components/common/Avatar';
 import { SaveQuestionResponse } from '@/types/saveQuestion';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { formatDistanceToNow } from 'date-fns';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ActionBar from '../../detail-qna/partials/ActionBar';
 import CodeEditor from '../../partials/CodeEditor';
 import DropdownMenu from '../../partials/DropdownMenu';
@@ -13,6 +13,7 @@ import QuestionContent from '../../partials/QuestionContent';
 import QuestionTitle from '../../partials/QuestionTitle';
 import { enUS, vi } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
+import { useAuth } from '@/store/authSignal';
 
 interface PostProps {
   post: SaveQuestionResponse;
@@ -21,10 +22,37 @@ interface PostProps {
 
 const PostsMySave = ({ post, searchTerm }: PostProps) => {
   const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const { user } = useAuth(); // Lấy thông tin user
+  const currentUserId = user?.id; // Lấy ID người dùng hiện tại
+  const isOwner = currentUserId === post.questionId?.userId?._id; // Kiểm tra quyền sở hữu
+
+  // Xử lý click bên ngoài để đóng menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const isValidCode = (code: string | undefined) => {
     if (!code) return false;
@@ -39,7 +67,10 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
   };
 
   return (
-    <div className='rounded-lg shadow-lg p-4 mb-6 border border-border bg-card'>
+    <div
+      ref={menuRef}
+      className='rounded-lg shadow-lg p-4 mb-6 border border-border bg-card'
+    >
       {/* Header */}
       <div className='flex items-center justify-between mt-3'>
         <div className='flex items-center space-x-2'>
@@ -62,11 +93,17 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
           </p>
         </div>
 
-        <div className='relative'>
+        <div className='relative' ref={menuRef}>
           <button onClick={toggleMenu}>
             <EllipsisVerticalIcon className='h-6 w-6 text-gray-500' />
           </button>
-          {showMenu && <DropdownMenu />}
+          {showMenu && (
+            <DropdownMenu
+              isOwner={isOwner}
+              questionId={post.questionId._id!}
+              onClose={() => setShowMenu(false)}
+            />
+          )}
         </div>
       </div>
 

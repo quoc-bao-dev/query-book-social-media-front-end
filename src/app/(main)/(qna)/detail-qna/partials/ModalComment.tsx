@@ -13,24 +13,24 @@ import { uploadImages } from '@/utils/uploadUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
+import { enUS, vi } from 'date-fns/locale';
 import { ImageIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import LanguageSeletor from '../../ask-question/partials/LanguageSeletor';
 import { QuestionSchema } from '../../ask-question/schema/questionSchema';
+import CommentOptions from '../../partials/CommentOptions';
 import ImageRender from '../../partials/ImageRender';
 import ModalError from '../../partials/ModalError';
-import { questionSchema } from '../../qna/[id]/schema/questionSchema';
 import Vote from '../../partials/Vote';
-import { useTranslations } from 'next-intl';
-import { enUS, vi } from 'date-fns/locale';
+import { questionSchema } from '../../qna/[id]/schema/questionSchema';
 
 type ModalCommentProps = {
   isOpen: boolean;
   onClose: () => void;
   id: string;
 };
-
 const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
@@ -39,6 +39,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
   const [images, setImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
   const t = useTranslations('ModalComment');
   const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
   const getLocale = (locale: string) => {
@@ -48,6 +49,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
+  const currentUserId = user?.id;
 
   const { data } = useAnswerQuery(id);
 
@@ -197,9 +199,14 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                       className='w-10 h-10 rounded-full'
                       fallBack={`${item.userId.firstName} ${item.userId.lastName}`}
                     />
-                    <p className='font-semibold'>
+                    <p className='font-semibold cursor-pointer'>
                       {item.userId.firstName} {item.userId.lastName}
                     </p>
+                    <CommentOptions
+                      answerId={item._id}
+                      questionId={item.questionId}
+                      isOwner={currentUserId === item.userId._id}
+                    />
                   </div>
                   <p className='mt-1 text-lg text-neutral-600'>
                     {item.content}
@@ -225,14 +232,18 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                   <div className='mt-2 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
                     <p>
                       {item.createdAt &&
-                        formatDistanceToNow(new Date(item.createdAt), {
-                          addSuffix: true,
-                          locale: getLocale(locale),
-                        })}
+                        (new Date().getTime() -
+                          new Date(item.createdAt).getTime() <
+                        60000
+                          ? t('justnow') // Hiển thị "Vừa xong" hoặc "Just now"
+                          : formatDistanceToNow(new Date(item.createdAt), {
+                              addSuffix: true,
+                              locale: getLocale(locale),
+                            }))}
                     </p>
                     <p className='text-2xl text-neutral-500'>•</p>
 
-                    <button className='flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
+                    <button className='mt-0.5 flex items-center gap-1 font-semibold hover:text-primary-600 transition'>
                       <HeartIcon className='w-4 h-4' />
                       <span>{t('like')}</span>
                     </button>
@@ -322,7 +333,11 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
               <input
                 ref={inputRef}
                 type='text'
-                placeholder={t('phinput')}
+                placeholder={
+                  user?.fullName
+                    ? t('phinput', { name: user?.fullName })
+                    : t('phinputNoName') // Nếu không có tên, dùng một chuỗi thay thế
+                }
                 className='w-[80%]  p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
                 onKeyDown={handleKeyDown}
               />
@@ -352,6 +367,12 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     onOpenChange={setShowCodeEditor}
                   >
                     <DialogContent className='max-w-2xl bg-card p-5 rounded-lg'>
+                      <p className='text-2xl text-center font-semibold text-neutral-900'>
+                        {t('codesnippet')}
+                      </p>
+                      <p className=' text-neutral-900 font-semibold'>
+                        {t('selectlanguage')}
+                      </p>
                       <LanguageSeletor
                         curLaguage={selectedLanguage}
                         setCurlanguage={setSelectedLanguage}

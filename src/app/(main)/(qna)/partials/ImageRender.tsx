@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-
 'use client';
 
 import { ImageIcon } from 'lucide-react';
@@ -17,14 +15,14 @@ const ImageRender = ({ images }: { images: string[] }) => {
 
   return (
     <div
-      className='relative mt-1 flex w-24 items-center gap-2 p-2 border rounded-md bg-info-100 shadow-sm cursor-pointer hover:bg-[#374151]'
+      className='group relative mt-1 flex w-24 items-center gap-2 p-2 border rounded-md bg-info-100 shadow-sm cursor-pointer hover:bg-info-700'
       onClick={ShowimageDetail}
     >
-      {/* Chấm đỏ thông báo */}
-      <span className='absolute top-[-3px] right-[-6px] w-3 h-3 bg-red-600 rounded-full '></span>
+      <span className='absolute top-[-3px] right-[-6px] w-3 h-3 bg-red-600 rounded-full'></span>
 
-      <ImageIcon className='w-5 h-5 text-neutral-900' />
-      <span className='text-sm text-neutral-900 font-semibold'>
+      <ImageIcon className='w-5 h-5 text-neutral-900 group-hover:text-neutral-100' />
+
+      <span className='text-s m font-semibold text-neutral-900 group-hover:text-neutral-100'>
         {images.length} {images.length > 1 ? 'files' : 'file'}
       </span>
     </div>

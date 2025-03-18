@@ -99,10 +99,6 @@ const LanguageSeletor = ({
 
   return (
     <Popover open={isOpenPopover} onOpenChange={setIsOpenPopover}>
-      <p className='text-2xl text-center font-semibold text-neutral-900'>
-        {t('codesnippet')}
-      </p>
-      <p className=' text-neutral-900 font-semibold'>{t('selectlanguage')}</p>
       <PopoverTrigger asChild>
         <Button
           variant='outline'
@@ -132,7 +128,7 @@ const LanguageSeletor = ({
                     const selected = monacoLanguages.find(
                       (lang) => curLang && curLang === lang.display,
                     );
-                    setCurlanguage(selected?.value!);
+                    setCurlanguage(selected?.value ?? '');
 
                     setIsOpenPopover(false);
                   }}

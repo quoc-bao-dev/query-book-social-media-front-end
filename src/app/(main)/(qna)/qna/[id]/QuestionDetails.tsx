@@ -9,7 +9,7 @@ type QuestionDetailsProps = {
 };
 const QuestionDetails = ({ question }: QuestionDetailsProps) => {
   return (
-    <div className='  p-4 bg-card max-h-full pt-14 px-14'>
+    <div className='  p-4 bg-card  pt-14 px-14'>
       {/* Câu hỏi */}
 
       <QuestionSection question={question} />

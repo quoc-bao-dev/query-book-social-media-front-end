@@ -15,6 +15,7 @@ import HashTagInput from './HashTagInput';
 import LanguageSeletor from './LanguageSeletor';
 import TopicSelect from './TopicSelect';
 import { useTranslations } from 'next-intl';
+import { useAppLoading } from '@/components/Layout/AppLoading';
 
 export default function AskQuestionForm() {
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
@@ -22,6 +23,7 @@ export default function AskQuestionForm() {
   const [images, setImages] = useState<File[]>([]); // State lưu ảnh
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const { loading, done } = useAppLoading(); // Sử dụng loading
   const t = useTranslations('AskQuestion');
 
   const {
@@ -59,6 +61,7 @@ export default function AskQuestionForm() {
   };
 
   const onSubmit = async (data: QuestionSchema) => {
+    loading(); // Bật trạng thái loading
     let uploadedImages: string[] = [];
 
     if (images.length > 0) {
@@ -67,6 +70,7 @@ export default function AskQuestionForm() {
         uploadedImages = uploadResult?.files.map((file) => file.filename) || [];
       } catch (error) {
         console.error('Upload failed', error);
+        done(); // Tắt loading nếu lỗi xảy ra
         return;
       }
     }
@@ -86,10 +90,10 @@ export default function AskQuestionForm() {
     try {
       await mutateAsync(payload);
       // console.log('upload', payload);
-
-      window.location.href = '/myquestion';
     } catch (error) {
       console.error('Error posting question:', error);
+    } finally {
+      done();
     }
   };
 
@@ -154,7 +158,18 @@ export default function AskQuestionForm() {
 
       {/* Upload Image Section */}
       <div>
-        <label className='block font-medium mb-2'>{t('image')}</label>
+        <div className='flex items-center justify-between'>
+          <label className='left-0 font-medium mb-2'>{t('image')}</label>
+          {images.length > 1 && (
+            <button
+              type='button'
+              onClick={() => setImages([])}
+              className='mb-2 text-primary-600 hover:underline'
+            >
+              {t('clearall')}
+            </button>
+          )}
+        </div>
 
         {images.length > 0 ? (
           <div className='relative w-full h-32 flex gap-1'>
@@ -208,7 +223,7 @@ export default function AskQuestionForm() {
       <Button
         type='submit'
         disabled={isPending}
-        className='w-full bg-primary-500 p-3 rounded-lg text-white font-semibold hover:bg-primary-700'
+        className='w-full bg-primary-500 p-3 rounded-lg text-neutral-900 font-semibold hover:bg-primary-700'
       >
         {isPending ? t('buttoncreating') : t('buttonpost')}
       </Button>

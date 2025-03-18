@@ -45,7 +45,7 @@ const Layout = ({ children }: PropsWithChildren) => {
               onClick={() => setIsSidebarOpen(true)}
               className='absolute top-20 -right-10 p-2 rounded-full bg-white shadow-md hover:scale-110 transition-all z-50 md:hidden'
             >
-              <ChevronRightIcon2 className='w-6 h-6 text-gray-700' />
+              <ChevronRightIcon2 className='w-6 h-6 text-neutral-500' />
             </button>
           )}
         </div>

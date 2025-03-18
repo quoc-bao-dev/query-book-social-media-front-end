@@ -1,12 +1,11 @@
+import Avatar from '@/components/common/Avatar';
 import { useAnswerQuery } from '@/queries/answer';
 import { getFirstCharacter } from '@/utils/nameUtilts';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowDown, ArrowUp } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
-import Avatar from '@/components/common/Avatar';
 import { enUS, vi } from 'date-fns/locale';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { useState } from 'react';
 
 type Props = {
   id: string;
@@ -27,7 +26,6 @@ const CardQuestion = ({
   question,
   name,
   createdAt,
-  votes,
 }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -47,15 +45,15 @@ const CardQuestion = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Nội dung chính */}
-      <div className='flex items-center'>
-        <div className='w-10 flex flex-col items-center'>
+      <div className='flex items-center pl-6'>
+        {/* <div className='w-10 flex flex-col items-center'>
           {votes && votes >= 0 ? (
             <ArrowUp size={20} className='text-success-500' />
           ) : (
             <ArrowDown size={20} className='text-error-500' />
           )}
           <span className='text-gray-600'>{votes}</span>
-        </div>
+        </div> */}
 
         <div className='flex-1 flex flex-col'>
           <Link

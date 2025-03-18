@@ -1,18 +1,38 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useGetAllTopic } from '@/queries/topic';
 import { TopicResponse } from '@/types/topic';
 import { useTranslations } from 'next-intl';
-import { FieldValues, UseFormRegister } from 'react-hook-form';
+import { FieldValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 
 interface TopicSelectProps {
   register: UseFormRegister<FieldValues>;
+  setValue: UseFormSetValue<FieldValues>;
   error?: string;
 }
 
-export default function TopicSelect({ register, error }: TopicSelectProps) {
+export default function TopicSelect({
+  register,
+  setValue,
+  error,
+}: TopicSelectProps) {
   const { data, isLoading, error: fetchError } = useGetAllTopic();
   const t = useTranslations('AskQuestion');
+
+  const [selectedTopic, setSelectedTopic] = useState<string>('');
+
+  useEffect(() => {
+    if (data) {
+      const defaultTopic = data.find(
+        (topic: TopicResponse) => topic.name === 'React',
+      );
+      if (defaultTopic) {
+        setValue('topic', defaultTopic._id);
+        setSelectedTopic(defaultTopic._id);
+      }
+    }
+  }, [data, setValue]);
 
   return (
     <div>
@@ -22,17 +42,21 @@ export default function TopicSelect({ register, error }: TopicSelectProps) {
       {isLoading ? (
         <p>{t('loadtopic')}</p>
       ) : fetchError ? (
-        <p className='text-red-500'>Failed to load topics</p>
+        <p className='text-red-500'>
+          Failed to load topics: {fetchError.message}
+        </p>
       ) : (
         <select
           {...register('topic')}
+          value={selectedTopic}
+          onChange={(e) => setSelectedTopic(e.target.value)}
           className='w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-green-500'
         >
           <option value='' hidden>
             {t('select')}
           </option>
           {data?.map((topic: TopicResponse) => (
-            <option key={topic._id} value={topic._id}>
+            <option className='capitalize' key={topic._id} value={topic._id}>
               {topic.name}
             </option>
           ))}

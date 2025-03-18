@@ -18,6 +18,27 @@ interface Post {
     code?: string;
     fileType?: string;
   };
+  topic: {
+    _id: string;
+    name: string;
+    description: string;
+    interestScore: number;
+    __v: number;
+  };
+  userId: {
+    _id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    avatar?: {
+      _id: string;
+      file: string;
+      sourceType: string;
+      type: string;
+      createdAt: string;
+    };
+  };
+
   imageUrl?: string;
   images?: string[];
   hashtags: { name: string }[];
@@ -38,11 +59,15 @@ const PostsMyQuestion = ({
   post,
   user,
   searchTerm,
+  currentUserId, // Thêm userId hiện tại
 }: {
   post: Post;
   user: UserResponse;
-  searchTerm: string;
+  searchTerm?: string;
+  currentUserId?: string;
 }) => {
+  const isOwner = post.userId._id === currentUserId; // So sánh với id của bài viết
+
   return (
     <div className='rounded-lg shadow-lg p-4 mb-6 border border-border bg-card'>
       {/* User Info */}
@@ -50,6 +75,8 @@ const PostsMyQuestion = ({
         avatarUrl={user?.avatarUrl}
         fullName={user?.fullName}
         createdAt={post?.createdAt ?? ''}
+        questionId={post._id}
+        isOwner={isOwner}
       />
 
       {/* Title */}

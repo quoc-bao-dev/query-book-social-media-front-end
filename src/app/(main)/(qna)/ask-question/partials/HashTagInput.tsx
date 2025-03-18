@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 type HashTagInputProps = {
   onChange: (data: string[]) => void;
 };
+
 const HashTagInput = ({ onChange }: HashTagInputProps) => {
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [input, setInput] = useState('');
@@ -21,11 +22,12 @@ const HashTagInput = ({ onChange }: HashTagInputProps) => {
 
   useEffect(() => {
     onChange(hashtags);
-  }, [hashtags]);
+  }, [hashtags, onChange]);
 
   const removeHashtag = (tag: string) => {
     setHashtags(hashtags.filter((t) => t !== tag));
   };
+
   return (
     <div>
       <div className='flex flex-wrap gap-2 mb-2'>
@@ -48,8 +50,6 @@ const HashTagInput = ({ onChange }: HashTagInputProps) => {
         type='text'
         className='w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500'
         placeholder={t('phhashtag')}
-        // value={hashtag}
-        // onChange={handleChange}
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}

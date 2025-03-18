@@ -24,6 +24,7 @@ import { questionSchema } from '../schema/questionSchema';
 import Vote from '../../../partials/Vote';
 import { useTranslations } from 'next-intl';
 import { enUS, vi } from 'date-fns/locale';
+import CommentOptions from '../../../partials/CommentOptions';
 
 type AnswerSectionProps = {
   questionId: string;
@@ -46,6 +47,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuth();
+  const currentUserId = user?.id;
 
   const { data } = useAnswerQuery(questionId);
 
@@ -71,7 +73,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
       const files = (e.target as HTMLInputElement)?.files;
       if (files) {
         const fileArray = Array.from(files);
-        console.log('Selected Files:', fileArray); // Kiểm tra xem file có đúng không
+        console.log('Selected Files:', fileArray);
 
         if (fileArray.length + images.length > 5) {
           setErrorMessage(t('errortitle'));
@@ -79,7 +81,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           return;
         }
 
-        setImages((prev) => [...prev, ...fileArray]); // Cập nhật state
+        setImages((prev) => [...prev, ...fileArray]);
         setErrorMessage(null);
       }
     };
@@ -190,6 +192,11 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
               <p className='font-semibold'>
                 {item.userId.firstName} {item.userId.lastName}
               </p>
+              <CommentOptions
+                answerId={item._id}
+                questionId={item.questionId}
+                isOwner={currentUserId === item.userId._id}
+              />
             </div>
             <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
 
@@ -236,153 +243,164 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           </div>
         </div>
       ))}
-
-      {data && visibleComments < data.length && (
-        <button
-          onClick={handleShowMore}
-          className='mt-2 text-primary-600 hover:underline'
-        >
-          {t('morecomment')}
-        </button>
-      )}
-
-      {images.length > 0 && (
-        <div className='flex items-center gap-2 py-2 z-50'>
-          {images.map((image, index) => {
-            const imageUrl =
-              image instanceof File ? URL.createObjectURL(image) : '';
-            return (
-              <div key={index} className='relative group'>
-                {imageUrl && (
-                  <img
-                    className='size-28 rounded-lg object-cover'
-                    src={imageUrl}
-                    alt='preview'
-                  />
-                )}
-                {/* Nút xóa ảnh */}
-                <button
-                  type='button'
-                  className='absolute size-7 top-1 right-1 bg-black/70 text-white rounded-full p-1 text-xs'
-                  onClick={() =>
-                    setImages((prev) => prev.filter((_, i) => i !== index))
-                  }
-                >
-                  ✕
-                </button>
-              </div>
-            );
-          })}
-          {/* Nút thêm ảnh nếu chưa đủ 5 ảnh */}
-          {images.length < 5 && (
-            <button
-              type='button'
-              onClick={handleUploadIamges}
-              className='flex items-center justify-center size-28 border-2 border-dashed border-gray-400 rounded-lg hover:bg-gray-100'
-            >
-              <span className='text-2xl text-gray-500'>+</span>
-            </button>
-          )}
-          <button
-            onClick={() => setImages([])}
-            className='mt-2 text-primary-600 hover:underline'
-          >
-            {t('clearall')}
-          </button>
-        </div>
-      )}
-
       <ModalError
         isOpen={isErrorModalOpen}
         onClose={() => setIsErrorModalOpen(false)}
         message={errorMessage || ''}
       />
 
-      <div className='mt-4 flex items-center gap-2'>
-        <Avatar
-          src={user?.avatarUrl}
-          className='w-10 h-10 rounded-full'
-          fallBack={user?.fullName}
-        />
-        <input
-          ref={inputRef}
-          type='text'
-          placeholder={t('phinput')}
-          className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
-          onKeyDown={handleKeyDown}
-        />
-
-        <div className='flex items-center gap-1'>
-          <button
-            className='p-2 rounded-lg hover:text-primary-600'
-            onClick={handleUploadIamges}
-          >
-            <ImageIcon className='w-6 h-6' />
-          </button>
-          <button
-            onClick={() => setShowCodeEditor(true)}
-            className='relative p-2 rounded-lg hover:text-primary-600'
-          >
-            <CodeIcon className='w-6 h-6' />
-
-            {/* Hiển thị dấu chấm đỏ nếu có code */}
-            {hasCode && (
-              <span className='absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full'></span>
-            )}
-          </button>
-
-          {showCodeEditor && (
-            <Dialog open={showCodeEditor} onOpenChange={setShowCodeEditor}>
-              <DialogContent className='max-w-2xl bg-card p-5 rounded-lg'>
-                <LanguageSeletor
-                  curLaguage={selectedLanguage}
-                  setCurlanguage={setSelectedLanguage}
-                  className='mb-4 text-neutral-900 hover:bg-input'
-                />
-                <Controller
-                  name='code'
-                  control={control}
-                  render={({ field }) => (
-                    <div>
-                      <MonacoEditor
-                        onChange={field.onChange}
-                        language={selectedLanguage}
-                        value={field.value} // Sử dụng field.value để cập nhật giá trị
-                        height={400}
-                        theme='vs-dark'
-                      />
-
-                      <div className='flex justify-end gap-4 mt-4'>
-                        {/* Nút Clear Code */}
-                        <button
-                          onClick={() => {
-                            field.onChange(''); // Xóa code trong Monaco Editor
-                            setHasCode(false); // Ẩn dấu chấm đỏ trên icon Code
-                          }}
-                          className='px-4 py-2 rounded-lg bg-error-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-error-200 hover:shadow-lg active:scale-95'
-                        >
-                          {t('clear')}
-                        </button>
-
-                        <button
-                          onClick={handleSave}
-                          className='px-4 py-2 rounded-lg bg-info-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-info-600 hover:shadow-lg active:scale-95'
-                        >
-                          {t('save')}
-                        </button>
-                      </div>
-                    </div>
+      {data && visibleComments < data.length && (
+        <button
+          onClick={handleShowMore}
+          className=' text-primary-600 hover:underline'
+        >
+          {t('morecomment')}
+        </button>
+      )}
+      <div className='sticky translate-x-[-48px] bottom-8 left-0 w-full bg-card mx-auto pb-14 pt-3 md:py-4 md:bottom-0'>
+        {images.length > 0 && (
+          <div className='flex items-center gap-2 py-2 z-50'>
+            {images.map((image, index) => {
+              const imageUrl =
+                image instanceof File ? URL.createObjectURL(image) : '';
+              return (
+                <div key={index} className='relative group'>
+                  {imageUrl && (
+                    <img
+                      className='size-28 rounded-lg object-cover'
+                      src={imageUrl}
+                      alt='preview'
+                    />
                   )}
-                />
-              </DialogContent>
-            </Dialog>
-          )}
-          <button
-            onClick={handleSubmit}
-            className='p-2 rounded-lg hover:text-primary-600'
-          >
-            <SendIcon />
-          </button>
+                  {/* Nút xóa ảnh */}
+                  <button
+                    type='button'
+                    className='absolute size-7 top-1 right-1 bg-black/70 text-white rounded-full p-1 text-xs'
+                    onClick={() =>
+                      setImages((prev) => prev.filter((_, i) => i !== index))
+                    }
+                  >
+                    ✕
+                  </button>
+                </div>
+              );
+            })}
+
+            {/* Nút thêm ảnh nếu chưa đủ 5 ảnh */}
+            {images.length < 5 && (
+              <button
+                type='button'
+                onClick={handleUploadIamges}
+                className='flex items-center justify-center size-28 border-2 border-dashed border-gray-400 rounded-lg hover:bg-gray-100'
+              >
+                <span className='text-2xl text-gray-500'>+</span>
+              </button>
+            )}
+            <button
+              onClick={() => setImages([])}
+              className='mt-2 w-28 text-primary-600 hover:underline'
+            >
+              {t('clearall')}
+            </button>
+          </div>
+        )}
+
+        <div className='mt-4 flex items-center gap-2'>
+          <Avatar
+            src={user?.avatarUrl}
+            className='w-10 h-10 rounded-full'
+            fallBack={user?.fullName}
+          />
+          <input
+            ref={inputRef}
+            type='text'
+            placeholder={
+              user?.fullName
+                ? t('phinput', { name: user?.fullName })
+                : t('phinputNoName') // Nếu không có tên, dùng một chuỗi thay thế
+            }
+            className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+            onKeyDown={handleKeyDown}
+          />
+
+          <div className='flex items-center gap-1'>
+            <button
+              className='p-2 rounded-lg hover:text-primary-600'
+              onClick={handleUploadIamges}
+            >
+              <ImageIcon className='w-6 h-6' />
+            </button>
+            <button
+              onClick={() => setShowCodeEditor(true)}
+              className='relative p-2 rounded-lg hover:text-primary-600'
+            >
+              <CodeIcon className='w-6 h-6' />
+
+              {/* Hiển thị dấu chấm đỏ nếu có code */}
+              {hasCode && (
+                <span className='absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full'></span>
+              )}
+            </button>
+
+            {showCodeEditor && (
+              <Dialog open={showCodeEditor} onOpenChange={setShowCodeEditor}>
+                <DialogContent className='max-w-2xl bg-card p-5 rounded-lg'>
+                  <p className='text-2xl text-center font-semibold text-neutral-900'>
+                    {t('codesnippet')}
+                  </p>
+                  <p className=' text-neutral-900 font-semibold'>
+                    {t('selectlanguage')}
+                  </p>
+                  <LanguageSeletor
+                    curLaguage={selectedLanguage}
+                    setCurlanguage={setSelectedLanguage}
+                    className='mb-4 text-neutral-900 hover:bg-input'
+                  />
+                  <Controller
+                    name='code'
+                    control={control}
+                    render={({ field }) => (
+                      <div>
+                        <MonacoEditor
+                          onChange={field.onChange}
+                          language={selectedLanguage}
+                          value={field.value} // Sử dụng field.value để cập nhật giá trị
+                          height={400}
+                          theme='vs-dark'
+                        />
+
+                        <div className='flex justify-end gap-4 mt-4'>
+                          {/* Nút Clear Code */}
+                          <button
+                            onClick={() => {
+                              field.onChange(''); // Xóa code trong Monaco Editor
+                              setHasCode(false); // Ẩn dấu chấm đỏ trên icon Code
+                            }}
+                            className='px-4 py-2 rounded-lg bg-error-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-error-200 hover:shadow-lg active:scale-95'
+                          >
+                            {t('clear')}
+                          </button>
+
+                          <button
+                            onClick={handleSave}
+                            className='px-4 py-2 rounded-lg bg-info-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-info-600 hover:shadow-lg active:scale-95'
+                          >
+                            {t('save')}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  />
+                </DialogContent>
+              </Dialog>
+            )}
+            <button
+              onClick={handleSubmit}
+              className='p-2 rounded-lg hover:text-primary-600'
+            >
+              <SendIcon />
+            </button>
+          </div>
         </div>
       </div>
     </div>
