@@ -3,7 +3,8 @@ import FloatInput from '@/components/common/FloatInput';
 import { useUpdateUserProfileMutation } from '@/queries/user';
 import { sCurUserProfileSignal } from '../../../signal/curUserProfileSignal';
 
-const URL_REGEX = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+const URL_REGEX =
+  /^(https?:\/\/)([a-zA-Z0-9.-]+)\.([a-z.]{2,6})(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
 
 interface LinkFormProps {
   onClose: () => void;

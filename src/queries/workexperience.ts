@@ -3,17 +3,16 @@ import { HttpResponse } from "@/types/common";
 import { WorkExperience } from "@/types/workexperience";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-// Lấy danh sách kinh nghiệm làm việc
-const getWork = () => {
+const getWork = (userId: string) => {
     return axiosClient
-        .get<HttpResponse<WorkExperience[]>>("/work-experiences")
+        .get<HttpResponse<WorkExperience[]>>(`/work-experiences/user/${userId}`)
         .then((response) => response.data.data);
 };
-
-export const useGetWork = () => {
+export const useGetWork = (userId: string) => {
     return useQuery({
-        queryKey: ["work-experiences"],
-        queryFn: getWork,
+        queryKey: ["work-experiences", userId],
+        queryFn: () => getWork(userId),
+        enabled: !!userId,
     });
 };
 

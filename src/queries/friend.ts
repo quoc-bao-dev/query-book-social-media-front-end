@@ -95,7 +95,7 @@ export const useRemoveRequestMutation = () => {
 };
 
 const postRemoveFriend = async (userId: string) =>
-  axiosClient.delete(`/friends/remove-friend/${userId}`);
+  axiosClient.delete(`/friends/remove/${userId}`);
 
 export const useRemoveFriendMutation = () => {
   const queryClient = useQueryClient();

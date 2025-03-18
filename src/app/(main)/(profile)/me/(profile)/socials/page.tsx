@@ -19,9 +19,11 @@ const ManageLinks = () => {
       <SetCurUserProfileSignal user={user} />
       <div className='md:w-[698px] h-fit mt-4 border border-b rounded-2xl bg-card py-4 px-4 space-y-5'>
         <div className='flex justify-between items-center mb-6'>
-          <div className='flex items-center space-x-2'>
+          <div className='flex items-center space-x-3'>
             <User className='text-primary-500' />
-            <span className='text-base font-semibold'>Quản lý liên kết</span>
+            <span className='font-bold text-neutral-950'>
+              Quản lý liên kết
+            </span>{' '}
           </div>
           <button
             onClick={() => setIsAddingLink(!isAddingLink)}

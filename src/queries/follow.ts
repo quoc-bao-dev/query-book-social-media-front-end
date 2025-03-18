@@ -27,3 +27,27 @@ export const useFollowMutation = (
     },
   });
 };
+const deleteFollow = (userId: string) => axiosClient.delete(`/follow/${userId}`);
+
+export const useUnfollowMutation = (
+  { mode, userId }: { mode?: 'default' | 'userPage'; userId?: string } = {
+    mode: 'default',
+  },
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => deleteFollow(userId),
+    onSuccess: async () => {
+      if (mode === 'userPage') {
+        queryClient.invalidateQueries({ queryKey: ['follow_suggest'] });
+
+        const user = (
+          await axiosClient.get<HttpResponse<UserProfileResponse>>(
+            `/users/profile/${userId}`,
+          )
+        ).data.data;
+        sCurUserProfileSignal.set({ user });
+      }
+    },
+  });
+};

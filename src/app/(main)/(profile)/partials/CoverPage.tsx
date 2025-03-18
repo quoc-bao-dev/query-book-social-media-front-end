@@ -25,6 +25,7 @@ import Friended from '../[userId]/partials/Friended';
 import { Button } from '@/components/common/Button';
 import Avatar from '@/components/common/Avatar';
 import CancelinvitationButton from '../[userId]/partials/CancelinvitationButton';
+import { useUnfollowMutation } from '@/queries/follow';
 
 const CoverPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +49,8 @@ const CoverPage = () => {
     useRemoveRequestMutation();
   const { mutateAsync: removeFriend, isPending: isRemoveFriendPending } =
     useRemoveFriendMutation();
+  const { mutateAsync: removeFollow, isPending: isRemoveFollowPending } =
+    useUnfollowMutation();
 
   const { data } = useSendRequestsQuery();
 
@@ -75,14 +78,23 @@ const CoverPage = () => {
     removeRequest(user?.id);
   };
   const handleRemoveFriends = async (id: string) => {
-    if (!user || isRemoveFriendPending) return;
-
+    if (isRemoveFriendPending) return;
     try {
       console.log('Đang xóa bạn:', id);
-      await removeFriend;
+      await removeFriend(id); // Gọi hàm xóa bạn bè với id
       console.log('Xóa bạn bè thành công:', id);
     } catch (error) {
       console.error('Lỗi khi xóa bạn bè:', error);
+    }
+  };
+  const handleRemoveFollow = async (id: string) => {
+    if (isRemoveFollowPending) return;
+    try {
+      console.log('Đang xóa bạn:', id);
+      await removeFollow(id); // Gọi hàm xóa bạn bè với id
+      console.log('Xóa Fl thành công:', id);
+    } catch (error) {
+      console.error('Lỗi khi fl:', error);
     }
   };
 
@@ -178,7 +190,7 @@ const CoverPage = () => {
                       {user?.followers?.some(
                         (_user) => _user.id === userMe?.id,
                       ) ? (
-                        <FollowedButton />
+                        <FollowedButton onClick={handleRemoveFollow} />
                       ) : (
                         <FollowButton userId={user.id} />
                       )}

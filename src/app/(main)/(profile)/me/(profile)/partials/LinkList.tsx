@@ -58,7 +58,7 @@ const LinkList = () => {
           user.links.map((link, index) => (
             <div
               key={index}
-              className='flex items-center justify-between p-3 bg-gray-100 rounded-lg'
+              className='border flex items-center justify-between p-3 bg-gray-100 rounded-lg '
             >
               {editingIndex === index ? (
                 <div className='flex flex-col space-y-2 w-full'>
