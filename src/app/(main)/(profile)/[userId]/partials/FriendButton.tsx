@@ -1,5 +1,5 @@
-import UserPlus from '@/components/icons/User-plus';
 import LoadingIcon from '@/components/icons/LoadingIcon';
+import UserPlus from '@/components/icons/User-plus';
 
 const FriendButton = ({
   onClick,

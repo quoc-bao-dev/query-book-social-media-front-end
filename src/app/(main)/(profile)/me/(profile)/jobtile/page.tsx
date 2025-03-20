@@ -1,26 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import {
-  useCreateWorkMutation,
-  useGetWork,
-  useDeleteWorkMutation,
-  useUpdateWorkMutation,
-} from '@/queries/workexperience';
-import { useJobTitleQuery } from '@/queries/jobTitle';
-import { WorkExperience } from '@/types/workexperience';
-import SetCurUserProfileSignal from '../../../partials/SetCurUserProfileSignal';
-import { useAuth } from '@/store/authSignal';
 import FloatInput from '@/components/common/FloatInput';
-import { JobTitleResponse } from '@/types/jobTitle';
-import User from '@/components/icons/User';
+import Tiptap from '@/components/common/TipTap';
 import Pen from '@/components/icons/Pencil';
 import PlusIcon from '@/components/icons/PlusIcon';
+import User from '@/components/icons/User';
+import { useJobTitleQuery } from '@/queries/jobTitle';
+import {
+  useCreateWorkMutation,
+  useDeleteWorkMutation,
+  useGetWork,
+  useUpdateWorkMutation,
+} from '@/queries/workexperience';
+import { useAuth } from '@/store/authSignal';
+import { WorkExperience } from '@/types/workexperience';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
+import SetCurUserProfileSignal from '../../../partials/SetCurUserProfileSignal';
 
 const Page = () => {
   const { user } = useAuth();
   const userId = user?.id;
+
+  //FIXME: fix this state
+  const [text, setText] = useState('');
+  console.log(text);
 
   const { mutate, isPending } = useCreateWorkMutation();
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -271,21 +275,16 @@ const Page = () => {
             </div>
 
             {/* Content Textarea */}
-            <div className='mb-4'>
+            <div className='mt-4 '>
               <label className='block text-sm font-medium text-gray-700 mb-1 '>
                 Nội dung công việc *
               </label>
-              <textarea
-                name='content'
+              <Tiptap
                 value={formData.content}
-                onChange={handleChange}
-                className={`peer block w-full appearance-none bg-card border-2 border-gray-300 px-3 py-2 rounded-md text-gray-900 focus:border-info-500 focus:outline-none focus:ring-1 focus:ring-info-500 ${
-                  errors.content ? 'border-red-500' : 'border-gray-300'
-                }`}
-                rows={4}
-                placeholder='Mô tả chi tiết công việc...'
+                onChange={(value) =>
+                  setFormData({ ...formData, content: value })
+                }
               />
-              <ErrorMessage message={errors.content} />
             </div>
 
             {/* Date Inputs */}

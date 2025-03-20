@@ -67,19 +67,19 @@ const FriendStatusButton: React.FC<FriendStatusButtonProps> = ({ userId }) => {
 
       {/* Dropdown */}
       {isDropdownOpen && (
-        <div className='z-10 absolute right-0 mt-2 w-60 bg-white border border-gray-100 rounded-lg shadow-md overflow-hidden'>
+        <div className='z-10 absolute right-0 mt-2 w-60 bg-gray-50 border border-gray-100 rounded-lg overflow-hidden'>
           {/* Hủy kết bạn */}
           <button
             onClick={handleRemoveFriends}
-            className='flex items-center w-full px-4 py-2 text-left text-red-500 hover:bg-gray-100'
+            className='flex items-center w-full px-4 py-2 text-left text-error-500 hover:bg-gray-300'
           >
             <X className='w-5 h-5 mr-2 text-error-500 ' />
             <div className='font-bold'>Hủy kết bạn</div>
           </button>
 
           {/* Báo cáo */}
-          <button className='flex items-center w-full px-4 py-2 text-left text-gray-800 hover:bg-gray-100'>
-            <Flag className='w-4 h-4 mr-2 text-error-500' />
+          <button className='flex items-center w-full px-4 py-2 text-left text-gray-800 hover:bg-gray-300'>
+            <Flag className='w-4 h-4 mr-3 text-error-500' />
             <div className='font-bold'>Báo cáo</div>
           </button>
         </div>

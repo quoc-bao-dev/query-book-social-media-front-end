@@ -4,9 +4,11 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
 import {
+  useAcceptRequestMutation,
   useFriendsQuery,
   useSendRequestMutation,
   useSendRequestsQuery,
+  useFriendRequestQuery,
 } from '@/queries/friend';
 import { useAuth } from '@/store/authSignal';
 
@@ -17,6 +19,7 @@ import CancelInvitationButton from '../[userId]/partials/CancelinvitationButton'
 import FollowButton from '../[userId]/partials/FollowButton';
 import FollowedButton from '../[userId]/partials/FollowedButton';
 import FriendButton from '../[userId]/partials/FriendButton';
+
 import Friended from '../[userId]/partials/Friended';
 import FriendStatusButton from '../[userId]/partials/FriendStatusButton';
 import PostButton from '../[userId]/partials/PostButton';
@@ -27,6 +30,7 @@ import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 import AvatarModal from '../me/(me)/partials/AvatarModal';
 import CoverModal from '../me/(me)/partials/CoverModal';
 import AvatarModalUser from './AvatarModalUser';
+import FriendRequestsButton from '../[userId]/partials/FriendRequests';
 
 const CoverPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +48,8 @@ const CoverPage = () => {
 
   const { mutateAsync, isPending: isSendRequestPending } =
     useSendRequestMutation();
+
+  const { data: friendRequests } = useFriendRequestQuery();
 
   // Các hàm mở modal
   const handleOpenModal = () => setIsModalOpen(true);
@@ -67,6 +73,12 @@ const CoverPage = () => {
 
   // Kiểm tra trạng thái kết bạn
   const isSendRequest = data?.some((item) => item.id === user?.id) ?? false;
+
+  // Hàm kiểm tra xem user đã gửi lời mời chưa
+  const isRequest = (userId?: string) => {
+    return friendRequests?.some((item) => item.id === userId) ?? false;
+  };
+
   const isFriend =
     userMe?.friends?.some((friend) => friend?.id === user?.id) ?? false;
 
@@ -138,13 +150,19 @@ const CoverPage = () => {
                   {user?.id !== userMe?.id && (
                     <>
                       {isSendRequest ? (
+                        // Nếu đã gửi lời mời, hiển thị nút Hủy lời mời
                         <CancelInvitationButton userId={user?.id || ''} />
+                      ) : isRequest?.(user?.id) ? (
+                        // Nếu nhận được lời mời từ user, hiển thị nút Chấp nhận lời mời
+                        <FriendRequestsButton userId={user?.id || ''} />
                       ) : !isFriend ? (
+                        // Nếu chưa là bạn bè, hiển thị nút Gửi lời mời
                         <FriendButton
                           onClick={handleSendRequest}
                           disabled={isSendRequestPending}
                         />
                       ) : (
+                        // Nếu đã là bạn bè, hiển thị trạng thái bạn bè
                         <FriendStatusButton userId={user?.id || ''} />
                       )}
                     </>
