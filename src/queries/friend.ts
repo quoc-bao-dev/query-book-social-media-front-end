@@ -53,13 +53,7 @@ export const useSendRequestMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['friend_suggest'] });
       queryClient.invalidateQueries({ queryKey: ['send_requests'] });
-      swal.fire({
-        icon: 'success',
-        title: 'Kết bạn thành công',
-        timer: 2000,
 
-
-      })
     },
   });
 };

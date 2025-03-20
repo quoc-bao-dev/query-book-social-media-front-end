@@ -1,31 +1,32 @@
 'use client';
 
-import Camera from '@/components/icons/Camera';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
+
 import {
   useFriendsQuery,
-  useRemoveFriendMutation,
-  useRemoveRequestMutation,
   useSendRequestMutation,
   useSendRequestsQuery,
 } from '@/queries/friend';
 import { useAuth } from '@/store/authSignal';
-import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+
+import Avatar from '@/components/common/Avatar';
+import Camera from '@/components/icons/Camera';
+
+import CancelInvitationButton from '../[userId]/partials/CancelinvitationButton';
 import FollowButton from '../[userId]/partials/FollowButton';
 import FollowedButton from '../[userId]/partials/FollowedButton';
 import FriendButton from '../[userId]/partials/FriendButton';
+import Friended from '../[userId]/partials/Friended';
 import FriendStatusButton from '../[userId]/partials/FriendStatusButton';
 import PostButton from '../[userId]/partials/PostButton';
 import ProfileButton from '../[userId]/partials/ProfileButton';
+
+import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
+
 import AvatarModal from '../me/(me)/partials/AvatarModal';
 import CoverModal from '../me/(me)/partials/CoverModal';
-import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 import AvatarModalUser from './AvatarModalUser';
-import Friended from '../[userId]/partials/Friended';
-import { Button } from '@/components/common/Button';
-import Avatar from '@/components/common/Avatar';
-import CancelinvitationButton from '../[userId]/partials/CancelinvitationButton';
-import { useUnfollowMutation } from '@/queries/follow';
 
 const CoverPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,35 +36,21 @@ const CoverPage = () => {
 
   const { user: userMe } = useAuth();
   const { user } = sCurUserProfileSignal.use();
-
   const { data: friendUser } = useFriendsQuery();
+  const { data } = useSendRequestsQuery();
 
   const isMe = user && userMe && user.id === userMe.id;
-
   const friends = isMe ? friendUser?.data?.data || [] : user?.friends || [];
 
   const { mutateAsync, isPending: isSendRequestPending } =
     useSendRequestMutation();
 
-  const { mutateAsync: removeRequest, isPending: isRemoveRequestPending } =
-    useRemoveRequestMutation();
-  const { mutateAsync: removeFriend, isPending: isRemoveFriendPending } =
-    useRemoveFriendMutation();
-  const { mutateAsync: removeFollow, isPending: isRemoveFollowPending } =
-    useUnfollowMutation();
+  // Các hàm mở modal
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleOpenModalCoveFage = () => setIsCoveModalOpen(true);
+  const handleOpenModalAvtUserId = () => setIsModalOpenAvtUserId(true);
 
-  const { data } = useSendRequestsQuery();
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleOpenModalCoveFage = () => {
-    setIsCoveModalOpen(true);
-  };
-  const handleOpenModalAvtUserId = () => {
-    setIsModalOpenAvtUserId(true);
-  };
-
+  // Hàm gửi yêu cầu kết bạn
   const handleSendRequest = useCallback(() => {
     if (!user || isLoading) return;
 
@@ -73,34 +60,12 @@ const CoverPage = () => {
     });
   }, [user, mutateAsync, isLoading]);
 
-  const handleRemoveRequest = () => {
-    if (!user || isRemoveRequestPending) return;
-    removeRequest(user?.id);
-  };
-  const handleRemoveFriends = async (id: string) => {
-    if (isRemoveFriendPending) return;
-    try {
-      console.log('Đang xóa bạn:', id);
-      await removeFriend(id); // Gọi hàm xóa bạn bè với id
-      console.log('Xóa bạn bè thành công:', id);
-    } catch (error) {
-      console.error('Lỗi khi xóa bạn bè:', error);
-    }
-  };
-  const handleRemoveFollow = async (id: string) => {
-    if (isRemoveFollowPending) return;
-    try {
-      console.log('Đang xóa bạn:', id);
-      await removeFollow(id); // Gọi hàm xóa bạn bè với id
-      console.log('Xóa Fl thành công:', id);
-    } catch (error) {
-      console.error('Lỗi khi fl:', error);
-    }
-  };
-
+  // Các đường dẫn
   const targetLink = isMe ? '/me' : `/${user?.id || ''}`;
   const profileLink = isMe ? '/me/profile' : `/${user?.id || ''}/profile`;
   const friendedLink = isMe ? '/me/friended' : `/${user?.id || ''}/friended`;
+
+  // Kiểm tra trạng thái kết bạn
   const isSendRequest = data?.some((item) => item.id === user?.id) ?? false;
   const isFriend =
     userMe?.friends?.some((friend) => friend?.id === user?.id) ?? false;
@@ -173,14 +138,14 @@ const CoverPage = () => {
                   {user?.id !== userMe?.id && (
                     <>
                       {isSendRequest ? (
-                        <CancelinvitationButton onClick={handleRemoveRequest} />
+                        <CancelInvitationButton userId={user?.id || ''} />
                       ) : !isFriend ? (
                         <FriendButton
                           onClick={handleSendRequest}
                           disabled={isSendRequestPending}
                         />
                       ) : (
-                        <FriendStatusButton onClick={handleRemoveFriends} />
+                        <FriendStatusButton userId={user?.id || ''} />
                       )}
                     </>
                   )}
@@ -190,7 +155,7 @@ const CoverPage = () => {
                       {user?.followers?.some(
                         (_user) => _user.id === userMe?.id,
                       ) ? (
-                        <FollowedButton onClick={handleRemoveFollow} />
+                        <FollowedButton userId={user.id} />
                       ) : (
                         <FollowButton userId={user.id} />
                       )}
@@ -303,10 +268,15 @@ const CoverPage = () => {
             <div className='mb-2 flex gap-2 justify-center'>
               {user?.id !== userMe?.id && (
                 <>
-                  {!isFriend ? (
-                    <FriendButton onClick={handleSendRequest} />
+                  {isSendRequest ? (
+                    <CancelInvitationButton userId={user?.id || ''} />
+                  ) : !isFriend ? (
+                    <FriendButton
+                      onClick={handleSendRequest}
+                      disabled={isSendRequestPending}
+                    />
                   ) : (
-                    <FriendStatusButton />
+                    <FriendStatusButton userId={user?.id || ''} />
                   )}
                 </>
               )}
@@ -314,7 +284,7 @@ const CoverPage = () => {
               {user?.id !== userMe?.id && user?.id && (
                 <>
                   {user?.followers?.some((_user) => _user.id === userMe?.id) ? (
-                    <FollowedButton />
+                    <FollowedButton userId={user.id} />
                   ) : (
                     <FollowButton userId={user.id} />
                   )}
