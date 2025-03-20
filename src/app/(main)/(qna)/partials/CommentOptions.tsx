@@ -61,7 +61,7 @@ const CommentOptions = ({
               <li
                 className='group flex items-center py-2 px-4 text-gray-700 cursor-pointer rounded-md hover:bg-neutral-900/10'
                 onClick={() => {
-                  // onEdit();
+                  onEdit();
                   console.log('jksdhjsdjgh', onEdit);
 
                   setIsOpen(false); // Đóng menu sau khi click
