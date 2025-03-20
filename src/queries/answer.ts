@@ -113,7 +113,7 @@ export const useDeleteAnswerMutation = (questionId: string) => {
         confirmButtonColor: "#ff7043",
         background: "#1c1c1c",
         color: "#fff",
-        timer: 2000,
+        timer: 1000,
         showConfirmButton: false,
         showClass: {
           popup: "animate__animated animate__zoomIn",
@@ -146,3 +146,20 @@ export const useDeleteAnswerMutation = (questionId: string) => {
     },
   });
 };
+
+// sua 
+const editAnswer = (answerId: string, payload: { content: string; code?: { fileType: string; code: string } }) =>
+  axiosClient.patch(`/answers/${answerId}`, payload);
+
+export const useEditAnswerMutation = (questionId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ answerId, payload }: { answerId: string; payload: { content: string; code?: { fileType: string; code: string } } }) =>
+      editAnswer(answerId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['answers', questionId] });
+    },
+  });
+};
+
+

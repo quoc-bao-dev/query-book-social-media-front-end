@@ -15,7 +15,7 @@ const ImageRender = ({ images }: { images: string[] }) => {
 
   return (
     <div
-      className='group relative mt-1 flex w-24 items-center gap-2 p-2 border rounded-md bg-info-100 shadow-sm cursor-pointer hover:bg-info-700'
+      className='group relative mt-1 flex w-24 items-center gap-2 p-2 rounded-md bg-info-100 text-info-500 shadow-sm cursor-pointer hover:bg-info-700'
       onClick={ShowimageDetail}
     >
       <span className='absolute top-[-3px] right-[-6px] w-3 h-3 bg-red-600 rounded-full'></span>
