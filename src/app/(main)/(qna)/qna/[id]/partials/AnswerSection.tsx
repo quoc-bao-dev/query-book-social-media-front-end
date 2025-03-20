@@ -7,7 +7,11 @@ import CodeIcon from '@/components/icons/CodeIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
 import SendIcon from '@/components/icons/SendIcon';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { useAnswerMutation, useAnswerQuery } from '@/queries/answer';
+import {
+  useAnswerMutation,
+  useAnswerQuery,
+  useEditAnswerMutation,
+} from '@/queries/answer';
 import { useAuth } from '@/store/authSignal';
 import { uploadImages } from '@/utils/uploadUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,6 +42,31 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
   const [images, setImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
+  const [editedContent, setEditedContent] = useState('');
+
+  const handleEdit = (answerId: string, content: string) => {
+    console.log('Editing answer:', answerId, 'with content:', content); // Debug
+    setEditingAnswerId(answerId);
+    setEditedContent(content);
+  };
+
+  const handleSaveEdit = async (answerId: string) => {
+    if (editedContent.trim()) {
+      await editAnswerMutation.mutateAsync({
+        answerId,
+        payload: { content: editedContent },
+      });
+      setEditingAnswerId(null);
+      setEditedContent('');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingAnswerId(null);
+  };
+
+  const editAnswerMutation = useEditAnswerMutation(questionId);
   const t = useTranslations('ModalComment');
   const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
   const getLocale = (locale: string) => {
@@ -196,9 +225,35 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
                 answerId={item._id}
                 questionId={item.questionId}
                 isOwner={currentUserId === item.userId._id}
+                onEdit={() => handleEdit(item._id, item.content)}
               />
             </div>
-            <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
+            {editingAnswerId === item._id ? (
+              <div className='mt-1'>
+                <textarea
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                  className='w-full p-2 border border-gray-300 rounded-md'
+                  rows={3}
+                />
+                <div className='flex gap-2 mt-2'>
+                  <button
+                    onClick={() => handleSaveEdit(item._id)}
+                    className='px-4 py-2 bg-blue-500 text-white rounded-md'
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={handleCancelEdit}
+                    className='px-4 py-2 bg-gray-500 text-white rounded-md'
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
+            )}
 
             {item.images && <ImageRender images={item.images} />}
             {item.code?.code && (
