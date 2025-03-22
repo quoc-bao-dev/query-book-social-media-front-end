@@ -68,8 +68,8 @@ export const useDeleteCommentMutation = (postId: string) => {
   return useMutation({
     mutationFn: (commentId: string) => deleteComment(commentId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['comment', postId] });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['comment', postId] });
       swal.fire({
         icon: 'success',
         text: 'Xóa bình luận thành công',

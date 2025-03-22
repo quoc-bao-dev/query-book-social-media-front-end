@@ -70,7 +70,7 @@ export const useCreatePostMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       swal.fire({
         icon: 'success',
-        title: 'Đăng bài thành công',
+        text: 'Đăng bài thành công',
         showConfirmButton: false,
         timer: 2000,
         confirmButtonColor: '#0abf7e',
