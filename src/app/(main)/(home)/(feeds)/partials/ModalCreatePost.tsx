@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select';
 import { useCreatePostMutation, useUpdatePostMutation } from '@/queries/post';
 import { useAuth } from '@/store/authSignal';
+import { MediaUpload } from '@/types/common';
 import { PostResponse } from '@/types/post';
 import { extractHashtags } from '@/utils/hashtagUtils';
 import { media } from '@/utils/mediaUtils';
@@ -33,8 +34,6 @@ import { signify } from 'react-signify';
 import { createPost, CreatePostSchema } from '../schema/CreatePostSchema';
 import AutoResizeTextarea from './AutoResizeTextarea';
 import CreatePostImage from './CreatePostImage';
-import { Media, MediaUpload } from '@/types/common';
-import { set } from 'date-fns';
 
 type ModalCreatePostSignal = {
   isOpen: boolean;
@@ -79,20 +78,6 @@ const ModalCreatePost = () => {
   const name = getFirstCharacter(user?.fullName || '');
   const { mutateAsync } = useCreatePostMutation();
   const { mutateAsync: updatePost } = useUpdatePostMutation(curPost.id);
-
-  useEffect(() => {
-    const images = files.map((file) => URL.createObjectURL(file));
-
-    // Lọc những ảnh không phải remove thì lấy lại
-    const imagesInCurPost = curPost.media.map((img) => media.toImage(img)!);
-
-    // Gọp 2 mảng thành mảng mới để show ra giao diện
-    setImageReview([...imagesInCurPost, ...images]);
-  }, [files, curPost]);
-
-  console.log('imageUpload', imageUpload);
-  console.log('curPost', curPost.media);
-  console.log('imageReview', imageReview);
 
   const onModalChange = (isOpen: boolean) => {
     sModalCreatePost.set((n) => (n.value.isOpen = isOpen));
@@ -200,8 +185,6 @@ const ModalCreatePost = () => {
       media: lsMedias,
     };
 
-    console.log('payload', payload);
-
     if (!curPost.id) {
       await mutateAsync(payload);
     } else {
@@ -222,6 +205,22 @@ const ModalCreatePost = () => {
     reset();
     sModalCreatePost.reset();
   };
+
+  useEffect(() => {
+    if (!curPost.content) return;
+    const curContent = curPost.content;
+    reset({ content: curContent });
+  }, [curPost]);
+
+  useEffect(() => {
+    const images = files.map((file) => URL.createObjectURL(file));
+
+    // Lọc những ảnh không phải remove thì lấy lại
+    const imagesInCurPost = curPost.media.map((img) => media.toImage(img)!);
+
+    // Gọp 2 mảng thành mảng mới để show ra giao diện
+    setImageReview([...imagesInCurPost, ...images]);
+  }, [files, curPost]);
 
   return (
     <Modal
@@ -295,6 +294,9 @@ const ModalCreatePost = () => {
               />
 
               {/* Báo lỗi cho người dùng */}
+              {errors.root && (
+                <p className='text-error-500'>something went wrong</p>
+              )}
               <div className='text-center'>
                 {errors.content && (
                   <p className='text-error-500'>{errors.content.message}</p>

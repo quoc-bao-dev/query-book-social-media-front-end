@@ -6,19 +6,14 @@ import DeleteIcon from '@/components/icons/DeleteIcon';
 import EditIcon from '@/components/icons/EditIcon';
 import EllipsisVerticalIcon from '@/components/icons/EllipsisVerticalIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
-import LoadingIcon from '@/components/icons/LoadingIcon';
 import LockIcon from '@/components/icons/LockIcon';
 import ReportIcon from '@/components/icons/ReportIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
 import WorldIcon from '@/components/icons/WorldIcon';
 import { cn } from '@/lib/utils';
-import {
-  useDeleteCommentMutation,
-  useGetCommentQuery,
-} from '@/queries/comment';
+import { useGetCommentQuery } from '@/queries/comment';
 import { useLikeMutation } from '@/queries/like';
-import { useDeletePostMutation } from '@/queries/post';
 import { useAuth } from '@/store/authSignal';
 import { Comment, PostResponse } from '@/types/post';
 import { formatDistanceToNow, parseISO } from 'date-fns';
@@ -28,7 +23,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useCommentDetail } from '../signal/commentDetail';
 import { useListImageDetail } from '../signal/listImageDetail';
 import CommentReply from './CommentReply';
+import { sModalConfirm, useModalConfirm } from './ModalConfirm';
 import { sModalCreatePost, useModalCreatePost } from './ModalCreatePost';
+import { useModalReportPost } from './ModalReport';
 import PostComment from './PostComment';
 import PostImage from './PostImage';
 
@@ -64,8 +61,6 @@ export type ReplyComment = {
 };
 
 const Post = ({ post, mode }: PostProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [commentId, setCommentId] = useState('');
   const [repComment, setRepComment] = useState<ReplyComment>({
     name: '',
     id: '',
@@ -78,10 +73,10 @@ const Post = ({ post, mode }: PostProps) => {
   const { showModal, setImages, setCurIndex } = useListImageDetail();
   const { setCurPost, open } = useCommentDetail();
   const { setEditCurPost } = useModalCreatePost();
+  const { openReport } = useModalReportPost();
+  const { openConfirm } = useModalConfirm();
 
   const { mutateAsync: likePost, isPending } = useLikeMutation();
-  const { mutateAsync: deleteComment } = useDeleteCommentMutation(post.id);
-  const { mutateAsync: deletePost } = useDeletePostMutation();
 
   // Chuyển đổi chuỗi thành đối tượng Date
   const date = parseISO(post.createdAt);
@@ -89,7 +84,6 @@ const Post = ({ post, mode }: PostProps) => {
   // Tính toán khoảng cách thời gian từ thời điểm cụ thể đến hiện tại
   const distance = formatDistanceToNow(date, { addSuffix: true });
   const isLiked = post.likes.some((like) => like.id === user?.id);
-
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   // Click ra ngoài màn hình sẽ nhận sk để xử lý hiển thị
@@ -138,13 +132,11 @@ const Post = ({ post, mode }: PostProps) => {
     setCurPost(post);
   };
 
-  const handleDeleteComment = async (id: string) => {
-    console.log(id);
-    if (isLoading) return;
-    setIsLoading(true);
-    setCommentId(id);
-    await deleteComment(id);
-    setIsLoading(false);
+  const openConfirmDeleteComment = async (id: string) => {
+    openConfirm();
+    sModalConfirm.set((n) => (n.value.Id = id));
+    sModalConfirm.set((n) => (n.value.Type = 'comment'));
+    sModalConfirm.set((n) => (n.value.postId = post.id));
   };
 
   // Lấy id và tên user cần trả lời comment
@@ -159,8 +151,14 @@ const Post = ({ post, mode }: PostProps) => {
   };
 
   // Xóa bài post
-  const handleDeletePost = async () => {
-    await deletePost(post.id);
+  const openConfirmDeletePost = () => {
+    openConfirm();
+    sModalConfirm.set((n) => (n.value.Id = post.id));
+    sModalConfirm.set((n) => (n.value.Type = 'post'));
+  };
+
+  const handleReportPost = () => {
+    openReport();
   };
 
   return (
@@ -224,7 +222,7 @@ const Post = ({ post, mode }: PostProps) => {
                     </button>
                   </div>
                   <div
-                    onClick={handleDeletePost}
+                    onClick={openConfirmDeletePost}
                     className='py-1 flex pl-2 items-center hover:bg-gray-100 hover:rounded-md'
                   >
                     <DeleteIcon className='size-6 fill-slate-500' />
@@ -238,7 +236,10 @@ const Post = ({ post, mode }: PostProps) => {
                 </>
               )}
 
-              <div className='py-1 flex pl-2 items-center hover:bg-gray-100 hover:rounded-md'>
+              <div
+                onClick={handleReportPost}
+                className='py-1 flex pl-2 items-center hover:bg-gray-100 hover:rounded-md'
+              >
                 <ReportIcon className='size-6 fill-slate-500' />
                 <button className='text-left pl-3'>
                   <div className=''>Báo cáo bài viết</div>
@@ -361,16 +362,12 @@ const Post = ({ post, mode }: PostProps) => {
                   <div className='flex justify-end items-center px-1 gap-5 text-neutral-600 text-[14px] font-medium'>
                     {_comment.userId === user?.id && (
                       <>
-                        {isLoading && _comment.id === commentId ? (
-                          <LoadingIcon size={15} color='#0abf7e' />
-                        ) : (
-                          <button
-                            onClick={() => handleDeleteComment(_comment.id)}
-                            className='hover:text-error-500 hover:duration-300'
-                          >
-                            Xóa
-                          </button>
-                        )}
+                        <button
+                          onClick={() => openConfirmDeleteComment(_comment.id)}
+                          className='hover:text-error-500 hover:duration-300'
+                        >
+                          Xóa
+                        </button>
                         <button
                           onClick={() =>
                             RepComment(_comment.fullName, _comment.id)
@@ -402,7 +399,7 @@ const Post = ({ post, mode }: PostProps) => {
               {mode === 'onPage' && (
                 <div className='text-gray-600 ml-14'>
                   {_comment.replies.length > 0 && (
-                    <button onClick={() => showCommentDetail()}>
+                    <button onClick={showCommentDetail}>
                       {_comment.replies.length} câu trả lời
                     </button>
                   )}

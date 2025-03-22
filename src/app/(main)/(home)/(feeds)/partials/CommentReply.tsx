@@ -1,12 +1,10 @@
 import Avatar from '@/components/common/Avatar';
-import LoadingIcon from '@/components/icons/LoadingIcon';
-import { useDeleteCommentMutation } from '@/queries/comment';
 import { useAuth } from '@/store/authSignal';
 import { Replies } from '@/types/post';
-import Link from 'next/link';
-import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useListImageDetail } from '../signal/listImageDetail';
+import { sModalConfirm, useModalConfirm } from './ModalConfirm';
 
 export interface CommentReplyModalProps {
   ReplyComment: Replies;
@@ -14,24 +12,21 @@ export interface CommentReplyModalProps {
 }
 
 const CommentReply = ({ ReplyComment, postId }: CommentReplyModalProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [commentId, setCommentId] = useState('');
-  const { mutateAsync: deleteComment } = useDeleteCommentMutation(postId);
-
   const { user } = useAuth();
+  const { openConfirm } = useModalConfirm();
   const { showModal, setImages, setCurIndex } = useListImageDetail();
   const showDetail = (image: string) => () => {
     setImages([image]);
     setCurIndex(0);
     showModal();
   };
+  console.log('reply', ReplyComment);
 
-  const handleDeleteComment = async (id: string) => {
-    if (isLoading) return;
-    setIsLoading(true);
-    setCommentId(id);
-    await deleteComment(id);
-    setIsLoading(false);
+  const openConfirmDeleteComment = async (id: string) => {
+    openConfirm();
+    sModalConfirm.set((n) => (n.value.Id = id));
+    sModalConfirm.set((n) => (n.value.Type = 'comment'));
+    sModalConfirm.set((n) => (n.value.postId = postId));
   };
 
   return (
@@ -75,18 +70,12 @@ const CommentReply = ({ ReplyComment, postId }: CommentReplyModalProps) => {
 
         <div className='flex justify-end items-center px-1 gap-5 text-neutral-600 text-[14px] font-medium'>
           {ReplyComment.author.id === user?.id && (
-            <>
-              {isLoading && ReplyComment.id === commentId ? (
-                <LoadingIcon size={15} color='#0abf7e' />
-              ) : (
-                <button
-                  onClick={() => handleDeleteComment(ReplyComment.id)}
-                  className='hover:text-error-500 hover:duration-300'
-                >
-                  Xóa
-                </button>
-              )}
-            </>
+            <button
+              onClick={() => openConfirmDeleteComment(ReplyComment.id)}
+              className='hover:text-error-500 hover:duration-300'
+            >
+              Xóa
+            </button>
           )}
         </div>
       </div>

@@ -1,5 +1,6 @@
 'use client';
 import { useAuth } from '@/store/authSignal';
+import { on } from 'events';
 import { useEffect, useRef } from 'react';
 
 type AutoResizeTextareaProps = {
@@ -16,7 +17,6 @@ const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = ({
 
   useEffect(() => {
     const textarea = textareaRef.current;
-
     if (textarea) {
       textarea.style.height = 'auto';
       textarea.style.height = `${textarea.scrollHeight}px`;

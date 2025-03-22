@@ -8,9 +8,8 @@ import Post from './Post';
 
 const ModalCommentDetail = () => {
   const { isOpen, curPost } = sCommentDetail.use();
-  console.log('curPost', curPost);
-
   const { close } = useCommentDetail();
+  console.log('curPost', curPost);
 
   return (
     <Modal isOpen={isOpen} onClose={close}>
