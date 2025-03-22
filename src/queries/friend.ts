@@ -52,6 +52,7 @@ export const useSendRequestMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['friend_suggest'] });
       queryClient.invalidateQueries({ queryKey: ['send_requests'] });
+
     },
   });
 };
@@ -82,6 +83,19 @@ export const useRemoveRequestMutation = () => {
     mutationFn: (userId: string) => postRemoveRequest(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['send_requests'] });
+    },
+  });
+};
+
+const postRemoveFriend = async (userId: string) =>
+  axiosClient.delete(`/friends/remove/${userId}`);
+
+export const useRemoveFriendMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => postRemoveFriend(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['friends'] });
     },
   });
 };

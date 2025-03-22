@@ -3,6 +3,7 @@ export type SaveQuestionResponse = {
   userId: UserId;
   __v: number;
   questionId: QuestionId;
+
 };
 
 export type QuestionId = {
@@ -13,6 +14,8 @@ export type QuestionId = {
   topic?: string;
   title?: string;
   question?: string;
+  images? : string[];
+
   vote?: any[];
   __v?: number;
   createdAt?: string;

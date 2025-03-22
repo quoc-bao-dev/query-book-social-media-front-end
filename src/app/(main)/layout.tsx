@@ -10,6 +10,8 @@ import ModalCommentDetail from './(home)/(feeds)/partials/ModalCommentDetail';
 import AppLoading from '@/components/Layout/AppLoading';
 import ModalCreateFeed from './(home)/(feeds)/partials/ModalCreateFeed';
 import ImageDetailFeedModal from './(home)/(feeds)/partials/ImageDetailFeedModal';
+import ModalReport from './(home)/(feeds)/partials/ModalReport';
+import ModalConfirm from './(home)/(feeds)/partials/ModalConfirm';
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
@@ -31,6 +33,8 @@ const Layout = ({ children }: PropsWithChildren) => {
       <ModalCommentDetail />
       <ImageDetailFeedModal />
       <ModalCreateFeed />
+      <ModalReport />
+      <ModalConfirm />
       <AppLoading />
     </UserProvider>
   );

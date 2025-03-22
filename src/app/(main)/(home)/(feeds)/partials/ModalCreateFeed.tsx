@@ -210,9 +210,6 @@ const ModalCreateFeed = () => {
                 </div>
               </div>
             </div>
-            {/* {errors.content && (
-              <p className='text-error-500'>{errors.content.message}</p>
-            )} */}
           </div>
           <Button
             disabled={isLoading}
@@ -241,9 +238,9 @@ const ModalCreateFeed = () => {
             closeFileAll();
             close();
           }}
-          className='bg-neutral-200 flex items-center justify-center absolute top-1 right-1 w-[30px] h-[30px] rounded-full '
+          className='bg-gray-300 flex items-center justify-center absolute top-1 right-1 w-6 h-6 rounded-full '
         >
-          <DeleteIcon className='size-8' />
+          <DeleteIcon className='size-6' />
         </div>
       </div>
     </Modal>

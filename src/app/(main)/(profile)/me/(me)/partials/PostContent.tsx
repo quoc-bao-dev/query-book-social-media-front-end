@@ -9,7 +9,7 @@ const PostContent = () => {
     return null;
   }
   return (
-    <div className='space-y-4'>
+    <div className=''>
       <PostsOfUser userId={user.id} />
     </div>
   );
