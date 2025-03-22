@@ -9,8 +9,10 @@ const PostsOfUser = ({ userId }: PostsOfUserProps) => {
   const { data } = usePostOfUserQuery(userId);
 
   return (
-    <div className=''>
-      {data?.map((item) => <Post key={item.id} post={item} mode='onPage' />)}
+    <div className='space-y-3'>
+      {data?.map((item) => (
+        <Post key={item.id} post={item} mode='onPage' />
+      ))}
     </div>
   );
 };
