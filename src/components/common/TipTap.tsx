@@ -21,7 +21,10 @@ import H1 from '../icons/H1';
 import H2 from '../icons/H2';
 import H3 from '../icons/H3';
 import { Bold, Italic, Strikethrough } from 'lucide-react';
-
+interface TiptapProps {
+  value?: string;
+  onChange: (value?: string) => void;
+}
 export default ({
   value,
   onChange,
@@ -138,11 +141,11 @@ export default ({
     }: { onClick: () => void; isActive: boolean } & PropsWithChildren) => (
       <button
         onClick={onClick}
-        className={`p-1 rounded-md transition text-gray-700 bg-cyan-300 ${
+        className={`p-1 rounded-md transition text-gray-900 ${
           isActive
-            ? 'bg-info-100 text-info-500'
-            : 'bg-gray-200 hover:bg-gray-300'
-        }`}
+            ? 'bg-info-900 text-info-500' // Màu khi nút đang active
+            : 'bg-gray-900 hover:bg-gray-300'
+        } bg-info-900 hover:bg-cyan-400 focus:bg-cyan-500`}
       >
         {children}
       </button>
@@ -192,7 +195,7 @@ export default ({
       )}
 
       <EditorContent
-        className='outline-none text-gray-800 bg-card p-4 border mt-4 rounded-lg mb-5'
+        className='outline-none text-gray-800 bg-card p-4 border border-gray-300 hover:border-gray-400 focus:border-blue-500 mt-4 rounded-lg mb-5 shadow-sm'
         editor={editor}
       />
     </>

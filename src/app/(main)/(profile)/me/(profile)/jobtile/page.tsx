@@ -17,14 +17,11 @@ import { WorkExperience } from '@/types/workexperience';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import SetCurUserProfileSignal from '../../../partials/SetCurUserProfileSignal';
+import DOMPurify from 'dompurify';
 
 const Page = () => {
   const { user } = useAuth();
   const userId = user?.id;
-
-  //FIXME: fix this state
-  const [text, setText] = useState('');
-  console.log(text);
 
   const { mutate, isPending } = useCreateWorkMutation();
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -201,6 +198,15 @@ const Page = () => {
     );
   };
 
+  const handleContentChange = (value?: string) => {
+    const cleanContent = DOMPurify.sanitize(value || '', {
+      ALLOWED_TAGS: [], // Không cho phép bất kỳ thẻ HTML nào
+      ALLOWED_ATTR: [], // Không cho phép thuộc tính như style, class, id, v.v.
+    });
+
+    setFormData((prev) => ({ ...prev, content: cleanContent }));
+  };
+
   return (
     <div>
       <SetCurUserProfileSignal user={user} />
@@ -233,14 +239,20 @@ const Page = () => {
                 name='jobTitleId'
                 value={formData.jobTitleId}
                 onChange={handleChange}
-                className={`w-full p-2 border rounded-md ${
+                className={`w-full p-2 border rounded-md bg-card ${
                   errors.jobTitleId ? 'border-red-500' : 'border-gray-300'
                 }`}
                 disabled={isLoadingJobs}
               >
-                <option value=''>Chọn vị trí...</option>
+                <option value='' className='bg-gray-200 text-gray-700'>
+                  Chọn vị trí...
+                </option>
                 {jobTitles.map((job) => (
-                  <option key={job.id} value={job.id}>
+                  <option
+                    key={job.id}
+                    value={job.id}
+                    className='bg-gray-100 text-gray-800'
+                  >
                     {job.title}
                   </option>
                 ))}
@@ -279,12 +291,7 @@ const Page = () => {
               <label className='block text-sm font-medium text-gray-700 mb-1 '>
                 Nội dung công việc *
               </label>
-              <Tiptap
-                value={formData.content}
-                onChange={(value) =>
-                  setFormData({ ...formData, content: value })
-                }
-              />
+              <Tiptap value={formData.content} onChange={handleContentChange} />
             </div>
 
             {/* Date Inputs */}
@@ -352,7 +359,7 @@ const Page = () => {
                 return (
                   <li
                     key={work._id}
-                    className='border p-4 rounded-lg bg-white shadow-sm'
+                    className='border p-4 rounded-lg bg-card shadow-sm '
                   >
                     <div className='flex justify-between items-start'>
                       <div>
@@ -368,14 +375,14 @@ const Page = () => {
                       <div className='flex gap-2'>
                         <button
                           onClick={() => handleEdit(work)}
-                          className='text-blue-600 hover:text-blue-800'
+                          className='text-primary-600 hover:text-primary-700'
                           title='Chỉnh sửa'
                         >
                           <Pen className='w-5 h-5' />
                         </button>
                         <button
                           onClick={() => handleDelete(work._id)}
-                          className='text-red-600 hover:text-red-800'
+                          className='text-error-900 hover:text-error-950'
                           title='Xóa'
                         >
                           <svg
