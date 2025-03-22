@@ -1,8 +1,8 @@
 'use client';
 
 import { Button } from '@/components/common/Button';
+import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon';
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon';
-import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 
 interface PaginationProps {
   currentPage: number;
@@ -39,7 +39,7 @@ const Pagination: React.FC<PaginationProps> = ({
               onClick={() => onPageChange(page)}
               className={`px-3 py-2 text-sm rounded-md ${
                 page === currentPage
-                  ? 'bg-neutral-700 text-neutral-200'
+                  ? 'bg-neutral-600 text-neutral-200'
                   : 'text-neutral-900 '
               }`}
             >
