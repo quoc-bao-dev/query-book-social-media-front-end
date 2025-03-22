@@ -1,5 +1,6 @@
 'use client';
 
+import LoadingEffect from '@/components/common/Loading';
 import axiosClient, { tokenManager } from '@/httpClient';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
@@ -40,10 +41,8 @@ const Page = () => {
   }, []);
 
   return (
-    <div>
-      Verify
-      <div>access_token: {accessToken}</div>
-      <div>refresh_token: {refreshToken}</div>
+    <div className='text-center bg-primary-50 text-primary-600 h-screen flex justify-center items-center text-4xl'>
+      <LoadingEffect />
     </div>
   );
 };
