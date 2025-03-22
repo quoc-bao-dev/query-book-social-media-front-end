@@ -69,13 +69,20 @@ const Header = () => {
               onClick={openNotifyDrawer}
             >
               <Bell className='size-6 text-primary-500' />
-              <div className='absolute top-0 right-0 size-5 text-white font-medium text-xs flex bg-error-500 rounded-full'>
-                {
-                  <sNotification.HardWrap>
-                    {({ count }) => <p className='m-auto'>{count}</p>}
-                  </sNotification.HardWrap>
-                }
-              </div>
+
+              {
+                <sNotification.HardWrap>
+                  {({ count }) => (
+                    <>
+                      {count > 0 && (
+                        <div className='absolute top-0 right-0 size-5 text-white font-medium text-xs flex bg-error-500 rounded-full'>
+                          <p className='m-auto'>{count}</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </sNotification.HardWrap>
+              }
             </div>
 
             <div className='hidden lg:block' onClick={openUserDrawer}>

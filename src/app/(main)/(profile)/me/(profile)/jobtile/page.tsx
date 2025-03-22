@@ -17,6 +17,7 @@ import { WorkExperience } from '@/types/workexperience';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import SetCurUserProfileSignal from '../../../partials/SetCurUserProfileSignal';
+import DOMPurify from 'dompurify';
 
 const Page = () => {
   const { user } = useAuth();
@@ -280,7 +281,7 @@ const Page = () => {
                 Nội dung công việc *
               </label>
               <Tiptap
-                value={formData.content}
+                value={formData.content!}
                 onChange={(value) =>
                   setFormData({ ...formData, content: value })
                 }
@@ -401,8 +402,12 @@ const Page = () => {
                     )}
                     {work.content && (
                       <p className='mt-2 text-gray-600'>
-                        <span className='font-medium'>Nội dung:</span>{' '}
-                        {work.content}
+                        <span className='font-medium'>Nội dung:</span>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(work.content),
+                          }}
+                        ></div>
                       </p>
                     )}
                   </li>
