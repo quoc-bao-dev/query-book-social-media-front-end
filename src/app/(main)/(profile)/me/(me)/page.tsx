@@ -3,7 +3,7 @@ import PostContent from './partials/PostContent';
 
 const Page = () => {
   return (
-    <div className='mt-1 md:w-[698px]'>
+    <div className='md:w-[698px]'>
       {/* From create Post */}
       <PostCreate />
       {/* From create Post */}

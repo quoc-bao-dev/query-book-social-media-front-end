@@ -1,3 +1,4 @@
+import Post from '@/app/(main)/(home)/(feeds)/partials/Post';
 import { CreatePostSchema } from '@/app/(main)/(home)/(feeds)/schema/CreatePostSchema';
 import axiosClient from '@/httpClient';
 import { HttpResponse } from '@/types/common';
@@ -69,7 +70,52 @@ export const useCreatePostMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       swal.fire({
         icon: 'success',
-        title: 'Đăng bài thành công',
+        text: 'Đăng bài thành công',
+        showConfirmButton: false,
+        timer: 2000,
+        confirmButtonColor: '#0abf7e',
+      })
+    },
+  });
+};
+
+// Delete post
+const deletePost = async (postId: string) => await axiosClient.delete(`/posts/${postId}`);
+export const useDeletePostMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (postId: string) => deletePost(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      swal.fire({
+        icon: 'success',
+        text: 'Xóa bài viết thành công',
+        showConfirmButton: false,
+        timer: 2000,
+        confirmButtonColor: '#0abf7e',
+      })
+    },
+  });
+};
+
+
+// Update post
+const updatePost = async (postId: string, payload: {
+  content: string;
+  status: CreatePostSchema['status'];
+  hashTags: string[];
+  media: string[];
+}) => await axiosClient.patch(`/posts/${postId}`, payload);
+
+export const useUpdatePostMutation = (postId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { content: string; status: CreatePostSchema['status']; hashTags: string[]; media: string[] }) => updatePost(postId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      swal.fire({
+        icon: 'success',
+        text: 'Chỉnh sửa bài viết thành công',
         showConfirmButton: false,
         timer: 2000,
         confirmButtonColor: '#0abf7e',

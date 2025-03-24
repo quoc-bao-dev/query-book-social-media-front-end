@@ -72,7 +72,7 @@ const layout = ({ children }: PropsWithChildren) => {
               >
                 <GlobeAlt />
                 <span className='lg:block font-semibold text-sm '>
-                  Các link liên kết
+                  Các link liên kết và mạng xã hộis
                 </span>
               </div>
             </Link>

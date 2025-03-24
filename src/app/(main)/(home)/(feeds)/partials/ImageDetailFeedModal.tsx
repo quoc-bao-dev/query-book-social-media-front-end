@@ -63,23 +63,23 @@ const ImageDetailFeedModal = () => {
         <div className='relative bg-card w-[500px] rounded-lg'>
           <div className='flex w-full relative justify-center items-center h-[580px] pt-3'>
             {listImages.length > 1 && (
-              <div className='absolute left-5' onClick={prevImage}>
-                <ChevronLeftIcon className='size-12 ' />
+              <div className='' onClick={prevImage}>
+                <ChevronLeftIcon className='size-10 ' />
               </div>
             )}
-            <div className='h-full mt-10 w-auto'>
+            <div className='w-[406px] max-h-[500px]  max flex justify-center mt-10'>
               <Image
                 src={listImages[curIndex]}
                 alt=''
-                className='w-full h-full object-contain  rounded-md'
+                className=' w-auto object-contain  rounded-md'
                 width={1000}
                 height={1000}
               />
             </div>
 
             {listImages.length > 1 && (
-              <div className='absolute right-5' onClick={nextImage}>
-                <ChevronRightIcon className='size-12' />
+              <div className='' onClick={nextImage}>
+                <ChevronRightIcon className='size-10' />
               </div>
             )}
           </div>
@@ -110,9 +110,9 @@ const ImageDetailFeedModal = () => {
           </div>
           <div
             onClick={closeModal}
-            className='absolute top-1 rounded-full right-1 w-8 h-8 bg-gray-300'
+            className='absolute top-1 rounded-full right-1 w-6 h-6 bg-gray-300 justify-center items-center flex'
           >
-            <DeleteIcon className='size-8' />
+            <DeleteIcon className='size-6' />
           </div>
         </div>
       </div>

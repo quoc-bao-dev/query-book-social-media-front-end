@@ -13,10 +13,29 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LoginSchema, loginSchema } from '../schemas';
+import { config } from '@/config';
 
 function FormLogin() {
   const [message, setMessage] = useState('');
   const [isShowActive, setIsShowActive] = useState(false);
+
+  const getOauthGoogleUrl = () => {
+    const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
+    const options = {
+      redirect_uri: config.GOOGLE_AUTHORIZATION_REDIRECT_URI,
+      client_id: config.GOOGLE_CLIENT_ID,
+      access_type: 'offline',
+      response_type: 'code',
+      prompt: 'consent',
+      scope: [
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email',
+      ].join(' '),
+    };
+    const qs = new URLSearchParams(options);
+    return `${rootUrl}?${qs.toString()}`;
+  };
+
   const {
     register,
     handleSubmit,
@@ -131,7 +150,9 @@ function FormLogin() {
           <div className='h-px bg-gray-500 flex-grow'></div>
         </div>
         <div className='flex items-center gap-5 justify-center'>
-          <Image src={'/images/google.png'} alt='' width={35} height={35} />
+          <a href={getOauthGoogleUrl()} className='cursor-pointer'>
+            <Image src={'/images/google.png'} alt='' width={35} height={35} />
+          </a>
           <Image src={'/images/git.png'} alt='' width={35} height={35} />
           <Image src={'/images/facebook.png'} alt='' width={35} height={35} />
         </div>

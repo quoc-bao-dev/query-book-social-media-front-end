@@ -3,9 +3,11 @@
 import { Button } from '@/components/common/Button';
 import MediaIcon from '@/components/icons/MediaIcon';
 import VideoIcon from '@/components/icons/VideoIcon';
+import { useAuth } from '@/store/authSignal';
 import { sModalCreatePost } from './ModalCreatePost';
 
 const PostCreate = () => {
+  const { user } = useAuth();
   const showModal = () => {
     sModalCreatePost.set((n) => (n.value.isOpen = true));
   };
@@ -20,13 +22,13 @@ const PostCreate = () => {
           onClick={showModal}
           className='w-full h-[100px] border border-gray-300 rounded-xl p-2 text-gray-600'
         >
-          Bạn đang nghĩ gì?
+          {user?.lastName} ơi, Bạn đang nghĩ gì thế?
         </div>
         <div className='flex justify-between items-center pt-2'>
           <div className='flex gap-4'>
             <div className='flex gap-2'>
               <div className=''>
-                <MediaIcon className='fill-primary-500' />
+                <MediaIcon className='size-6 fill-primary-500' />
               </div>
               <p>Image</p>
             </div>
