@@ -9,7 +9,15 @@ import Swal from 'sweetalert2';
 interface QuestionPayload {
   title: string;
   content: string;
+  topic: string;
+  code: {
+    fileType: string;
+    code?: string;
+  };
+  hashtags?: string[];
+  images: string[];
 }
+
 
 const getAllQuestions = (limit: number, page: number, search: string) =>
   axiosClient
@@ -46,15 +54,12 @@ export const useCreateQuestionMutation = () => {
         title: t("successTitle"),
         text: t("successText"),
         icon: "success",
-        showConfirmButton: true,
-        confirmButtonText: t("confirmButtonText"),
-        confirmButtonColor: "#22c55e",
         backdrop: `rgba(0,0,0,0.4)`,
-        timer: 3000,
+        timer: 2000, // Hiển thị trong 2 giây
+        showConfirmButton: false, // Tắt nút xác nhận
         customClass: {
           popup: "swal-custom-popup",
           title: "swal-custom-title",
-          confirmButton: "swal-custom-button"
         }
       }).then(() => {
         window.location.href = "/myquestion";
@@ -201,6 +206,52 @@ export const useDeleteQuestionMutation = () => {
           },
         });
       }
+    },
+  });
+};
+
+// sua cau hoi 
+const patchEditQuestion = ({
+  questionId,
+  payload,
+}: {
+  questionId: string;
+  payload: {
+    question?: string;
+    code?: {
+      fileType: string;
+      code?: string;
+    };
+  };
+}) => axiosClient.patch(`/questions/${questionId}`, payload);
+
+export const useEditQuestionMutation = () => {
+  const queryClient = useQueryClient();
+  const t = useTranslations("question");
+
+  return useMutation({
+    mutationFn: patchEditQuestion,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["questions"] });
+      queryClient.invalidateQueries({ queryKey: ["my-question"] });
+
+      Swal.fire({
+        title: t("editSuccessTitle"),
+        text: t("editSuccessText"),
+        icon: "success",
+        confirmButtonColor: "#22c55e",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        title: t("editErrorTitle"),
+        text: t("editErrorText"),
+        icon: "error",
+        confirmButtonText: t("okButtonText"),
+      });
+      console.error("Error editing question:", error);
     },
   });
 };

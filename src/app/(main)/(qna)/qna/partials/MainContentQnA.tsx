@@ -11,14 +11,13 @@ import SearchBarQnA from './SearchBarQnA';
 import { useTranslations } from 'next-intl';
 
 const MainContentQnA = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [curPage, setCurPage] = useState(1);
-
   const { setLoading } = useAppLoading();
-
   const param = useSearchParams();
   const mode = param.get('mode');
   const t = useTranslations('MainContentQnA');
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [curPage, setCurPage] = useState(1);
 
   const { data: questionResponse, isLoading } = useQuestionQuery({
     limit: 10,
@@ -26,18 +25,18 @@ const MainContentQnA = () => {
     search: searchTerm,
   });
 
-  // const { data, paginnation } = questionResponse;
-
   const lsQuestions = questionResponse?.data;
   const pagination = questionResponse?.pagination;
 
   useEffect(() => {
     setLoading(isLoading);
   }, [isLoading, setLoading]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Điều kiện kiểm tra mode đặt ngay trước return
   if (mode === 'detail') {
     return <MainContentDetailQnA />;
   }

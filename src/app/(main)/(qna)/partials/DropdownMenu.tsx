@@ -1,5 +1,4 @@
 'use client';
-import { useDeleteQuestionMutation } from '@/queries/question';
 import {
   FlagIcon,
   PencilSquareIcon,
@@ -9,23 +8,19 @@ import { useTranslations } from 'next-intl';
 import { useRef } from 'react';
 
 const DropdownMenu = ({
-  questionId,
   isOwner,
   onClose, // Thêm props để đóng menu
+  onEdit, // ✅ Nhận thêm prop onEdit
+  onDelete,
 }: {
   questionId: string;
   isOwner: boolean;
   onClose: () => void;
+  onEdit: () => void; // ✅ Hàm bật chế độ chỉnh sửa
+  onDelete: () => void; // ✅ Hàm xóa bài viết
 }) => {
   const t = useTranslations('DropdownMenu');
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const { mutate: deleteQuestion } = useDeleteQuestionMutation();
-
-  const handleDelete = () => {
-    deleteQuestion(questionId);
-    onClose(); // Đóng menu sau khi xóa
-  };
 
   return (
     <div
@@ -36,7 +31,10 @@ const DropdownMenu = ({
         {isOwner && (
           <li
             className='flex items-center py-2 px-4 text-gray-700 hover:bg-neutral-900/10 cursor-pointer'
-            onClick={onClose} // Đóng menu khi chọn chỉnh sửa
+            onClick={() => {
+              onEdit(); // ✅ Bật chế độ chỉnh sửa
+              onClose();
+            }}
           >
             <PencilSquareIcon className='w-5 h-5 text-gray-700 mr-2' />
             {t('edit')}
@@ -46,7 +44,7 @@ const DropdownMenu = ({
         {isOwner && (
           <li
             className='flex items-center py-2 px-4 text-red-600 hover:bg-neutral-900/10 cursor-pointer'
-            onClick={handleDelete}
+            onClick={onDelete} // Gọi hàm xóa ở đây
           >
             <TrashIcon className='w-5 h-5 text-red-600 mr-2' />
             {t('delete')}

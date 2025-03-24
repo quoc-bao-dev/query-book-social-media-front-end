@@ -18,10 +18,10 @@ export default function TopicSelect({
   error,
 }: TopicSelectProps) {
   const { data, isLoading, error: fetchError } = useGetAllTopic();
-  const t = useTranslations('AskQuestion');
 
   const [selectedTopic, setSelectedTopic] = useState<string>('');
 
+  const t = useTranslations('AskQuestion');
   useEffect(() => {
     if (data) {
       const defaultTopic = data.find(

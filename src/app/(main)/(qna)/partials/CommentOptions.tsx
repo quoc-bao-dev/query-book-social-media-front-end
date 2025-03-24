@@ -8,7 +8,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface CommentOptionsProps {
   answerId: string;
@@ -28,21 +28,20 @@ const CommentOptions = ({
   const { mutate: deleteAnswer } = useDeleteAnswerMutation(questionId);
   const t = useTranslations('DropdownMenu');
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     deleteAnswer(answerId);
-  };
-  console.log('dhbfbds', onEdit);
+  }, [deleteAnswer, answerId]);
 
-  // Đóng menu khi click ra ngoài
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  }, []);
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [handleClickOutside]);
 
   return (
     <div className='relative' ref={menuRef}>

@@ -24,38 +24,40 @@ type SavedQuestion = {
 
 const ActionBar = ({ id }: ActionBarProps) => {
   const queryClient = useQueryClient();
-  const { data: answerData } = useAnswerQuery(id);
-  const countComment = answerData?.length || 0;
+  const t = useTranslations('ActionBar');
 
+  const { data: answerData } = useAnswerQuery(id);
   const { data: savedQuestions } = useGetMySaveQuestionQuery();
   const saveMutation = useSaveQuestionMutation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const t = useTranslations('ActionBar');
 
+  const QUERY_KEY = {
+    SAVED_QUESTIONS: ['my-save-question'],
+  };
+
+  const countComment = answerData?.length || 0;
   const isSaved = savedQuestions?.some((item) => item.questionId._id === id);
 
   const handleSaveQuestion = async () => {
     if (saveMutation.isPending) return;
 
     queryClient.setQueryData<SavedQuestion[]>(
-      ['my-save-question'],
-      (oldData) => {
-        if (!oldData) return [];
+      QUERY_KEY.SAVED_QUESTIONS,
+      (prev) => {
+        if (!prev) return [];
         return isSaved
-          ? oldData.filter((item) => item.questionId._id !== id)
-          : [...oldData, { questionId: { _id: id } }];
+          ? prev.filter((item) => item.questionId._id !== id)
+          : [...prev, { questionId: { _id: id } }];
       },
     );
 
     try {
       await saveMutation.mutateAsync(id);
-      queryClient.invalidateQueries({ queryKey: ['my-save-question'] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY.SAVED_QUESTIONS });
     } catch (error) {
       console.error('Lỗi khi lưu câu hỏi:', error);
-
-      //return if error
-      queryClient.setQueryData(['my-save-question'], savedQuestions);
+      queryClient.setQueryData(QUERY_KEY.SAVED_QUESTIONS, savedQuestions);
     }
   };
 

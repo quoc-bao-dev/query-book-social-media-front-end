@@ -58,6 +58,7 @@
     "clearall": "Xóa Tất Cả",
     "clear": "Xóa Code",
     "save": "Lưu",
+    "cancel": "Hủy",
     "comment" : "Bình Luận",
     "like" : "Thích",
     "reply" : "Trả lời",
@@ -84,6 +85,8 @@
     "locale": "vi",
     "justnow": "Vừa xong",
     "by": "bởi",
+    "save": "Lưu",
+    "cancel": "Hủy",
     "comment": "Bình Luận"
   },
   "DropdownMenu": {
@@ -137,7 +140,7 @@
     "errorText": "Không thể xóa câu trả lời, vui lòng thử lại."
   },
   "question" : {
-    "successTitle": "🎉 Thành công!",
+    "successTitle": "Thành công!",
   "successText": "Câu hỏi của bạn đã được đăng thành công.",
   "confirmButtonText": "Đi đến câu hỏi của tôi",
   "errorTitle": "Lỗi!",
@@ -147,10 +150,15 @@
   "deleteWarningText": "Bạn có chắc chắn muốn xóa không? Hành động này không thể hoàn tác!",
   "deleteConfirmButton": "Xóa Ngay!",
   "deleteCancelButton": "Hủy",
-  "deleteSuccessTitle": "🗑 Đã xóa!",
+  "deleteSuccessTitle": "Đã xóa!",
   "deleteSuccessText": "Câu hỏi đã bị xóa vĩnh viễn.",
-  "deleteErrorTitle": "❌ Xóa thất bại!",
+  "deleteErrorTitle": "Xóa thất bại!",
   "deleteErrorText": "Đã xảy ra lỗi. Vui lòng thử lại.",
-  "deleteRetryButton": "🔄 Thử lại"
+  "deleteRetryButton": "Thử lại",
+  "editSuccessTitle": "Chỉnh sửa thành công",
+  "editSuccessText": "Câu hỏi của bạn đã được cập nhật thành công.",
+  "editErrorTitle": "Chỉnh sửa thất bại",
+  "copycode": "Đã Copy !",
+  "editErrorText": "Có lỗi xảy ra khi cập nhật câu hỏi."
   }
 }

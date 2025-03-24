@@ -152,12 +152,22 @@ const editAnswer = (answerId: string, payload: { content: string; code?: { fileT
   axiosClient.patch(`/answers/${answerId}`, payload);
 
 export const useEditAnswerMutation = (questionId: string) => {
+  const t = useTranslations("question");
+
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ answerId, payload }: { answerId: string; payload: { content: string; code?: { fileType: string; code: string } } }) =>
       editAnswer(answerId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['answers', questionId] });
+      Swal.fire({
+              title: t("editSuccessTitle"),
+              text: t("editSuccessText"),
+              icon: "success",
+              confirmButtonColor: "#22c55e",
+              timer: 2000,
+              showConfirmButton: false,
+            });
     },
   });
 };

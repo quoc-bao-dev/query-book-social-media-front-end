@@ -18,7 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
 import { ImageIcon } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import LanguageSeletor from '../../../ask-question/partials/LanguageSeletor';
 import { QuestionSchema } from '../../../ask-question/schema/questionSchema';
@@ -29,36 +29,77 @@ import Vote from '../../../partials/Vote';
 import { useTranslations } from 'next-intl';
 import { enUS, vi } from 'date-fns/locale';
 import CommentOptions from '../../../partials/CommentOptions';
+import { Button } from '@/components/common/Button';
 
 type AnswerSectionProps = {
   questionId: string;
 };
 
 const AnswerSection = ({ questionId }: AnswerSectionProps) => {
+  // Hooks liên quan đến state
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
-  const [hasCode, setHasCode] = useState(false); // State để kiểm tra có code không
+  const [hasCode, setHasCode] = useState(false);
   const [visibleComments, setVisibleComments] = useState(4);
   const [images, setImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState('');
+  const [editedCode, setEditedCode] = useState('');
+  const [highlightedCommentId, setHighlightedCommentId] = useState<
+    string | null
+  >(null);
 
-  const handleEdit = (answerId: string, content: string) => {
-    console.log('Editing answer:', answerId, 'with content:', content); // Debug
+  // Refs
+  const inputRef = useRef<HTMLInputElement>(null);
+  const commentRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const lastCommentRef = useRef<HTMLDivElement | null>(null);
+
+  // Hooks liên quan đến dữ liệu
+  const { user } = useAuth();
+  const currentUserId = user?.id;
+
+  const { data } = useAnswerQuery(questionId);
+  const editAnswerMutation = useEditAnswerMutation(questionId);
+  const { mutateAsync } = useAnswerMutation(questionId);
+
+  const t = useTranslations('ModalComment');
+  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
+  const getLocale = (locale: string) => (locale === 'vi' ? vi : enUS);
+
+  // useForm hook
+  const {
+    control,
+    watch,
+    reset,
+    formState: {},
+  } = useForm<QuestionSchema>({
+    resolver: zodResolver(questionSchema),
+  });
+  const code = watch('code');
+
+  // Xử lý chỉnh sửa câu trả lời
+  const handleEdit = (answerId: string, content: string, code?: string) => {
     setEditingAnswerId(answerId);
     setEditedContent(content);
+    if (code) {
+      setEditedCode(code); // Nếu có code, chỉnh sửa code thay vì nội dung text
+    }
   };
 
   const handleSaveEdit = async (answerId: string) => {
     if (editedContent.trim()) {
       await editAnswerMutation.mutateAsync({
         answerId,
-        payload: { content: editedContent },
+        payload: {
+          content: editedContent,
+          code: { fileType: 'javascript', code: editedCode }, // Cập nhật code
+        },
       });
       setEditingAnswerId(null);
       setEditedContent('');
+      setEditedCode('');
     }
   };
 
@@ -66,31 +107,26 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     setEditingAnswerId(null);
   };
 
-  const editAnswerMutation = useEditAnswerMutation(questionId);
-  const t = useTranslations('ModalComment');
-  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
-  const getLocale = (locale: string) => {
-    return locale === 'vi' ? vi : enUS;
-  };
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const { user } = useAuth();
-  const currentUserId = user?.id;
-
-  const { data } = useAnswerQuery(questionId);
-
+  // Xử lý hiển thị thêm bình luận
   const handleShowMore = () => {
-    setVisibleComments((prev) => prev + 4); // Hiển thị thêm 4 bình luận
+    setVisibleComments((prev) => prev + 4);
+    setTimeout(() => {
+      lastCommentRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 100);
   };
 
+  // Xử lý lưu code
   const handleSave = () => {
     if (code?.trim()) {
-      setHasCode(true); // Đánh dấu là có code
-      setShowCodeEditor(false); // Ẩn modal
+      setHasCode(true);
+      setShowCodeEditor(false);
     }
   };
-  // FIXME
+
+  // Xử lý upload ảnh
   const handleUploadIamges = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -116,18 +152,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     };
   };
 
-  const { mutateAsync } = useAnswerMutation(questionId);
-  const {
-    control,
-    watch,
-    reset,
-    formState: {},
-  } = useForm<QuestionSchema>({
-    resolver: zodResolver(questionSchema),
-  });
-
-  const code = watch('code');
-
+  // Xử lý gửi câu trả lời
   const handleSubmit = async () => {
     const answer = inputRef.current?.value?.trim();
     const trimmedCode = code?.trim();
@@ -148,7 +173,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     const payload = {
       questionId,
       content: answer || '',
-      images: uploadedImages, // Gửi ảnh lên server
+      images: uploadedImages,
       ...(trimmedCode && {
         code: {
           fileType: selectedLanguage,
@@ -157,18 +182,17 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
       }),
     };
 
-    // console.log('hahaha', payload);
-
     await mutateAsync(payload);
 
     if (inputRef.current) inputRef.current.value = '';
     reset();
-    setImages([]); // Reset ảnh sau khi gửi
+    setImages([]);
     setHasCode(false);
     setShowCodeEditor(false);
     setSelectedLanguage('typescript');
   };
 
+  // Xử lý sự kiện Enter để gửi bình luận
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -176,16 +200,10 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     }
   };
 
-  console.log('Cấu trúc của data:', data);
-  data?.forEach((item) => {
-    if (Array.isArray(item.votes)) {
-      console.log(`Cấu trúc votes tại item:`, item.votes);
-    }
-  });
-
+  // Sắp xếp dữ liệu câu trả lời dựa trên số vote
   const sortedData = data
     ?.map((item) => {
-      const votes = item.votes || []; // Đảm bảo votes luôn là mảng
+      const votes = item.votes || [];
       const totalVotes =
         votes.filter((v) => v.voteType === 'up').length -
         votes.filter((v) => v.voteType === 'down').length;
@@ -194,18 +212,52 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     })
     .sort((a, b) => b.totalVotes - a.totalVotes);
 
+  // useEffect để theo dõi comment nổi bật
+  useEffect(() => {
+    if (highlightedCommentId) {
+      setTimeout(() => {
+        commentRefs.current[highlightedCommentId]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }, 100);
+
+      setTimeout(() => setHighlightedCommentId(null), 3000);
+    }
+  }, [sortedData, highlightedCommentId]);
+
+  // Debug log dữ liệu câu trả lời
+  console.log('Cấu trúc của data:', data);
+  data?.forEach((item) => {
+    if (Array.isArray(item.votes)) {
+      console.log(`Cấu trúc votes tại item:`, item.votes);
+    }
+  });
+
   return (
     <div>
-      {sortedData?.slice(0, visibleComments).map((item) => (
+      {sortedData?.slice(0, visibleComments).map((item, index, arr) => (
         <div
           key={item._id}
-          className='relative mt-5 pl-6 border-l-2 border-neutral-100'
+          ref={(el) => {
+            commentRefs.current[item._id] = el;
+            if (index === arr.length - 1) {
+              lastCommentRef.current = el;
+            }
+          }}
+          className={`relative mt-5 pl-6 border-l-2 border-neutral-100 
+            ${
+              highlightedCommentId === item._id
+                ? 'bg-neutral-300/25 transition max-w-max rounded-lg'
+                : ''
+            }`}
         >
           {item.votes ? (
             <Vote
               questionId={questionId}
               answerId={item._id}
               votes={item.votes}
+              onVote={() => setHighlightedCommentId(item._id)} // Lưu ID bình luận sau khi vote
             />
           ) : (
             <>placehodle</>
@@ -225,51 +277,82 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
                 answerId={item._id}
                 questionId={item.questionId}
                 isOwner={currentUserId === item.userId._id}
-                onEdit={() => handleEdit(item._id, item.content)}
+                onEdit={() =>
+                  handleEdit(item._id, item.content, item.code?.code)
+                }
               />
             </div>
-            {editingAnswerId === item._id ? (
-              <div className='mt-1'>
-                <textarea
-                  value={editedContent}
-                  onChange={(e) => setEditedContent(e.target.value)}
-                  className='w-full p-2 border border-gray-300 rounded-md'
-                  rows={3}
-                />
-                <div className='flex gap-2 mt-2'>
-                  <button
-                    onClick={() => handleSaveEdit(item._id)}
-                    className='px-4 py-2 bg-blue-500 text-white rounded-md'
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={handleCancelEdit}
-                    className='px-4 py-2 bg-gray-500 text-white rounded-md'
-                  >
-                    Cancel
-                  </button>
-                </div>
+            {item.content && (
+              <div className='mt-3'>
+                {editingAnswerId === item._id ? (
+                  <textarea
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    className='w-full p-2 '
+                    rows={3}
+                  />
+                ) : (
+                  <p className=' text-lg text-neutral-700 whitespace-pre-wrap break-words'>
+                    {item.content}
+                  </p>
+                )}
               </div>
-            ) : (
-              <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
             )}
 
             {item.images && <ImageRender images={item.images} />}
             {item.code?.code && (
               <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
-                <MonacoEditor
-                  className='h-[300px]'
-                  value={item.code.code}
-                  theme='vs-dark'
-                  language={item.code.fileType || 'javascript'}
-                  options={{
-                    readOnly: true,
-                    domReadOnly: true,
-                    minimap: { enabled: false },
-                    scrollBeyondLastLine: false,
-                  }}
-                />
+                {editingAnswerId === item._id ? (
+                  <div>
+                    <MonacoEditor
+                      className='h-[300px]'
+                      value={editedCode}
+                      theme='vs-dark'
+                      language={item.code.fileType || 'javascript'}
+                      options={{
+                        readOnly: false,
+                        domReadOnly: false,
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                      }}
+                      onChange={(newValue) => setEditedCode(newValue || '')}
+                    />
+                  </div>
+                ) : (
+                  <MonacoEditor
+                    className='h-[300px]'
+                    value={item.code.code}
+                    theme='vs-dark'
+                    language={item.code.fileType || 'javascript'}
+                    options={{
+                      readOnly: true,
+                      domReadOnly: true,
+                      minimap: { enabled: false },
+                      scrollBeyondLastLine: false,
+                    }}
+                  />
+                )}
+              </div>
+            )}
+
+            {(item.code?.code || item.content) && (
+              <div className='flex mt-2 justify-end'>
+                {editingAnswerId === item._id ? (
+                  <div className='flex gap-2'>
+                    <Button
+                      onClick={() => handleSaveEdit(item._id)}
+                      className='px-4 py-2 rounded-md'
+                    >
+                      {t('save')}
+                    </Button>
+                    <Button
+                      onClick={handleCancelEdit}
+                      className='px-4 py-2 bg-neutral-400 hover:bg-error-500 rounded-md'
+                    >
+                      {t('cancel')}
+                    </Button>
+                  </div>
+                ) : null}
               </div>
             )}
             <div className='mt-2 flex justify-start items-center gap-4 text-neutral-700 text-sm'>

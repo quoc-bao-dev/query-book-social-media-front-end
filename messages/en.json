@@ -57,6 +57,7 @@
     "clearall": "Clear All",
     "clear": "Clear Code",
     "save": "Save",
+    "cancel": "Cancel",
     "comment" : "Comment",
     "like" : "Like",
     "reply" : "Reply",
@@ -77,7 +78,10 @@
     "locale": "en",
     "justnow": "Just now",
     "by": "by",
+    "save": "Save",
+    "cancel": "Cancel",
     "comment": "Comment"
+
   },
   "DropdownMenu": {
     "edit": "Edit",
@@ -133,7 +137,7 @@
   },
 
   "question" : {
-    "successTitle": "🎉 Success!",
+    "successTitle": "Success",
   "successText": "Your question has been posted successfully.",
   "confirmButtonText": "Go to My Questions",
   "errorTitle": "Error!",
@@ -145,8 +149,13 @@
   "deleteCancelButton": "Cancel",
   "deleteSuccessTitle": "🗑 Deleted!",
   "deleteSuccessText": "The question has been permanently removed.",
-  "deleteErrorTitle": "❌ Deletion Failed!",
+  "deleteErrorTitle": "Deletion Failed!",
   "deleteErrorText": "Something went wrong. Please try again.",
-  "deleteRetryButton": "🔄 Try Again"
+  "deleteRetryButton": "Try Again",
+  "editSuccessTitle": "Edit Successful",
+  "editSuccessText": "Your question has been updated successfully.",
+  "editErrorTitle": "Edit Failed",
+  "copycode": "Coppied !",
+  "editErrorText": "There was an error updating the question."
   }
 }

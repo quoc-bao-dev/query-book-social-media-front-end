@@ -10,8 +10,9 @@ interface SearchBarQnAProps {
 }
 
 const SearchBarQnA: React.FC<SearchBarQnAProps> = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
   const searchRef = useRef<HTMLInputElement>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
   const t = useTranslations('SearchBarQnA');
 
   const handleSearch = () => {
@@ -25,6 +26,7 @@ const SearchBarQnA: React.FC<SearchBarQnAProps> = ({ onSearch }) => {
       searchRef.current.focus();
     }
   };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -35,7 +37,7 @@ const SearchBarQnA: React.FC<SearchBarQnAProps> = ({ onSearch }) => {
   return (
     <div className='mb-6 relative flex items-center gap-4 w-full'>
       {/* Icon kính lúp */}
-      <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+      <div className='absolute inset-y-0 left-3 flex items-center pointer-events-none'>
         <MagnifyingGlassIcon className='h-6 w-6 text-primary-600' />
       </div>
 
@@ -47,14 +49,15 @@ const SearchBarQnA: React.FC<SearchBarQnAProps> = ({ onSearch }) => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={handleKeyDown}
-        className='w-full pl-10 pr-10 px-4 py-2 placeholder-neutral-500 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+        className='w-full pl-10 pr-12 px-4 py-2 placeholder-neutral-500 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
       />
 
+      {/* Nút clear (dấu X) */}
       {searchTerm && (
         <button
           type='button'
           onClick={handleClear}
-          className='absolute right-[100px] inset-y-0 flex items-center text-primary-600 hover:text-primary-800'
+          className='absolute right-28 inset-y-0 flex items-center text-primary-600 hover:text-primary-800'
         >
           <XCircleIcon className='h-7 w-7' />
         </button>

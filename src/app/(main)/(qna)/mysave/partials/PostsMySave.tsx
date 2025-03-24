@@ -1,8 +1,16 @@
 import Avatar from '@/components/common/Avatar';
+import { Button } from '@/components/common/Button';
+import {
+  useDeleteQuestionMutation,
+  useEditQuestionMutation,
+} from '@/queries/question';
+import { useAuth } from '@/store/authSignal';
 import { SaveQuestionResponse } from '@/types/saveQuestion';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import { formatDistanceToNow } from 'date-fns';
-import { useEffect, useRef, useState } from 'react';
+import { enUS, vi } from 'date-fns/locale';
+import { useTranslations } from 'next-intl';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ActionBar from '../../detail-qna/partials/ActionBar';
 import CodeEditor from '../../partials/CodeEditor';
 import DropdownMenu from '../../partials/DropdownMenu';
@@ -11,9 +19,7 @@ import HashTagPost from '../../partials/HashTagPost';
 import ImageRender from '../../partials/ImageRender';
 import QuestionContent from '../../partials/QuestionContent';
 import QuestionTitle from '../../partials/QuestionTitle';
-import { enUS, vi } from 'date-fns/locale';
-import { useTranslations } from 'next-intl';
-import { useAuth } from '@/store/authSignal';
+import MonacoEditor from '@monaco-editor/react';
 
 interface PostProps {
   post: SaveQuestionResponse;
@@ -24,8 +30,27 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const { user } = useAuth(); // Lấy thông tin user
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(
+    post.questionId.question || '',
+  );
+  const [editedCode, setEditedCode] = useState(
+    post.questionId.code?.code || '',
+  );
+  const { mutate: editQuestion } = useEditQuestionMutation();
+  const { mutate: deleteQuestion } = useDeleteQuestionMutation(); // Hook xóa bài viết
+
   const currentUserId = user?.id; // Lấy ID người dùng hiện tại
-  const isOwner = currentUserId === post.questionId?.userId?._id; // Kiểm tra quyền sở hữu
+
+  // Dùng useMemo để tránh tính toán lại nếu currentUserId hoặc post không thay đổi
+  const isOwner = useMemo(
+    () => currentUserId === post.questionId?.userId?._id,
+    [currentUserId, post],
+  );
+
+  // Kiểm tra nội dung hợp lệ
+  const isValidCode = (code: string | undefined) =>
+    (code ?? '').trim().length > 0;
 
   // Xử lý click bên ngoài để đóng menu
   useEffect(() => {
@@ -38,33 +63,60 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleMenu = () => {
-    setShowMenu(!showMenu);
-  };
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowMenu(false);
-      }
-    };
+  // Tối ưu toggle menu
+  const toggleMenu = useCallback(() => setShowMenu((prev) => !prev), []);
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  // Lưu thay đổi câu hỏi
+  const handleSave = useCallback(() => {
+    if (!editedContent.trim() && !editedCode.trim()) return; // Không lưu nếu cả hai trống
 
-  const isValidCode = (code: string | undefined) => {
-    if (!code) return false;
-    const trimmedCode = code.trim();
-    return trimmedCode.length > 0; // Chỉ cần có nội dung là đủ
-  };
+    editQuestion(
+      {
+        questionId: post.questionId._id!,
+        payload: {
+          question: editedContent,
+          code: {
+            code: editedCode,
+            fileType: post.questionId.code?.fileType || 'plaintext',
+          },
+        },
+      },
+      {
+        onSuccess: () => {
+          post.questionId.question = editedContent; // Cập nhật UI ngay lập tức
+          if (post && post.questionId && post.questionId.code) {
+            post.questionId.code.code = editedCode;
+          }
+          setIsEditing(false);
+        },
+      },
+    );
+  }, [editedContent, editedCode, editQuestion, post]);
+
+  // Hủy chỉnh sửa, khôi phục nội dung ban đầu
+  const handleCancel = useCallback(() => {
+    setEditedContent(post.questionId.question || '');
+    setIsEditing(false);
+  }, [post]);
+
+  // Hàm xóa bài viết
+  const handleDelete = useCallback(() => {
+    if (!post.questionId._id) return;
+
+    deleteQuestion(post.questionId._id, {
+      onSuccess: () => {
+        window.location.href = '/mysave';
+      },
+    });
+
+    setShowMenu(false); // Đóng menu sau khi xóa
+  }, [deleteQuestion, post]);
 
   const t = useTranslations('CardQuestion');
   const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
-  const getLocale = (locale: string) => {
-    return locale === 'vi' ? vi : enUS;
-  };
+
+  // Đơn giản hóa hàm lấy locale
+  const getLocale = (locale: string) => (locale === 'vi' ? vi : enUS);
 
   return (
     <div
@@ -102,6 +154,8 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
               isOwner={isOwner}
               questionId={post.questionId._id!}
               onClose={() => setShowMenu(false)}
+              onEdit={() => setIsEditing(true)}
+              onDelete={handleDelete}
             />
           )}
         </div>
@@ -115,7 +169,17 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
       />
 
       {/* Content */}
-      <QuestionContent content={post.questionId.question!} />
+      {isEditing ? (
+        <div className='mt-1'>
+          <textarea
+            className='w-full p-2 '
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+          />
+        </div>
+      ) : (
+        <QuestionContent content={post.questionId.question!} />
+      )}
 
       {/* image  */}
       {post.questionId?.images && (
@@ -123,11 +187,40 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
       )}
 
       {/* Code Editor */}
-      {isValidCode(post.questionId.code?.code) && (
-        <CodeEditor
-          code={post.questionId.code?.code || ''}
-          fileType={post.questionId.code?.fileType || 'plaintext'}
-        />
+      {isValidCode(post.questionId?.code?.code) &&
+        (isEditing ? (
+          <MonacoEditor
+            className='h-[300px]'
+            value={editedCode}
+            theme='vs-dark'
+            language={post.questionId.code?.fileType || 'javascript'}
+            options={{
+              readOnly: false,
+              domReadOnly: false,
+              minimap: { enabled: false },
+              scrollBeyondLastLine: false,
+            }}
+            onChange={(newValue) => setEditedCode(newValue || '')}
+          />
+        ) : (
+          <CodeEditor
+            code={post.questionId?.code?.code || ''}
+            fileType={post.questionId?.code?.fileType || 'plaintext'}
+          />
+        ))}
+
+      {isEditing && (
+        <div className='flex space-x-2 justify-end mt-2'>
+          <Button onClick={handleSave} className='px-4 py-2 rounded-md'>
+            {t('save')}
+          </Button>
+          <Button
+            onClick={handleCancel}
+            className='px-4 py-2 bg-neutral-400 hover:bg-error-500 rounded-md'
+          >
+            {t('cancel')}
+          </Button>
+        </div>
       )}
 
       {/* Hashtags */}
