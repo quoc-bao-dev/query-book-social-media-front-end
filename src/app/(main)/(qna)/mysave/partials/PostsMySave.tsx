@@ -146,7 +146,10 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
         </div>
 
         <div className='relative' ref={menuRef}>
-          <button onClick={toggleMenu}>
+          <button
+            onClick={toggleMenu}
+            className='p-2 rounded-full hover:bg-gray-200 transition-all duration-200'
+          >
             <EllipsisVerticalIcon className='h-6 w-6 text-gray-500' />
           </button>
           {showMenu && (

@@ -72,8 +72,11 @@ const PostUserInfoMyQuestion = ({
       </div>
 
       <div className='relative'>
-        <button onClick={() => setShowMenu(!showMenu)}>
-          <EllipsisVerticalIcon className='h-6 w-6 text-gray-500' />
+        <button
+          onClick={() => setShowMenu(!showMenu)}
+          className='p-2 rounded-full hover:bg-gray-200 transition-all duration-200'
+        >
+          <EllipsisVerticalIcon className='h-6 w-6' />
         </button>
 
         {showMenu && (

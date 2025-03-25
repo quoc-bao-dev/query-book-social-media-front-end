@@ -2,6 +2,7 @@
 'use client';
 
 import Avatar from '@/components/common/Avatar';
+import { Button } from '@/components/common/Button';
 import ChatBubbleOvalLeftIcon from '@/components/icons/ChatBubbleOvalLeftIcon';
 import CodeIcon from '@/components/icons/CodeIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
@@ -17,19 +18,19 @@ import { uploadImages } from '@/utils/uploadUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
+import { enUS, vi } from 'date-fns/locale';
 import { ImageIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import LanguageSeletor from '../../../ask-question/partials/LanguageSeletor';
 import { QuestionSchema } from '../../../ask-question/schema/questionSchema';
+import CommentOptions from '../../../partials/CommentOptions';
 import ImageRender from '../../../partials/ImageRender';
 import ModalError from '../../../partials/ModalError';
-import { questionSchema } from '../schema/questionSchema';
 import Vote from '../../../partials/Vote';
-import { useTranslations } from 'next-intl';
-import { enUS, vi } from 'date-fns/locale';
-import CommentOptions from '../../../partials/CommentOptions';
-import { Button } from '@/components/common/Button';
+import { questionSchema } from '../schema/questionSchema';
+import { ChevronDoubleUpIcon } from '@heroicons/react/24/solid';
 
 type AnswerSectionProps = {
   questionId: string;
@@ -50,11 +51,21 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
   const [highlightedCommentId, setHighlightedCommentId] = useState<
     string | null
   >(null);
+  const [isPending, setIsPending] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
   const commentRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const lastCommentRef = useRef<HTMLDivElement | null>(null);
+  const answerSectionRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 800,
+      behavior: 'smooth',
+    });
+  };
 
   // Hooks liên quan đến dữ liệu
   const { user } = useAuth();
@@ -159,6 +170,8 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
 
     if (!answer && !trimmedCode && images.length === 0) return;
 
+    setIsPending(true); // Bắt đầu loading
+
     let uploadedImages: string[] = [];
     if (images.length > 0) {
       try {
@@ -166,6 +179,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
         uploadedImages = uploadResult?.files.map((file) => file.filename) || [];
       } catch (error) {
         console.error('Upload failed', error);
+        setIsPending(false);
         return;
       }
     }
@@ -183,6 +197,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     };
 
     await mutateAsync(payload);
+    setIsPending(false); // Kết thúc loading
 
     if (inputRef.current) inputRef.current.value = '';
     reset();
@@ -234,8 +249,22 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     }
   });
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (lastCommentRef.current) {
+        const commentRect = lastCommentRef.current.getBoundingClientRect();
+        // Show button when last comment is in viewport (or slightly above)
+        const isLastCommentVisible = commentRect.top <= window.innerHeight;
+        setShowScrollButton(isLastCommentVisible);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [sortedData]); // Add sortedData to dependency array
+
   return (
-    <div>
+    <div ref={answerSectionRef}>
       {sortedData?.slice(0, visibleComments).map((item, index, arr) => (
         <div
           key={item._id}
@@ -245,7 +274,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
               lastCommentRef.current = el;
             }
           }}
-          className={`relative mt-5 pl-6 border-l-2 border-neutral-100 
+          className={`relative mt-5 pl-6 border-l-2 border-neutral-300 
             ${
               highlightedCommentId === item._id
                 ? 'bg-neutral-300/25 transition max-w-max rounded-lg'
@@ -301,7 +330,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
 
             {item.images && <ImageRender images={item.images} />}
             {item.code?.code && (
-              <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
+              <div className=' border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
                 {editingAnswerId === item._id ? (
                   <div>
                     <MonacoEditor
@@ -355,7 +384,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
                 ) : null}
               </div>
             )}
-            <div className='mt-2 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
+            <div className='mt-1 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
               <p>
                 {item.createdAt &&
                   (new Date().getTime() - new Date(item.createdAt).getTime() <
@@ -395,9 +424,18 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           {t('morecomment')}
         </button>
       )}
-      <div className='sticky translate-x-[-48px] bottom-8 left-0 w-full bg-card mx-auto pb-14 pt-3 md:py-4 md:bottom-0'>
+      {showScrollButton && (
+        <button
+          onClick={scrollToTop}
+          className='fixed z-60 bottom-32 right-[40%] p-2 bg-primary-500 rounded-full shadow-lg hover:bg-primary-600 transition-colors duration-300'
+          aria-label='Scroll to top'
+        >
+          <ChevronDoubleUpIcon className='size-6' />
+        </button>
+      )}
+      <div className='sticky z-50 translate-x-[-48px] bottom-8 left-0 w-[114%] bg-card mx-auto pb-14 pt-3 md:py-4 md:bottom-0'>
         {images.length > 0 && (
-          <div className='flex items-center gap-2 py-2 z-50'>
+          <div className='flex items-center gap-2 py-2 '>
             {images.map((image, index) => {
               const imageUrl =
                 image instanceof File ? URL.createObjectURL(image) : '';
@@ -443,7 +481,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           </div>
         )}
 
-        <div className='mt-4 flex items-center gap-2'>
+        <div className='mt-4 bg-card flex items-center gap-2'>
           <Avatar
             src={user?.avatarUrl}
             className='w-10 h-10 rounded-full'
@@ -457,7 +495,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
                 ? t('phinput', { name: user?.fullName })
                 : t('phinputNoName') // Nếu không có tên, dùng một chuỗi thay thế
             }
-            className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+            className='w-[70%] placeholder-neutral-400 focus:placeholder-neutral-600 p-2 border border-primary-500 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
             onKeyDown={handleKeyDown}
           />
 
@@ -533,10 +571,19 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
               </Dialog>
             )}
             <button
+              disabled={isPending}
               onClick={handleSubmit}
-              className='p-2 rounded-lg hover:text-primary-600'
+              className={`p-2 rounded-full flex items-center justify-center ${
+                isPending
+                  ? 'cursor-not-allowed opacity-50'
+                  : 'hover:text-primary-500'
+              }`}
             >
-              <SendIcon />
+              {isPending ? (
+                <div className='h-6 w-6 border-4 border-transparent border-t-neutral-900 border-l-neutral-900 rounded-full animate-spin'></div>
+              ) : (
+                <SendIcon className='size-6' />
+              )}
             </button>
           </div>
         </div>

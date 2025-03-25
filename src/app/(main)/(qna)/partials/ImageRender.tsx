@@ -22,7 +22,7 @@ const ImageRender: React.FC<ImageRenderProps> = ({ images = [] }) => {
 
   return (
     <div
-      className='group relative mt-1 flex w-20 items-center gap-2 p-1 border border-info-500 rounded-md bg-info-100 cursor-pointer hover:bg-info-200'
+      className='group relative mt-2 flex w-20 items-center gap-2 p-1 border border-info-500 rounded-md bg-info-100 cursor-pointer hover:bg-info-200'
       onClick={showImageDetail}
     >
       <span className='absolute -top-[3px] -right-[6px] w-3 h-3 bg-red-600 rounded-full'></span>

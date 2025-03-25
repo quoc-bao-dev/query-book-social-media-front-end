@@ -5,10 +5,11 @@ import Modal from '@/components/common/Modal';
 import ChatBubbleOvalLeftIcon from '@/components/icons/ChatBubbleOvalLeftIcon';
 import CodeIcon from '@/components/icons/CodeIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
-import SendIcon from '@/components/icons/SendIcon';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
+import { Button } from '@/components/common/Button';
+import SendIcon from '@/components/icons/SendIcon';
 import {
   useAnswerMutation,
   useAnswerQuery,
@@ -16,6 +17,7 @@ import {
 } from '@/queries/answer';
 import { useAuth } from '@/store/authSignal';
 import { uploadImages } from '@/utils/uploadUtils';
+import { ChevronDoubleUpIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
@@ -31,8 +33,6 @@ import ImageRender from '../../partials/ImageRender';
 import ModalError from '../../partials/ModalError';
 import Vote from '../../partials/Vote';
 import { questionSchema } from '../../qna/[id]/schema/questionSchema';
-import { Button } from '@/components/common/Button';
-import { XCircleIcon } from '@heroicons/react/24/outline';
 
 type ModalCommentProps = {
   isOpen: boolean;
@@ -54,10 +54,13 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
   const [highlightedCommentId, setHighlightedCommentId] = useState<
     string | null
   >(null);
+  const [isPending, setIsPending] = useState(false);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const commentRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const lastCommentRef = useRef<HTMLDivElement | null>(null);
+  const commentsContainerRef = useRef<HTMLDivElement>(null);
 
   // 2. API Hooks (Queries & Mutations)
   const { user } = useAuth();
@@ -150,6 +153,8 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
 
     if (!answer && !trimmedCode && images.length === 0) return;
 
+    setIsPending(true); // Bắt đầu loading
+
     let uploadedImages: string[] = [];
     if (images.length > 0) {
       try {
@@ -157,6 +162,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
         uploadedImages = uploadResult?.files.map((file) => file.filename) || [];
       } catch (error) {
         console.error('Upload failed', error);
+        setIsPending(false);
         return;
       }
     }
@@ -174,6 +180,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
     };
 
     await mutateAsync(payload);
+    setIsPending(false); // Kết thúc loading
 
     if (inputRef.current) inputRef.current.value = '';
     reset();
@@ -191,6 +198,15 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
+    }
+  };
+
+  const handleScroll = () => {
+    if (commentsContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } =
+        commentsContainerRef.current;
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
+      setShowScrollToTop(isNearBottom);
     }
   };
 
@@ -241,7 +257,11 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
         </div>
 
         {/* Nội dung bình luận */}
-        <div className='mt-4 space-y-4 overflow-y-auto max-h-[60vh] pr-2 scrollbar scrollbar-w-[4px] scrollbar-thumb-gray-400 scrollbar-track-transparent'>
+        <div
+          ref={commentsContainerRef}
+          onScroll={handleScroll}
+          className='mt-4 space-y-4 overflow-y-auto max-h-[60vh] pr-2 scrollbar scrollbar-w-[4px] scrollbar-thumb-gray-400 scrollbar-track-transparent'
+        >
           {sortedData && sortedData.length > 0 ? (
             sortedData.slice(0, visibleComments).map((item, index, arr) => (
               <div
@@ -298,7 +318,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                       <textarea
                         value={editedContent}
                         onChange={(e) => setEditedContent(e.target.value)}
-                        className='w-full p-2 '
+                        className='w-full p-2 border-2 border-neutral-500 rounded-lg '
                         rows={3}
                       />
                     </div>
@@ -396,6 +416,23 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
             </p>
           )}
 
+          {showScrollToTop && (
+            <button
+              onClick={() => {
+                commentsContainerRef.current?.scrollTo({
+                  top: 0,
+                  behavior: 'smooth',
+                });
+              }}
+              className='fixed bottom-40 right-1/2 bg-primary-500 hover:bg-primary-600 text-white rounded-full p-2 shadow-lg transition-all duration-300 z-50'
+              style={{
+                transform: 'translateX(50%)',
+              }}
+            >
+              <ChevronDoubleUpIcon className='size-6' />
+            </button>
+          )}
+
           {data && visibleComments < data.length && (
             <button
               onClick={handleShowMore}
@@ -404,13 +441,14 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
               {t('morecomment')}
             </button>
           )}
+
           <ModalError
             isOpen={isErrorModalOpen}
             onClose={() => setIsErrorModalOpen(false)}
             message={errorMessage || ''}
           />
 
-          <div className='border-t pt-4 bg-card sticky bottom-0'>
+          <div className='border-t pt-4 bg-card sticky bottom-[-1px]'>
             {images.length > 0 && (
               <div className='ml-12  flex gap-2 py-2 z-50'>
                 {images.map((image, index) => {
@@ -447,7 +485,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     onClick={handleUploadIamges}
                     className='flex items-center justify-center size-28 border-2 border-dashed border-gray-400 rounded-lg hover:bg-gray-100'
                   >
-                    <span className='text-2xl text-gray-500'>+</span>
+                    <span className='text-2xl text-neutral-500'>+</span>
                   </button>
                 )}
                 <button
@@ -472,7 +510,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     ? t('phinput', { name: user?.fullName })
                     : t('phinputNoName') // Nếu không có tên, dùng một chuỗi thay thế
                 }
-                className='w-[80%]  p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+                className='w-[80%] placeholder-neutral-400 focus:placeholder-neutral-600  p-2 border border-primary-500 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
                 onKeyDown={handleKeyDown}
               />
 
@@ -556,10 +594,19 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                 )}
 
                 <button
+                  disabled={isPending}
                   onClick={handleSubmit}
-                  className='p-2 rounded-lg hover:text-primary-600'
+                  className={`p-2 rounded-full flex items-center justify-center ${
+                    isPending
+                      ? 'cursor-not-allowed opacity-50'
+                      : 'hover:text-primary-500'
+                  }`}
                 >
-                  <SendIcon />
+                  {isPending ? (
+                    <div className='h-6 w-6 border-4 border-transparent border-t-neutral-900 border-l-neutral-900 rounded-full animate-spin'></div>
+                  ) : (
+                    <SendIcon className='size-6' />
+                  )}
                 </button>
               </div>
             </div>
