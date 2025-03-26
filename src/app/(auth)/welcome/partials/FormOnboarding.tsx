@@ -23,13 +23,13 @@ import { cn } from '@/lib/utils';
 import { useFollowMutation } from '@/queries/follow';
 import { useJobTitleQuery } from '@/queries/jobTitle';
 import { getUserSuggestion } from '@/queries/user';
-import { UserSuggestResponse } from '@/types/user';
+import { UserResponse, UserSuggestResponse } from '@/types/user';
 import { uploadImage } from '@/utils/uploadUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { use, useCallback, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
   formUserOnboarding,
@@ -41,6 +41,7 @@ import FollowItem from './FollowItem';
 const FormOnboarding = ({ step = 1 }: { step: number }) => {
   const [isOpenPopover, setIsOpenPopover] = useState(false);
   const [followSuggest, setFollowSuggest] = useState<UserSuggestResponse[]>([]);
+  const [user, setUser] = useState<UserResponse | null>(null);
 
   const { data } = useJobTitleQuery();
 
@@ -55,7 +56,11 @@ const FormOnboarding = ({ step = 1 }: { step: number }) => {
         page: 1,
         suggestMode: 'follow_suggest',
       });
+      const userRes = await axiosClient.get('/users/me');
+
       setFollowSuggest(res);
+      setUser(userRes.data.data);
+      console.log(userRes.data.data);
     })();
 
     return () => {
@@ -66,6 +71,7 @@ const FormOnboarding = ({ step = 1 }: { step: number }) => {
   const {
     register,
     watch,
+    setValue,
     formState: { errors },
     handleSubmit,
     control,
@@ -102,8 +108,9 @@ const FormOnboarding = ({ step = 1 }: { step: number }) => {
 
   const avatarReview = watch('avatarFile');
 
-  const imageReview =
-    avatarReview?.length > 0 && URL.createObjectURL(avatarReview[0]);
+  const imageReview = user?.avatarUrl
+    ? user?.avatarUrl
+    : avatarReview?.length > 0 && URL.createObjectURL(avatarReview[0]);
 
   const curJobTitle = watch('jobTitle');
 
@@ -119,17 +126,22 @@ const FormOnboarding = ({ step = 1 }: { step: number }) => {
     //upload file
 
     try {
-      const file = await uploadImage(data.avatarFile[0]);
+      const file =
+        data?.avatarFile.length > 0
+          ? await uploadImage(data.avatarFile[0])
+          : undefined;
 
       const payload = {
         firstName: data.firstName,
         lastName: data.lastName,
         jobTitle: jodId,
-        avatar: {
-          fileName: file,
-          type: 'image',
-          sourceType: 'file',
-        },
+        avatar: file
+          ? {
+              fileName: file,
+              type: 'image',
+              sourceType: 'file',
+            }
+          : undefined,
       };
 
       const uploadRes = await axiosClient.patch('/users/profile', payload);
@@ -298,6 +310,11 @@ const FormOnboarding = ({ step = 1 }: { step: number }) => {
     ),
     [followSuggest, handleFollow],
   );
+
+  useEffect(() => {
+    user?.firstName && setValue('firstName', user?.firstName);
+    user?.lastName && setValue('lastName', user?.lastName);
+  }, [user]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

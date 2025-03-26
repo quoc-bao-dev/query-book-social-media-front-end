@@ -1,12 +1,11 @@
 'use client';
 
-import Academic from '@/components/icons/Academic';
 import GlobeAlt from '@/components/icons/Globe-alt';
 import UserCircle from '@/components/icons/User-circle';
+import { useAuth } from '@/store/authSignal';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PropsWithChildren } from 'react';
-import { useAuth } from '@/store/authSignal';
 import SetCurUserProfileSignal from '../../partials/SetCurUserProfileSignal';
 
 const Layout = ({ children }: PropsWithChildren) => {

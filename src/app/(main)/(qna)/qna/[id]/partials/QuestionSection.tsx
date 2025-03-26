@@ -1,10 +1,17 @@
-import Avatar from '@/components/common/Avatar';
+'use client';
 import { QuestionResponse } from '@/types/question';
-import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowLeftIcon } from 'lucide-react';
-import Link from 'next/link';
 import ActionBar from '../../../detail-qna/partials/ActionBar';
+import AvatarUser from '../../../partials/AvatarUser';
+import ButtonBack from '../../../partials/ButtonBack';
+import CodeEditor from '../../../partials/CodeEditor';
+import FileType from '../../../partials/FileType';
+import HashTagPost from '../../../partials/HashTagPost';
+import ImageRender from '../../../partials/ImageRender';
+import QuestionContent from '../../../partials/QuestionContent';
+import QuestionTitle from '../../../partials/QuestionTitle';
+import { useTranslations } from 'next-intl';
+import { enUS, vi } from 'date-fns/locale';
 
 const QuestionSection = ({ question }: { question: QuestionResponse }) => {
   const isValidCode = (code: string | undefined) => {
@@ -15,22 +22,22 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
     const isOnlyComment = /^(\s*\/\/.*|\s*)$/.test(trimmedCode);
     return trimmedCode.length > 0 && !isOnlyComment;
   };
+  const t = useTranslations('CardQuestion');
+  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
+  const getLocale = (locale: string) => {
+    return locale === 'vi' ? vi : enUS;
+  };
 
   return (
     <div className='bg-card p-4'>
-      <Link
-        href='/qna'
-        className='flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-500 hover:text-gray-700'
-      >
-        <ArrowLeftIcon className='w-6 h-6' />
-      </Link>
+      <ButtonBack href='/qna' />
 
       {/* User Info */}
       <div className='flex items-center gap-3'>
-        <Avatar
+        <AvatarUser
           src={question.userId.avatarUrl!}
-          className='w-10 h-10 rounded-full'
-          fallBack={`${question.userId.firstName} ${question.userId.lastName} `}
+          firstName={question.userId.firstName}
+          lastName={question.userId.lastName}
         />
         <div className='flex justify-center items-center gap-2'>
           <p className='font-semibold text-neutral-500'>
@@ -38,52 +45,43 @@ const QuestionSection = ({ question }: { question: QuestionResponse }) => {
           </p>
           <p className='text-2xl text-neutral-500 '>•</p>
           <p className='text-sm text-neutral-500 '>
-            {question.createdAt && (
-              <span>
-                {formatDistanceToNow(new Date(question.createdAt), {
-                  addSuffix: true,
-                })}
-              </span>
-            )}
+            {question.createdAt &&
+              (new Date().getTime() - new Date(question.createdAt).getTime() <
+              60000
+                ? t('justnow') // Hiển thị "Vừa xong" hoặc "Just now"
+                : formatDistanceToNow(new Date(question.createdAt), {
+                    addSuffix: true,
+                    locale: getLocale(locale),
+                  }))}
           </p>
         </div>
       </div>
 
-      {/* Question Content */}
-      <h2 className='mt-2 text-3xl font-semibold text-neutral-900'>
-        {question.title}
-      </h2>
-      <div className='mt-2 text-lg text-neutral-600 whitespace-pre-wrap break-words'>
-        {question.question}
-      </div>
+      {/* Question Title */}
+      <QuestionTitle postId={question._id} title={question.title} />
 
-      {/* Hashtags */}
-      {question?.hashtags.map((item: any) => (
-        <span
-          key={item._id}
-          className='text-xs bg-info-100 text-info-500 px-2 py-1 mr-1 rounded-md cursor-pointer'
-        >
-          #{item.name}
-        </span>
-      ))}
+      {/* Question Content */}
+      <QuestionContent content={question.question} />
+
+      {/* Image Render */}
+      {question.images && question.images?.length > 0 && (
+        <ImageRender images={question.images} />
+      )}
 
       {/* Code Block */}
       {isValidCode(question.code?.code) && (
-        <MonacoEditor
-          className='h-[350px] pt-[10px]'
-          value={question.code.code}
-          theme='vs-dark'
-          language={question.code.fileType}
-          options={{ readOnly: true, domReadOnly: true }}
+        <CodeEditor
+          code={question.code?.code || ''}
+          fileType={question.code?.fileType || 'plaintext'}
         />
       )}
+      {/* Hashtags */}
+      <HashTagPost hashtags={question?.hashtags} />
 
       <div className='flex justify-between items-center'>
         <ActionBar id={question._id} countComment={0} />
         {isValidCode(question.code?.code) && (
-          <p className='mt-2 text-info-500 capitalize border border-info-400 px-2 py-1 rounded-lg bg-info-100 text-xs font-semibold'>
-            {question.code.fileType}
-          </p>
+          <FileType fileType={question.code?.fileType || 'plaintext'} />
         )}
       </div>
     </div>

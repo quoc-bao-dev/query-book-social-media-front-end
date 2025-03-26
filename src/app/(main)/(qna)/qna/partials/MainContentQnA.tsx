@@ -8,6 +8,7 @@ import MainContentDetailQnA from '../../detail-qna/partials/MainContentDetailQnA
 import CardQuestion from './CardQuestion';
 import Pagination from './Pagination';
 import SearchBarQnA from './SearchBarQnA';
+import { useTranslations } from 'next-intl';
 
 const MainContentQnA = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,6 +18,7 @@ const MainContentQnA = () => {
 
   const param = useSearchParams();
   const mode = param.get('mode');
+  const t = useTranslations('MainContentQnA');
 
   const { data: questionResponse, isLoading } = useQuestionQuery({
     limit: 10,
@@ -42,7 +44,9 @@ const MainContentQnA = () => {
 
   return (
     <div className='bg-background max-h-full p-6 '>
-      <h2 className='text-xl font-bold mb-4 text-center'>Recent Questions</h2>
+      <h2 className='text-xl font-bold mb-4 text-center'>
+        {t('recentquestions')}
+      </h2>
       <SearchBarQnA onSearch={setSearchTerm} />
 
       {lsQuestions && lsQuestions.length > 0 ? (
@@ -62,7 +66,9 @@ const MainContentQnA = () => {
             />
           ))
       ) : (
-        <p className='text-center text-neutral-500 mt-4'>No results found</p>
+        <p className='text-center text-neutral-500 mt-4'>
+          {t('noresultsfound')}
+        </p>
       )}
 
       {lsQuestions && lsQuestions.length > 0 && pagination && (

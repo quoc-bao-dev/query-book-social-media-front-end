@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
 
 const monacoLanguages = [
@@ -94,6 +95,8 @@ const LanguageSeletor = ({
   className,
 }: LanguageSelectProps) => {
   const [isOpenPopover, setIsOpenPopover] = useState(false);
+  const t = useTranslations('AskQuestion');
+
   return (
     <Popover open={isOpenPopover} onOpenChange={setIsOpenPopover}>
       <PopoverTrigger asChild>
@@ -111,9 +114,9 @@ const LanguageSeletor = ({
       </PopoverTrigger>
       <PopoverContent className='max-w-[360px] w-[360px] p-0'>
         <Command>
-          <CommandInput placeholder='Search the language' />
+          <CommandInput placeholder={t('searchlanguage')} />
           <CommandList>
-            <CommandEmpty>No language found.</CommandEmpty>
+            <CommandEmpty>{t('nolanguage')}</CommandEmpty>
             <CommandGroup>
               {monacoLanguages.map((lang) => (
                 <CommandItem
@@ -125,7 +128,7 @@ const LanguageSeletor = ({
                     const selected = monacoLanguages.find(
                       (lang) => curLang && curLang === lang.display,
                     );
-                    setCurlanguage(selected?.value!);
+                    setCurlanguage(selected?.value ?? '');
 
                     setIsOpenPopover(false);
                   }}

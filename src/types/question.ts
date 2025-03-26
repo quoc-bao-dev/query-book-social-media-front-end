@@ -10,6 +10,7 @@ export type QuestionResponse = {
   __v: number;
   createdAt?: string;
   updatedAt?: string;
+  images: string[]
 };
 
 interface UserId {
