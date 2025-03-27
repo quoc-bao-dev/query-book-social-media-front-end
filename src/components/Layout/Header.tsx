@@ -61,7 +61,9 @@ const Header = () => {
               <LocaleSwitcher />
             </div>
             <div className='hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200'>
-              <ChatBubbleOvalLeftEllipsis className='size-6 text-primary-500' />
+              <Link href={'/messages'}>
+                <ChatBubbleOvalLeftEllipsis className='size-6 text-primary-500' />
+              </Link>
             </div>
 
             <div

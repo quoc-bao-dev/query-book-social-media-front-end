@@ -19,15 +19,15 @@ const NavMenu = () => {
       icon: <CodeIcon className='size-8 text-primary-500 stroke-[1.75]' />,
       link: '/qna',
     },
-    {
-      id: 2,
-      icon: <BagIcon className='size-8 text-primary-500 stroke-[1.75]' />,
-      link: '/',
-    },
+    // {
+    //   id: 2,
+    //   icon: <BagIcon className='size-8 text-primary-500 stroke-[1.75]' />,
+    //   link: '/',
+    // },
   ];
 
   return (
-    <div className='relative lg:grid lg:grid-cols-3 gap-4 w-[400px]'>
+    <div className='relative lg:grid lg:grid-cols-2 gap-4 w-[400px]'>
       {menuItems.map((item, index) => (
         <Link key={item.id} href={item.link}>
           <div
