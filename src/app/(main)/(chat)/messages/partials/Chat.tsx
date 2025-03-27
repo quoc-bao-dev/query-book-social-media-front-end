@@ -20,6 +20,9 @@ const Chat = () => {
   const { user } = useAuth();
   const { curRoomId, curMemberInfo, curUser } = sChat.use();
   const { socket } = useMessageSocket();
+  console.log('curRoomId', curRoomId);
+  console.log(sChat.use());
+
   const { data, refetch } = useMessageQuery(curRoomId);
   const { hasImage } = sChatImageInput.use();
 
