@@ -291,7 +291,16 @@ const Page = () => {
               <label className='block text-sm font-medium text-gray-700 mb-1 '>
                 Nội dung công việc *
               </label>
+<<<<<<< HEAD
               <Tiptap value={formData.content} onChange={handleContentChange} />
+=======
+              <Tiptap
+                value={formData.content!}
+                onChange={(value) =>
+                  setFormData({ ...formData, content: value })
+                }
+              />
+>>>>>>> origin/testing
             </div>
 
             {/* Date Inputs */}
@@ -408,8 +417,12 @@ const Page = () => {
                     )}
                     {work.content && (
                       <p className='mt-2 text-gray-600'>
-                        <span className='font-medium'>Nội dung:</span>{' '}
-                        {work.content}
+                        <span className='font-medium'>Nội dung:</span>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(work.content),
+                          }}
+                        ></div>
                       </p>
                     )}
                   </li>

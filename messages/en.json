@@ -27,5 +27,126 @@
     "resource": "Resource",
     "request": "Request",
     "remove": "Remove"
+  },
+
+  "SidebarQnA": {
+    "qna": "Q&A",
+    "myquestion": "My Question",
+    "mysave": "My Save"
+  },
+  "MainContentQnA": {
+    "recentquestions": "Recent Questions",
+    "loading": "Loading...",
+    "noresultsfound":"No results found"
+  },
+  "SearchBarQnA": {
+    "placeholder": "Search by title or content...",
+    "button":"Search"
+  },
+  "SearchBarMyQuestion": {
+    "placeholder": "Search by title..."
+  },
+  "AskQuestionButton": {
+    "button": "Ask a Question"
+  },
+  "ModalComment": {
+    "locale": "en",
+    "justnow": "Just now",
+    "codesnippet": "Code Snippet",
+    "selectlanguage": "Select Language",
+    "clearall": "Clear All",
+    "clear": "Clear Code",
+    "save": "Save",
+    "comment" : "Comment",
+    "like" : "Like",
+    "reply" : "Reply",
+    "nocomment": "No Comment !",
+    "error": "Error",
+    "errortitle": "You can only upload a maximum of 5 photos!",
+    "morecomment" : "View more comment",
+    "phinput": "Comment as {name}",
+  "phinputNoName": "Comment"
+  },
+  "ActionBar": {
+    "save": "Save",
+    "saved": "Saved",
+    "saving": "Saving...",
+    "unsaving": "Un-saving..."
+  },
+  "CardQuestion": {
+    "locale": "en",
+    "justnow": "Just now",
+    "by": "by",
+    "comment": "Comment"
+  },
+  "DropdownMenu": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "report": "Report",
+    "confirmDeleteTitle": "Are you sure?",
+    "confirmDeleteText": "This action cannot be undone.",
+    "confirmDeleteYes": "Yes, delete it!",
+    "confirmDeleteNo": "Cancel"
+  },
+
+  
+  
+  "AskQuestion": {
+
+    "codesnippet": "Code Snippet",
+    "selectlanguage": "Select Language",
+    "nolanguage": "No language found",
+    "formname": "Ask a Question",
+    "topic": "Topic",
+    "loadtopic": "Loading topics...",
+    "clearall": "Clear All",
+
+    "select": "Select a topic",
+    "title": "Title",
+    "phtitle": "Write a Title",
+    "content": "Content",
+    "phcontent": "Write something...",
+    "code": "Have you code ?",
+    "searchlanguage": "Search the language",
+    "hashtag": "Hashtag",
+    "phhashtag": "(Ex: code, javascript, react,...)",
+    "image": "Upload Image",
+    "buttonpost": "Post",
+    "buttoncreating": "Creating...",
+    "error": "Error",
+    "errortitle": "You can only upload a maximum of 5 photos!"
+  },
+  "Layout": {
+    "topic": "Topic",
+    "title":"Ask questions, get answers, and engage with the community"
+  },
+
+  "deleteAnswer": {
+    "confirmTitle": "Warning !",
+    "confirmText": "Once deleted, you will not be able to recover this answer!",
+    "confirmButton": "Yes",
+    "cancelButton": "Cancel",
+    "successTitle": "Deleted!",
+    "successText": "The answer has been successfully deleted.",
+    "errorTitle": "Error!",
+    "errorText": "Unable to delete the answer, please try again."
+  },
+
+  "question" : {
+    "successTitle": "🎉 Success!",
+  "successText": "Your question has been posted successfully.",
+  "confirmButtonText": "Go to My Questions",
+  "errorTitle": "Error!",
+  "errorText": "Failed to post the question. Please try again.",
+  "okButtonText": "OK",
+  "deleteWarningTitle": "Warning !",
+  "deleteWarningText": "Are you sure you want to delete this? This action is irreversible!",
+  "deleteConfirmButton": "Yes",
+  "deleteCancelButton": "Cancel",
+  "deleteSuccessTitle": "🗑 Deleted!",
+  "deleteSuccessText": "The question has been permanently removed.",
+  "deleteErrorTitle": "❌ Deletion Failed!",
+  "deleteErrorText": "Something went wrong. Please try again.",
+  "deleteRetryButton": "🔄 Try Again"
   }
 }

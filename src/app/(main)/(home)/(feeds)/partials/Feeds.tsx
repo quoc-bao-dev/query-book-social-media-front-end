@@ -27,8 +27,6 @@ const Feeds = () => {
   // Lấy dữ liệu gán vào biến stories
   const stories = data?.data.data;
 
-  // console.log('stories', groupedStories);
-
   // Tạo groupStories
   useEffect(() => {
     if (stories) {
@@ -67,8 +65,6 @@ const Feeds = () => {
       setGroupedStories(result);
     }
   }, [stories]);
-
-  console.log('groupedStories', groupedStories);
 
   const showCreateFeed = () => {
     open();

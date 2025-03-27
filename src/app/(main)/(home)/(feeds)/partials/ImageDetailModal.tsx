@@ -30,12 +30,12 @@ const ImageDetailModal = () => {
   return (
     <Modal isOpen={isShow} onClose={closeModal}>
       <div className='flex z-50'>
-        <div className='relative bg-card w-[1000px] rounded-lg'>
+        <div className='relative bg-card w-[800px] rounded-lg'>
           <div className='flex w-full relative justify-center items-center h-[580px] pt-3'>
             <div className='absolute left-5' onClick={prevImage}>
-              <ChevronLeftIcon className='size-12 ' />
+              <ChevronLeftIcon className='size-12 fill-gray-600 ' />
             </div>
-            <div className='h-full w-auto'>
+            <div className='flex h-full max-w-[600px] max-h-[550px] items-center'>
               <Image
                 src={listImages[curIndex]}
                 alt=''
@@ -46,33 +46,41 @@ const ImageDetailModal = () => {
             </div>
 
             <div className='absolute right-5' onClick={nextImage}>
-              <ChevronRightIcon className='size-12' />
+              <ChevronRightIcon className='size-12 fill-gray-600' />
             </div>
           </div>
 
           {/* List Images */}
-          <div className=' max-w-[600px] mx-auto overflow-x-auto py-2'>
-            <div className='flex justify-center items-end gap-2 h-[100px]'>
-              {listImages.map((image, index) => (
-                <Image
-                  onClick={() => setCurIndex(index)}
-                  key={index}
-                  src={image}
-                  alt=''
-                  className={cn('w-auto h-full object-cover rounded-sm ', {
-                    'border-[3px] border-primary-500': curIndex === index,
-                  })}
-                  width={1000}
-                  height={1000}
-                />
-              ))}
+          {listImages.length > 1 && (
+            <div className='flex w-[600px] mx-auto overflow-x-auto py-2 '>
+              <div className='flex gap-2 items-center w-fit'>
+                {listImages.map((image, index) => (
+                  <div key={index} className='size-[80px] bg-slate-100'>
+                    <Image
+                      onClick={() => setCurIndex(index)}
+                      key={index}
+                      src={image}
+                      alt=''
+                      className={cn(
+                        'w-full h-full object-contain rounded-sm ',
+                        {
+                          'border-[3px] border-primary-500': curIndex === index,
+                        },
+                      )}
+                      width={1000}
+                      height={1000}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
           <div
             onClick={closeModal}
-            className='absolute top-1 rounded-full right-1 w-8 h-8 bg-gray-300'
+            className='flex absolute top-1 rounded-full right-1 w-6 h-6 justify-center items-center bg-gray-100'
           >
-            <DeleteIcon className='size-8' />
+            <DeleteIcon className='size-4' />
           </div>
         </div>
       </div>

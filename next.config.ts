@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       'avatars.githubusercontent.com',
       'query-book-social-media-image-server.onrender.com',
       'image.query-book.quocbaoart.com',
+      'lh3.googleusercontent.com',
     ], // Add your local development domain
   },
   typescript: {

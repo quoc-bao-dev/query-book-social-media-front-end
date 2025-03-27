@@ -25,7 +25,7 @@ export const useCreateStoryMutation = () => {
       queryClient.invalidateQueries({ queryKey: ['stories'] });
       //Thông báo upload thanh cong
       swal.fire({
-        title: 'Cập nhật thành công!',
+        text: 'Cập nhật thành công!',
         icon: 'success',
         confirmButtonColor: '#0abf7e',
         timer: 2000,

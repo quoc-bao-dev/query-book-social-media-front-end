@@ -27,5 +27,130 @@
     "resource": "Tài nguyên",
     "request": "Yêu cầu",
     "remove": "Gỡ bỏ"
+  },
+  "SidebarQnA": {
+    "qna": "Hỏi Đáp",
+    "myquestion": "Câu Hỏi Của Tôi",
+    "mysave": "Đã Lưu"
+  },
+
+"MainContentQnA": {
+    "recentquestions": "Câu Hỏi Gần Đây",
+    "loading": "Đang Tải...",
+    "noresultsfound":"Không tìm thấy kết quả nào"
+
+  },
+  
+  "SearchBarQnA": {
+    "placeholder": "Tìm kiếm theo tiêu đề hoặc nội dung...",
+    "button":"Tìm Kiếm"
+    
+  },
+  "SearchBarMyQuestion": {
+    "placeholder": "Tìm kiếm theo tiêu đề..."
+  },
+  "ModalComment": {
+    "locale": "vi",
+    "justnow": "Vừa xong",
+
+    "codesnippet": "Code Mẫu",
+    "selectlanguage": "Lựa Chọn Ngôn Ngữ",
+    "clearall": "Xóa Tất Cả",
+    "clear": "Xóa Code",
+    "save": "Lưu",
+    "comment" : "Bình Luận",
+    "like" : "Thích",
+    "reply" : "Trả lời",
+    "nocomment": "Không có bình luận nào !",
+    "error": "Lỗi",
+    "errortitle": "Bạn chỉ được upload tối đa 5 ảnh !",
+    "morecomment" : "Xem thêm bình luận",
+    "phinput": "Bình luận dưới tên {name}",
+  "phinputNoName": "Bình luận"
+
+
+  },
+  "AskQuestionButton": {
+    "button": "Đặt Câu Hỏi"
+  },
+  "ActionBar": {
+    "save": "Lưu",
+    "saved": "Đã Lưu",
+    "saving": "Đang Lưu...",
+    "unsaving": "Đang Bỏ Lưu..."
+
+  },
+  "CardQuestion": {
+    "locale": "vi",
+    "justnow": "Vừa xong",
+    "by": "bởi",
+    "comment": "Bình Luận"
+  },
+  "DropdownMenu": {
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "report": "Báo cáo",
+    "confirmDeleteTitle": "Bạn có chắc chắn?",
+    "confirmDeleteText": "Hành động này không thể hoàn tác.",
+    "confirmDeleteYes": "Có, xóa!",
+    "confirmDeleteNo": "Hủy"
+  },
+  
+  "AskQuestion": {
+    "codesnippet": "Code Mẫu",
+    "selectlanguage": "Lựa Chọn Ngôn Ngữ",
+    "nolanguage": "Không tìm thấy ngôn ngữ",
+    
+    "formname": "Đặt câu hỏi",
+    "topic": "Chủ đề",
+    "loadtopic": "Đang tải chủ đề...",
+    "clearall": "Xóa Tất Cả",
+
+    "select": "Chọn một chủ đề",
+    "title": "Tiêu đề",
+    "phtitle": "Viết tiêu đề",
+    "content": "Nội dung",
+    "phcontent": "Viết gì đó...",
+    "code": "Bạn có code không?",
+    "searchlanguage": "Tìm kiếm ngôn ngữ",
+    "hashtag": "Thẻ",
+    "phhashtag": "(Ví dụ: code, javascript, react,...)",
+    "image": "Tải lên hình ảnh",
+    "buttonpost": "Đăng",
+    "buttoncreating": "Đang tạo...",
+    "error": "Lỗi",
+    "errortitle": "Bạn chỉ được upload tối đa 5 ảnh !"
+},
+
+  "Layout": {
+    "topic": "Chủ Đề",
+    "title":"Đặt câu hỏi, nhận câu trả lời và tương tác với cộng đồng."
+  },
+  "deleteAnswer": {
+    "confirmTitle": "Cảnh Báo",
+    "confirmText": "Sau khi xóa, bạn sẽ không thể khôi phục câu trả lời này!",
+    "confirmButton": "Xóa",
+    "cancelButton": "Hủy",
+    "successTitle": "Đã xóa!",
+    "successText": "Câu trả lời đã được xóa thành công.",
+    "errorTitle": "Lỗi!",
+    "errorText": "Không thể xóa câu trả lời, vui lòng thử lại."
+  },
+  "question" : {
+    "successTitle": "🎉 Thành công!",
+  "successText": "Câu hỏi của bạn đã được đăng thành công.",
+  "confirmButtonText": "Đi đến câu hỏi của tôi",
+  "errorTitle": "Lỗi!",
+  "errorText": "Đăng câu hỏi thất bại. Vui lòng thử lại.",
+  "okButtonText": "OK",
+  "deleteWarningTitle": "Cảnh Báo !",
+  "deleteWarningText": "Bạn có chắc chắn muốn xóa không? Hành động này không thể hoàn tác!",
+  "deleteConfirmButton": "Xóa Ngay!",
+  "deleteCancelButton": "Hủy",
+  "deleteSuccessTitle": "🗑 Đã xóa!",
+  "deleteSuccessText": "Câu hỏi đã bị xóa vĩnh viễn.",
+  "deleteErrorTitle": "❌ Xóa thất bại!",
+  "deleteErrorText": "Đã xảy ra lỗi. Vui lòng thử lại.",
+  "deleteRetryButton": "🔄 Thử lại"
   }
 }

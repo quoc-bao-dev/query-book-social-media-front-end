@@ -1,4 +1,7 @@
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+'use client';
+import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
+import { useRef } from 'react';
 
 interface SearchBarMySaveProps {
   searchTerm: string;
@@ -9,18 +12,37 @@ const SearchBarMySave = ({
   searchTerm,
   setSearchTerm,
 }: SearchBarMySaveProps) => {
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const t = useTranslations('SearchBarMyQuestion');
+  const handleClear = () => {
+    setSearchTerm('');
+    if (searchRef.current) {
+      searchRef.current.value = '';
+      searchRef.current.focus();
+    }
+  };
   return (
     <div className='mb-6 relative'>
       <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-        <MagnifyingGlassIcon className='h-5 w-5 text-[#00A76F]' />
+        <MagnifyingGlassIcon className='h-5 w-5 text-primary-600' />
       </div>
       <input
         type='text'
-        placeholder='Search by author or tag...'
+        placeholder={t('placeholder')}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className='w-full pl-10 px-4 py-2 placeholder-neutral-500 placeholder:opacity-70 border border-none rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
       />
+      {searchTerm && (
+        <button
+          type='button'
+          onClick={handleClear}
+          className='absolute right-3 inset-y-0 flex items-center text-primary-600 hover:text-primary-800'
+        >
+          <XCircleIcon className='h-7 w-7' />
+        </button>
+      )}
     </div>
   );
 };

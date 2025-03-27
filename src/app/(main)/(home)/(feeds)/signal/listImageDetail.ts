@@ -1,6 +1,6 @@
 import { signify } from 'react-signify';
 type ListImageDetail = {
-  listImages: string[];
+  listImages: string[] | File[];
   curIndex: number;
   isShow: boolean;
 };
@@ -12,7 +12,7 @@ export const sListImageDetail = signify<ListImageDetail>({
 
 export const useListImageDetail = () => {
   return {
-    setImages: (images: string[]) => {
+    setImages: (images: string[] | File[]) => {
       sListImageDetail.set((n) => (n.value.listImages = images));
     },
     setCurIndex: (index: number) => {

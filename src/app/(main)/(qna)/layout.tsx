@@ -3,9 +3,11 @@ import Header from '@/components/Layout/Header';
 import ChevronRightIcon2 from '@/components/icons/ChevronRightIcon2';
 import { PropsWithChildren, useState } from 'react';
 import SidebarQnA from './partials/SidebarQnA';
+import { useTranslations } from 'next-intl';
 
 const Layout = ({ children }: PropsWithChildren) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const t = useTranslations('Layout');
 
   return (
     <div className='w-full max-w-[1200px] mx-auto relative'>
@@ -14,10 +16,8 @@ const Layout = ({ children }: PropsWithChildren) => {
 
       {/* Section Title */}
       <div className='pt-20 pb-3 px-8 bg-background'>
-        <h1 className='text-3xl font-extrabold'>Topic</h1>
-        <h2 className='text-accent-foreground'>
-          Ask questions, get answers, and engage with the community
-        </h2>
+        <h1 className='text-3xl font-extrabold'>{t('topic')}</h1>
+        <h2 className='text-accent-foreground'>{t('title')}</h2>
       </div>
 
       {/* Layout grid */}
@@ -33,13 +33,9 @@ const Layout = ({ children }: PropsWithChildren) => {
         {/* Sidebar */}
         <div
           className={`bg-card shadow-lg transition-all duration-300 ease-in-out 
-          md:sticky md:w-full md:mt-4 md:h-[calc(100vh-1rem)] md:col-span-3
-          fixed top-0 left-0 h-full w-64 z-50 
-          ${
-            isSidebarOpen
-              ? 'translate-x-0'
-              : '-translate-x-full md:translate-x-0'
-          }`}
+  md:sticky md:top-5 md:w-full md:h-[calc(100vh-1.25rem)] md:col-span-3
+  fixed top-0 mt-4 left-0 h-full w-64 z-50 
+  ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
         >
           <SidebarQnA />
 
@@ -49,7 +45,7 @@ const Layout = ({ children }: PropsWithChildren) => {
               onClick={() => setIsSidebarOpen(true)}
               className='absolute top-20 -right-10 p-2 rounded-full bg-white shadow-md hover:scale-110 transition-all z-50 md:hidden'
             >
-              <ChevronRightIcon2 className='w-6 h-6 text-gray-700' />
+              <ChevronRightIcon2 className='w-6 h-6 text-neutral-500' />
             </button>
           )}
         </div>
