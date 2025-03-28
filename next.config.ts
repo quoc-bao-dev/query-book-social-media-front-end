@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       'query-book-social-media-image-server.onrender.com',
       'image.query-book.quocbaoart.com',
       'lh3.googleusercontent.com',
+      '14.225.211.84',
     ], // Add your local development domain
   },
   typescript: {

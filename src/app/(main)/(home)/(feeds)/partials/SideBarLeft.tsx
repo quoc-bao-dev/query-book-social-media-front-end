@@ -8,12 +8,11 @@ import SafeIcon from '@/components/icons/SafeIcon';
 import ServerIcon from '@/components/icons/ServerIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LeftSidebarItem from './LeftSidebarItem';
-import Sparkles from '@/components/icons/Sparkles';
-import { useTranslations } from 'next-intl';
 import ToolIcon from './ToolIcon';
 
 const SideBarLeft = () => {
