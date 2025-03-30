@@ -27,11 +27,11 @@ const Page = () => {
   }, []);
 
   return (
-    <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
+    <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 justify-center'>
       {user?.followings?.map((friend) => (
         <div
           key={friend.id}
-          className='relative flex flex-col items-center w-full max-w-[255px] h-48 p-4 rounded-lg bg-gray-100 hover:bg-gray-200 transition duration-200'
+          className='relative flex flex-col items-center w-full max-w-[185px] h-48 p-4 rounded-lg bg-gray-100 hover:bg-gray-200 transition duration-200'
         >
           {/* Avatar */}
           <div className='w-16 h-16 rounded-full overflow-hidden border border-gray-300 relative'>

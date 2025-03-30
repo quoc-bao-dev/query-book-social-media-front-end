@@ -208,7 +208,7 @@ const CoverPage = () => {
             <div className='md:flex absolute translate-y-[-30%] size-[150px] md:size-[170px] rounded-full bg-muted overflow-hidden p-1 z-50'>
               {user?.avatarUrl ? (
                 <img
-                  src={user?.avatarUrl || '/images/git.png'}
+                  src={user?.avatarUrl || '/images/avatar-trang-4.jpg'}
                   alt='Avatar'
                   className='w-full h-full object-cover rounded-full shadow-lg'
                 />
