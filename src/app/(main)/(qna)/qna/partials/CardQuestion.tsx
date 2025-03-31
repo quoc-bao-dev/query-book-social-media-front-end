@@ -16,6 +16,7 @@ type Props = {
   question: string;
   createdAt: string;
   votes?: number;
+  topic: { name: string }; // 🆕 Thêm topic vào props
 };
 
 const CardQuestion = ({
@@ -26,10 +27,12 @@ const CardQuestion = ({
   question,
   name,
   createdAt,
+  topic,
 }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const { data: answerData } = useAnswerQuery(id);
+
   const countComment = answerData?.length || 0;
 
   const t = useTranslations('CardQuestion');
@@ -90,6 +93,7 @@ const CardQuestion = ({
               </span>
             ))}
           </div>
+          <p className='text-sm text-neutral-500'>Topic: {topic.name}</p>
         </div>
       </div>
 

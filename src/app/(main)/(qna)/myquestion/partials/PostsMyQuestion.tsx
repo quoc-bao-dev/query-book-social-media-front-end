@@ -138,7 +138,7 @@ const PostsMyQuestion = ({
         (isEditing ? (
           <div>
             <textarea
-              className='w-full p-2'
+              className='w-full mt-2 shadow-xl p-2 border-2 border-neutral-400 rounded-lg'
               value={editedQuestion}
               onChange={(e) => setEditedQuestion(e.target.value)}
             />

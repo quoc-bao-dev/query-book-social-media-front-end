@@ -14,6 +14,7 @@ const MainContentQnA = () => {
   const { setLoading } = useAppLoading();
   const param = useSearchParams();
   const mode = param.get('mode');
+  const search = param.get('search') || ''; // Lấy giá trị tìm kiếm hashtag từ URL
   const t = useTranslations('MainContentQnA');
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,7 +23,7 @@ const MainContentQnA = () => {
   const { data: questionResponse, isLoading } = useQuestionQuery({
     limit: 10,
     page: curPage,
-    search: searchTerm,
+    search: searchTerm || search, // Ưu tiên searchTerm, nếu rỗng thì dùng search từ URL
   });
 
   const lsQuestions = questionResponse?.data;
@@ -62,6 +63,7 @@ const MainContentQnA = () => {
               hashtags={q.hashtags}
               question={q.question}
               createdAt={q.createdAt!}
+              topic={q.topic || { name: 'Unknown' }} // ✅ Tránh lỗi nếu topic bị undefined
             />
           ))
       ) : (

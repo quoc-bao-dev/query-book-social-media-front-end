@@ -2,22 +2,22 @@
 import Header from '@/components/Layout/Header';
 import ChevronRightIcon2 from '@/components/icons/ChevronRightIcon2';
 import { PropsWithChildren, useState } from 'react';
-import SidebarQnA from './partials/SidebarQnA';
 import { useTranslations } from 'next-intl';
+import SidebarSearch from './partials/SidebarSearch';
 
 const Layout = ({ children }: PropsWithChildren) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const t = useTranslations('Layout');
 
   return (
-    <div className='w-full max-w-[1400px] mx-auto relative'>
+    <div className='w-full max-w-[1300px] mx-auto relative'>
       {/* Header */}
       <Header />
 
       {/* Section Title */}
       <div className='pt-20 pb-3 px-8 bg-background'>
-        <h1 className='text-3xl font-extrabold'>{t('topic')}</h1>
-        <h2 className='text-accent-foreground'>{t('title')}</h2>
+        <h1 className='text-3xl font-extrabold'>Trang Tìm Kiếm</h1>
+        <h2 className='text-accent-foreground'>Trang tìm kiếm toàn cục </h2>
       </div>
 
       {/* Layout grid */}
@@ -37,7 +37,7 @@ const Layout = ({ children }: PropsWithChildren) => {
   fixed top-0 mt-4 left-0 h-full w-64 z-50 
   ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
         >
-          <SidebarQnA />
+          <SidebarSearch />
 
           {/* Button Toggle Sidebar */}
           {!isSidebarOpen && (

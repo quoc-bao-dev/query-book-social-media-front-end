@@ -272,10 +272,10 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     lastCommentRef.current = el;
                   }
                 }}
-                className={`relative mt-5 ml-14 pl-6 border-l-2 border-neutral-100
+                className={`relative mt-5 ml-14 pl-6 border-l-2 rounded-lg border-primary-500
                   ${
                     highlightedCommentId === item._id
-                      ? 'bg-neutral-300/25 max-w-max transition'
+                      ? 'bg-primary-500/25  max-w-max transition'
                       : ''
                   }`}
               >
@@ -496,6 +496,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                 </button>
               </div>
             )}
+            {/* Input bình luận */}
             <div className='sm:z-50 z-50 pb-1 flex items-center gap-2'>
               <Avatar
                 src={user?.avatarUrl}
@@ -510,7 +511,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     ? t('phinput', { name: user?.fullName })
                     : t('phinputNoName') // Nếu không có tên, dùng một chuỗi thay thế
                 }
-                className='w-[80%] placeholder-neutral-400 focus:placeholder-neutral-600  p-2 border border-primary-500 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+                className='w-[80%]  placeholder-neutral-400 focus:placeholder-neutral-600  p-2 border border-primary-500 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
                 onKeyDown={handleKeyDown}
               />
 
@@ -519,13 +520,13 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                   className='p-2 rounded-lg hover:text-primary-600'
                   onClick={handleUploadIamges}
                 >
-                  <ImageIcon className='w-6 h-6' />
+                  <ImageIcon className='size-6' strokeWidth={2} />
                 </button>
                 <button
                   onClick={() => setShowCodeEditor(true)}
                   className='relative p-2 rounded-lg hover:text-primary-600'
                 >
-                  <CodeIcon className='w-6 h-6' />
+                  <CodeIcon className='size-6' />
 
                   {/* Hiển thị dấu chấm đỏ nếu có code */}
                   {hasCode && (
@@ -612,8 +613,6 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
             </div>
           </div>
         </div>
-
-        {/* Input bình luận */}
       </div>
     </Modal>
   );

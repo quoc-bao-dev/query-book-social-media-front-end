@@ -58,7 +58,7 @@ const CommentOptions = ({
           <ul className='space-y-2'>
             {isOwner && (
               <li
-                className='group flex items-center py-2 px-4 text-gray-700 cursor-pointer rounded-md hover:bg-neutral-900/10'
+                className='group flex items-center py-2 px-4 text-neutral-600 cursor-pointer rounded-md hover:bg-neutral-900/10'
                 onClick={() => {
                   onEdit();
                   console.log('jksdhjsdjgh', onEdit);
@@ -66,7 +66,7 @@ const CommentOptions = ({
                   setIsOpen(false); // Đóng menu sau khi click
                 }}
               >
-                <PencilSquareIcon className='w-5 h-5 text-gray-700 mr-2 ' />
+                <PencilSquareIcon className='size-5 text-neutral-600 mr-2 ' />
                 <span>{t('edit')}</span>
               </li>
             )}
@@ -75,12 +75,12 @@ const CommentOptions = ({
                 className='group flex items-center py-2 px-4 text-red-600 cursor-pointer rounded-md hover:bg-neutral-900/10'
                 onClick={handleDelete}
               >
-                <TrashIcon className='w-5 h-5 text-red-600 mr-2 ' />
+                <TrashIcon className='size-5 text-red-600 mr-2 ' />
                 <span>{t('delete')}</span>
               </li>
             )}
-            <li className='group flex items-center py-2 px-4 text-gray-700 cursor-pointer rounded-md hover:bg-neutral-900/10'>
-              <FlagIcon className='w-5 h-5 text-gray-700 mr-2 ' />
+            <li className='group flex items-center py-2 px-4 text-neutral-600 cursor-pointer rounded-md hover:bg-neutral-900/10'>
+              <FlagIcon className='size-5 text-neutral-600 mr-2 ' />
               <span>{t('report')}</span>
             </li>
           </ul>

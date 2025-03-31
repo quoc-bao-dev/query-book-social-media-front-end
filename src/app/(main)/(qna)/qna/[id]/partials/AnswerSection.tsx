@@ -274,10 +274,10 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
               lastCommentRef.current = el;
             }
           }}
-          className={`relative mt-5 pl-6 border-l-2 border-neutral-300 
+          className={`relative mt-5 pl-6 border-l-2 rounded-lg border-primary-500
             ${
               highlightedCommentId === item._id
-                ? 'bg-neutral-300/25 transition max-w-max rounded-lg'
+                ? 'bg-primary-500/25 transition max-w-max rounded-lg'
                 : ''
             }`}
         >
@@ -292,8 +292,8 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
             <>placehodle</>
           )}
 
-          <div className='mb-14'>
-            <div className='flex items-center gap-3'>
+          <div className='mb-14 '>
+            <div className='flex items-center gap-3 z-20'>
               <Avatar
                 src={item.userId.avatarUrl!}
                 className='w-10 h-10 rounded-full'
@@ -427,13 +427,13 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
       {showScrollButton && (
         <button
           onClick={scrollToTop}
-          className='fixed z-60 bottom-32 right-[40%] p-2 bg-primary-500 rounded-full shadow-lg hover:bg-primary-600 transition-colors duration-300'
+          className='fixed bottom-32 right-[40%] p-2 bg-primary-500 rounded-full shadow-lg hover:bg-primary-600 transition-colors duration-300'
           aria-label='Scroll to top'
         >
           <ChevronDoubleUpIcon className='size-6' />
         </button>
       )}
-      <div className='sticky z-50 translate-x-[-48px] bottom-8 left-0 w-[114%] bg-card mx-auto pb-14 pt-3 md:py-4 md:bottom-0'>
+      <div className='sticky z-30 translate-x-[-48px] bottom-8 left-0 w-[114%] bg-card mx-auto pb-14 pt-3 md:py-4 md:bottom-0'>
         {images.length > 0 && (
           <div className='flex items-center gap-2 py-2 '>
             {images.map((image, index) => {
@@ -480,7 +480,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
             </button>
           </div>
         )}
-
+        {/* input bình luận */}
         <div className='mt-4 bg-card flex items-center gap-2'>
           <Avatar
             src={user?.avatarUrl}

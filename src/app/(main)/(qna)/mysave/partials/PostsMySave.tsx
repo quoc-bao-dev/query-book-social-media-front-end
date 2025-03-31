@@ -175,7 +175,7 @@ const PostsMySave = ({ post, searchTerm }: PostProps) => {
       {isEditing ? (
         <div className='mt-1'>
           <textarea
-            className='w-full p-2 '
+            className='w-full mt-2 min-h-max shadow-xl p-2 border-2 border-neutral-400 rounded-lg '
             value={editedContent}
             onChange={(e) => setEditedContent(e.target.value)}
           />

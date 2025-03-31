@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react';
-import SearchBar from './SearchBar';
-import FilterOptions from './FilterOptions';
-import UserList from './UserList';
+import FilterOptions from '../../partials/FilterOptions';
 import PostList from './PostList';
+import SearchBar from './SearchBar';
+import UserList from './UserList';
 
 // Fake dữ liệu user
 const usersData = [
@@ -139,7 +139,7 @@ const MainContentSearchPage = () => {
   });
 
   return (
-    <div className='p-6 max-w-3xl mx-auto bg-card min-h-screen'>
+    <div className='p-6 w-full mx-auto bg-card min-h-screen'>
       {/* Thanh tìm kiếm */}
       <SearchBar onSearch={setSearchQuery} />
 

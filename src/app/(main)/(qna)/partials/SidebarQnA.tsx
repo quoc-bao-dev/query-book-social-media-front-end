@@ -1,21 +1,26 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Home, Bookmark, User } from 'lucide-react';
+import { useGetAllTopic } from '@/queries/topic';
+import { TopicResponse } from '@/types/topic';
+import { Bookmark, ChevronDown, Home, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 export default function SidebarQnA() {
-  const pathname = usePathname();
+  const [selectedTopic, setSelectedTopic] = useState('');
+  const [hashtag, setHashtag] = useState('');
 
+  const pathname = usePathname();
   const t = useTranslations('SidebarQnA');
+  const { data, error: fetchError } = useGetAllTopic();
 
   return (
-    <div className=' bg-card h-full p-6 flex flex-col  '>
-      <nav className='mt-10 '>
-        <ul className='space-y-2 '>
-          {/* Option Q&A */}
+    <div className='bg-card h-full p-6 flex flex-col'>
+      <nav className='mt-10'>
+        <ul className='space-y-2'>
           <Link
             href='/qna'
             className={cn(
@@ -30,15 +35,14 @@ export default function SidebarQnA() {
           >
             <Home
               size={22}
-              className={`${
+              className={
                 pathname.startsWith('/qna')
-                  ? 'text-primary-500 '
+                  ? 'text-primary-500'
                   : 'text-gray-700'
-              }`}
+              }
             />
             {t('qna')}
           </Link>
-          {/* Option My Question */}
           <Link
             href='/myquestion'
             className={cn(
@@ -53,16 +57,14 @@ export default function SidebarQnA() {
           >
             <User
               size={22}
-              className={`${
+              className={
                 pathname === '/myquestion'
-                  ? 'text-primary-500 '
+                  ? 'text-primary-500'
                   : 'text-gray-700'
-              }`}
+              }
             />
             {t('myquestion')}
           </Link>
-
-          {/* Option My Save */}
           <Link
             href='/mysave'
             className={cn(
@@ -77,14 +79,69 @@ export default function SidebarQnA() {
           >
             <Bookmark
               size={22}
-              className={`${
-                pathname === '/mysave' ? 'text-primary-500 ' : 'text-gray-700'
-              }`}
+              className={
+                pathname === '/mysave' ? 'text-primary-500' : 'text-gray-700'
+              }
             />
             {t('mysave')}
           </Link>
         </ul>
       </nav>
+
+      <div className='my-6 border-t border-gray-300'></div>
+
+      {/* Bộ lọc hashtag và chủ đề */}
+      <div className='mt-6 p-4 bg-background rounded-xl shadow-md border border-gray-200'>
+        <div className='flex justify-center font-semibold text-xl pb-5'>
+          Filter
+        </div>
+        {/* Tìm kiếm hashtag */}
+        <div className='mb-4'>
+          <label className='text-sm font-medium text-gray-700 mb-1 block'>
+            Search Hashtag
+          </label>
+          <div className='flex justify-around items-center gap-2'>
+            <input
+              type='text'
+              value={hashtag}
+              onChange={(e) => setHashtag(e.target.value)}
+              placeholder='Enter hashtag...'
+              className='w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none'
+            />
+          </div>
+        </div>
+
+        {/* Lọc theo chủ đề */}
+        <div>
+          <label className='text-sm font-medium text-gray-700 mb-1 block'>
+            Select Topic
+          </label>
+          {fetchError ? (
+            <p className='text-red-500'>Failed to load topics</p>
+          ) : (
+            <div className='relative'>
+              <select
+                value={selectedTopic}
+                onChange={(e) => setSelectedTopic(e.target.value)}
+                className='w-full p-2 border border-gray-300 rounded-lg appearance-none focus:ring-2 focus:ring-primary-500'
+              >
+                <option value='' hidden>
+                  Select a topic
+                </option>
+                {data?.map((topic: TopicResponse) => (
+                  <option key={topic._id} value={topic._id}>
+                    {topic.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                className='absolute right-3 top-3 text-gray-500 pointer-events-none'
+                size={18}
+              />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
