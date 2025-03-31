@@ -54,7 +54,10 @@ const SettingDrawer = () => {
                   : 'Chuyển sang chế độ sáng'
               }
               selected={selected === theme}
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              onClick={() => {
+                setTheme(theme === 'light' ? 'dark' : 'light');
+                setSelected(selected === 'light' ? 'dark' : 'light');
+              }}
             />
           </div>
         </div>
