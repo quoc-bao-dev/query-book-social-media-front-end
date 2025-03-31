@@ -31,6 +31,8 @@ import AvatarModal from '../me/(me)/partials/AvatarModal';
 import CoverModal from '../me/(me)/partials/CoverModal';
 import AvatarModalUser from './AvatarModalUser';
 import FriendRequestsButton from '../[userId]/partials/FriendRequests';
+import EllipsisVerticalIcon from '@/components/icons/EllipsisVerticalIcon';
+import PostOptionsMenu from '../[userId]/partials/PostOptionsMenu';
 
 const CoverPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -318,17 +320,29 @@ const CoverPage = () => {
       {/* Hoso - Baiviet */}
       <div className='bg-card flex justify-end items-center border-t border-gray-200 rounded-b-2xl'>
         <div className='flex justify-center space-x-2 relative pr-4'>
-          <Link href={targetLink} className='block' prefetch>
+          <Link href={targetLink} className='block' prefetch aria-label='Post'>
             <PostButton />
           </Link>
-          <Link href={profileLink} className='block' prefetch>
+          <Link
+            href={profileLink}
+            className='block'
+            prefetch
+            aria-label='Profile'
+          >
             <ProfileButton />
           </Link>
-          <Link href={friendedLink} className='block' prefetch>
+          <Link
+            href={friendedLink}
+            className='block'
+            prefetch
+            aria-label='Friends'
+          >
             <Friended />
           </Link>
         </div>
+        <PostOptionsMenu />
       </div>
+
       {/* Hoso - Baiviet */}
 
       {/* Mode */}
