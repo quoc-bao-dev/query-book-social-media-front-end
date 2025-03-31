@@ -21,9 +21,9 @@ const ModalCommentDetail = () => {
             </div>
             <div
               onClick={close}
-              className='bg-neutral-200 flex items-center justify-center absolute top-1 right-1 w-[30px] h-[30px] rounded-full '
+              className='bg-neutral-100 flex items-center justify-center absolute top-1 right-1 w-[25px] h-[25px] rounded-full '
             >
-              <DeleteIcon className='size-8' />
+              <DeleteIcon className='size-6' />
             </div>
           </div>
           <div className='max-h-[660px] h-[660px]'>

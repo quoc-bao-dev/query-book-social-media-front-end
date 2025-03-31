@@ -25,7 +25,7 @@ import { useListImageDetail } from '../signal/listImageDetail';
 import CommentReply from './CommentReply';
 import { sModalConfirm, useModalConfirm } from './ModalConfirm';
 import { sModalCreatePost, useModalCreatePost } from './ModalCreatePost';
-import { useModalReportPost } from './ModalReport';
+import { sModalReportPost, useModalReportPost } from './ModalReport';
 import PostComment from './PostComment';
 import PostImage from './PostImage';
 
@@ -159,6 +159,7 @@ const Post = ({ post, mode }: PostProps) => {
 
   const handleReportPost = () => {
     openReport();
+    sModalReportPost.set((n) => (n.value.postId = post.id));
   };
 
   return (
@@ -266,9 +267,9 @@ const Post = ({ post, mode }: PostProps) => {
           <div className='flex py-4 items-center'>
             <div onClick={handleLike}>
               {!isLiked ? (
-                <HeartIcon />
+                <HeartIcon className='hover:scale-125 transition-all hover:duration-300' />
               ) : (
-                <HeartIcon className='fill-error-500 stroke-error-500' />
+                <HeartIcon className='fill-error-500 stroke-error-500 transition-all duration-300 transform scale-110 hover:scale-125' />
               )}
             </div>
 

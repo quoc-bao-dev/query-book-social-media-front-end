@@ -71,7 +71,7 @@ const CreatePostImage = ({ lsImage, onDelete }: Props) => {
         <div className='relative z-40'>
           <div className='grid grid-cols-2 gap-2 p-2 items-center'>
             {File.map((item, index) => (
-              <div key={index} className='flex relative bg-slate-300'>
+              <div key={index} className='flex relative'>
                 <Image
                   onClick={showDetail(index)}
                   src={item}

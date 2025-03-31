@@ -26,12 +26,12 @@ const Layout = ({ children }: PropsWithChildren) => {
 
         <NavbarMobile />
       </div>
+      <ImageDetailFeedModal />
+      <ImageDetailModal />
       <ModalCreatePost />
       <NotifyDrawer />
       <UserDrawer />
-      <ImageDetailModal />
       <ModalCommentDetail />
-      <ImageDetailFeedModal />
       <ModalCreateFeed />
       <ModalReport />
       <ModalConfirm />

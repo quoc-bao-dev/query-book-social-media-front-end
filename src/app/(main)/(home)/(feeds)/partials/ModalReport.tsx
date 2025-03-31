@@ -3,16 +3,18 @@ import { Button } from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
-import { el } from 'date-fns/locale';
+import { useCreateReportMutation, useGetReportQuery } from '@/queries/report';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { signify } from 'react-signify';
 
 type ReportPostProps = {
   isShow: boolean;
+  postId: string;
 };
 
-const sModalReportPost = signify<ReportPostProps>({
+export const sModalReportPost = signify<ReportPostProps>({
   isShow: false,
+  postId: '',
 });
 
 export const useModalReportPost = () => {
@@ -24,17 +26,22 @@ export const useModalReportPost = () => {
 
 const ModalReport = () => {
   const [step, setStep] = useState(1);
-  const [content, setContent] = useState('');
+  const [reason, setReason] = useState('');
+  const [reportId, setReportId] = useState('');
 
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  const { isShow } = sModalReportPost.use();
+  const { isShow, postId } = sModalReportPost.use();
   const { closeReport } = useModalReportPost();
+  const { data } = useGetReportQuery();
+  const { mutateAsync } = useCreateReportMutation(postId);
 
   const handleReport = () => {
     setStep(2);
   };
+
+  const contentReport = data?.data?.data;
 
   // Click ra ngoài màn hình sẽ nhận sk để xử lý hiển thị
   useEffect(() => {
@@ -71,48 +78,20 @@ const ModalReport = () => {
               Tại sao bạn muốn báo cáo bài viết này?
             </h1>
           </div>
-          <div
-            onClick={handleReport}
-            className='w-full font-medium h-[50px] px-2 hover:bg-gray-200 rounded-md flex items-center'
-          >
-            <ChevronRightIcon className='size-5 fill-gray-800' />
-            Nội dung người lớn
-          </div>
-          <div
-            onClick={handleReport}
-            className='w-full font-medium h-[50px] px-2 hover:bg-gray-200 rounded-md flex items-center '
-          >
-            <ChevronRightIcon className='size-5 fill-gray-800' />
-            Nội dung mang tính chất bạo lực
-          </div>
-          <div
-            onClick={handleReport}
-            className='w-full font-medium h-[50px] px-2 hover:bg-gray-200 rounded-md flex items-center '
-          >
-            <ChevronRightIcon className='size-5 fill-gray-800' />
-            Từ ngữ lăng mạ/xúc phạm
-          </div>
-          <div
-            onClick={handleReport}
-            className='w-full font-medium h-[50px] px-2 hover:bg-gray-200 rounded-md flex items-center '
-          >
-            <ChevronRightIcon className='size-5 fill-gray-800' />
-            Thông tin sai sự thật
-          </div>
-          <div
-            onClick={handleReport}
-            className='w-full font-medium h-[50px] px-2 hover:bg-gray-200 rounded-md flex items-center '
-          >
-            <ChevronRightIcon className='size-5 fill-gray-800' />
-            Thông tin sai sự thật
-          </div>
-          <div
-            onClick={handleReport}
-            className='w-full font-medium h-[50px] px-2 hover:bg-gray-200 rounded-md flex items-center '
-          >
-            <ChevronRightIcon className='size-5 fill-gray-800' />
-            Tôi không muốn xem nội dung này
-          </div>
+          {contentReport.map((_content, index) => (
+            <div
+              key={index}
+              onClick={() => {
+                handleReport();
+                setReason(_content.content);
+                setReportId(_content.id);
+              }}
+              className='w-full font-medium h-[50px] px-2 hover:bg-gray-200 rounded-md flex items-center'
+            >
+              <ChevronRightIcon className='size-5 fill-gray-800' />
+              {_content.content}
+            </div>
+          ))}
         </div>
       </>
     );
@@ -134,29 +113,55 @@ const ModalReport = () => {
           Báo Cáo
         </h1>
         <hr />
-        <div className='w-full p-2 '>Nội dung bạn muốn báo cáo</div>
-        <div className='w-full p-2'>...........</div>
-        <div className='p-2 max-h-[500px] overflow-y-auto'>
-          <textarea
-            placeholder='Nhập nội dung bạn muốn báo cáo!'
-            className='border-[0.3px] w-full p-2 h-[50px]'
-            ref={contentRef}
-          ></textarea>
+        <div className='px-4 pt-4'>
+          <div className='w-full text-[18px]'>
+            Bạn muốn báo cáo bài viết này vì nó mang{' '}
+            <span className='font-semibold'>{reason}</span>
+          </div>
+          <div className='w-full text-gray-900 pt-4'>
+            Hãy ghi rõ chi tiết nội dung bạn sắp báo cáo
+          </div>
+          <div className='max-h-[500px] mt-2 overflow-y-auto'>
+            <textarea
+              placeholder='Nhập nội dung bạn muốn báo cáo!'
+              className='border-[0.3px] w-full p-2 h-[150px] focus:border-primary-500 outline-none rounded-md resize-none'
+              ref={contentRef}
+            ></textarea>
+          </div>
+          <div className='pt-2'>
+            Chúng tôi chỉ gỡ nội dung{' '}
+            <span className='text-error-500 font-semibold'>
+              vi phạm tiêu chuẩn cộng đồng
+            </span>{' '}
+            của mình.
+          </div>
         </div>
-        <div className='flex py-2 justify-center items-center'>
-          <Button onClick={handleSubmit}>Submit</Button>
+        <div className='flex py-5 justify-center items-center'>
+          <Button onClick={handleSubmit}>Báo cáo</Button>
         </div>
       </div>
     );
-  }, []);
+  }, [reason]);
 
-  const handleSubmit = () => {
-    console.log('contentRef', contentRef.current?.value);
+  // Gửi báo cáo
+  const handleSubmit = async () => {
+    const content = contentRef.current?.value?.trim() || '';
+    const payload = {
+      reason: reportId,
+      content,
+    };
+
+    await mutateAsync(payload);
+
+    closeReport();
+    setReason('');
+    setReportId('');
+    setStep(1);
   };
 
   return (
     <Modal isOpen={isShow} onClose={closeReport}>
-      <div className='relative w-[600px] h-auto bg-card rounded-xl  '>
+      <div className='relative w-[650px] h-auto bg-card rounded-xl  '>
         {step === 1 && <FormStep1 />}
         {step === 2 && <FormStep2 />}
       </div>
