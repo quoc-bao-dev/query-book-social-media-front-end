@@ -38,9 +38,7 @@ export default async function RootLayout({
           <ClientOnly>
             <AppProvider>
               <div className='font-public-sans'>{children}</div>
-              <div className='fixed top-[50%] translate-y-[-50%] z-[100]'>
-                <ModeToggle />
-              </div>
+              {/* <div className='fixed top-[50%] translate-y-[-50%] z-[100]'></div> */}
             </AppProvider>
           </ClientOnly>
         </NextIntlClientProvider>

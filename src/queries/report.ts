@@ -1,47 +1,37 @@
 import axiosClient from '@/httpClient';
-import { useQuery } from '@tanstack/react-query';
+import { swal } from '@/utils/swal';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-const getReportReasons = async () => {
-    const response = await axiosClient.get<{ success: boolean; data: any[] }>(
-        '/report-reason/account'
-    );
-    return response.data.data;
+type CreateStoryPayload = {
+  reason: string;
+  content: string;
 };
 
-export const useReportReasonQuery = () => {
-    return useQuery({
-        queryKey: ['report-reasons'],
-        queryFn: getReportReasons,
-        staleTime: 30 * 1000, // Dữ liệu tươi trong 30 giây
-        retry: 2, // Thử lại 2 lần nếu lỗi
-        select: (data) =>
-            data.map(({ id, reasonCode, content }) => ({
-                id,
-                reasonCode,
-                content,
-            })),
+// Get Report
+const reportGet = () => axiosClient.get('/report-reason/post');
 
-    });
-};
-const fetchReportReasons = async (userId: string) => {
-    const response = await axiosClient.get<{ success: boolean; data: any[] }>(
-        `/report/account/${userId}`
-    );
-    return response.data.data;
-};
+export const useGetReportQuery = () =>
+  useQuery({ queryKey: ['report'], queryFn: reportGet });
 
-export const useFetchReportReasons = (userId: string) => {
-    return useQuery({
-        queryKey: ['report-reasons', userId],
-        queryFn: () => fetchReportReasons(userId),
-        enabled: !!userId,
-        staleTime: 30 * 1000,
-        retry: 2,
-        select: (data) =>
-            data.map(({ id, reasonCode, content }) => ({
-                id,
-                reasonCode,
-                content,
-            })),
-    });
+// Create Report
+const reportCreate = (postId: string, payload: CreateStoryPayload) =>
+  axiosClient.post(`/report/post/${postId}`, payload);
+
+export const useCreateReportMutation = (postId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: CreateStoryPayload) => reportCreate(postId, payload),
+    onSuccess: () => {
+      //hành động fetch lại data
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      //Thông báo upload thanh cong
+      swal.fire({
+        text: 'Báo cáo thành công!',
+        icon: 'success',
+        confirmButtonColor: '#0abf7e',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    },
+  });
 };

@@ -13,6 +13,7 @@ import Avatar from './Avatar';
 import LocaleSwitcher from './LocaleSwitcher';
 import NavMenu from './NavMenu';
 import SearchHeader from './SearchHeader';
+import { useSettingDrawer } from '@/app/(main)/partials/SettingDrawer';
 
 export const sNotification = signify<{ count: number }>({ count: 0 });
 
@@ -24,6 +25,8 @@ export const useNotification = () => ({
 const Header = () => {
   const { open: openNotifyDrawer } = useNotifyDrawer();
   const { open: openUserDrawer } = useUserDrawer();
+
+  const { open } = useSettingDrawer();
 
   return (
     <>
@@ -53,7 +56,10 @@ const Header = () => {
 
           {/* action buttons */}
           <div className='flex gap-6 items-center justify-center z-50'>
-            <div className='hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200'>
+            <div
+              onClick={open}
+              className='hidden md:block p-2 rounded-full hover:bg-gray-200 transition-all duration-200'
+            >
               <Cog6Tooth className='size-6 text-primary-500' />
             </div>
 
