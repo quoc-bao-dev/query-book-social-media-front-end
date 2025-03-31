@@ -12,6 +12,7 @@ import ModalCreateFeed from './(home)/(feeds)/partials/ModalCreateFeed';
 import ImageDetailFeedModal from './(home)/(feeds)/partials/ImageDetailFeedModal';
 import ModalReport from './(home)/(feeds)/partials/ModalReport';
 import ModalConfirm from './(home)/(feeds)/partials/ModalConfirm';
+import SettingDrawer from './partials/SettingDrawer';
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
@@ -31,6 +32,7 @@ const Layout = ({ children }: PropsWithChildren) => {
       <ModalCreatePost />
       <NotifyDrawer />
       <UserDrawer />
+      <SettingDrawer />
       <ModalCommentDetail />
       <ModalCreateFeed />
       <ModalReport />
