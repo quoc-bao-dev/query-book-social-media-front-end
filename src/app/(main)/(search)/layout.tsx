@@ -2,12 +2,10 @@
 import Header from '@/components/Layout/Header';
 import ChevronRightIcon2 from '@/components/icons/ChevronRightIcon2';
 import { PropsWithChildren, useState } from 'react';
-import { useTranslations } from 'next-intl';
 import SidebarSearch from './partials/SidebarSearch';
 
 const Layout = ({ children }: PropsWithChildren) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const t = useTranslations('Layout');
 
   return (
     <div className='w-full max-w-[1300px] mx-auto relative'>

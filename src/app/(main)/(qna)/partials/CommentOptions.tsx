@@ -9,23 +9,25 @@ import {
 } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useModalReportPost } from '../../(home)/(feeds)/partials/ModalReport';
 
 interface CommentOptionsProps {
   answerId: string;
   questionId: string;
   isOwner: boolean;
-  onEdit: () => void; // Nhận callback function
+  onEdit: () => void;
 }
 
 const CommentOptions = ({
   answerId,
   questionId,
   isOwner,
-  onEdit, // Nhận prop onEditClick
+  onEdit,
 }: CommentOptionsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { mutate: deleteAnswer } = useDeleteAnswerMutation(questionId);
+  const { openReport } = useModalReportPost(); // Lấy hàm mở modal báo cáo
   const t = useTranslations('DropdownMenu');
 
   const handleDelete = useCallback(() => {
@@ -61,9 +63,7 @@ const CommentOptions = ({
                 className='group flex items-center py-2 px-4 text-neutral-600 cursor-pointer rounded-md hover:bg-neutral-900/10'
                 onClick={() => {
                   onEdit();
-                  console.log('jksdhjsdjgh', onEdit);
-
-                  setIsOpen(false); // Đóng menu sau khi click
+                  setIsOpen(false);
                 }}
               >
                 <PencilSquareIcon className='size-5 text-neutral-600 mr-2 ' />
@@ -79,7 +79,11 @@ const CommentOptions = ({
                 <span>{t('delete')}</span>
               </li>
             )}
-            <li className='group flex items-center py-2 px-4 text-neutral-600 cursor-pointer rounded-md hover:bg-neutral-900/10'>
+            {/* Nút mở modal báo cáo */}
+            <li
+              className='group flex items-center py-2 px-4 text-neutral-600 cursor-pointer rounded-md hover:bg-neutral-900/10'
+              onClick={openReport}
+            >
               <FlagIcon className='size-5 text-neutral-600 mr-2 ' />
               <span>{t('report')}</span>
             </li>

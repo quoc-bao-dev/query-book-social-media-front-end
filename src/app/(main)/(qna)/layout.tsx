@@ -10,7 +10,7 @@ const Layout = ({ children }: PropsWithChildren) => {
   const t = useTranslations('Layout');
 
   return (
-    <div className='w-full max-w-[1400px] mx-auto relative'>
+    <div className='w-full max-w-[1300px] mx-auto relative'>
       {/* Header */}
       <Header />
 

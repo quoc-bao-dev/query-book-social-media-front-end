@@ -274,10 +274,10 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
               lastCommentRef.current = el;
             }
           }}
-          className={`relative mt-5 pl-6 border-l-2 rounded-lg border-primary-500
+          className={`relative mt-5 pl-6 border-l-2 border-primary-500
             ${
               highlightedCommentId === item._id
-                ? 'bg-primary-500/25 transition max-w-max rounded-lg'
+                ? 'bg-primary-500/25 transition max-w-max'
                 : ''
             }`}
         >

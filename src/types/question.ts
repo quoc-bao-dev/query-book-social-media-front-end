@@ -24,6 +24,7 @@ interface UserId {
 
 interface Topic {
   name: string
+  _id:string
 }
 interface Avatar {
   _id: string;

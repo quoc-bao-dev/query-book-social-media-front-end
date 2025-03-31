@@ -6,21 +6,23 @@ import {
 } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
 import { useRef } from 'react';
+import { useModalReportPost } from '../../(home)/(feeds)/partials/ModalReport';
 
 const DropdownMenu = ({
   isOwner,
-  onClose, // Thêm props để đóng menu
-  onEdit, // ✅ Nhận thêm prop onEdit
+  onClose,
+  onEdit,
   onDelete,
 }: {
   questionId: string;
   isOwner: boolean;
   onClose: () => void;
-  onEdit: () => void; // ✅ Hàm bật chế độ chỉnh sửa
-  onDelete: () => void; // ✅ Hàm xóa bài viết
+  onEdit: () => void;
+  onDelete: () => void;
 }) => {
   const t = useTranslations('DropdownMenu');
   const menuRef = useRef<HTMLDivElement>(null);
+  const { openReport } = useModalReportPost(); // Lấy hàm mở modal báo cáo
 
   return (
     <div
@@ -32,7 +34,7 @@ const DropdownMenu = ({
           <li
             className='flex items-center py-2 px-4 text-neutral-600 hover:bg-neutral-900/10 cursor-pointer'
             onClick={() => {
-              onEdit(); // ✅ Bật chế độ chỉnh sửa
+              onEdit();
               onClose();
             }}
           >
@@ -44,7 +46,7 @@ const DropdownMenu = ({
         {isOwner && (
           <li
             className='flex items-center py-2 px-4 text-error-400 hover:bg-neutral-900/10 cursor-pointer'
-            onClick={onDelete} // Gọi hàm xóa ở đây
+            onClick={onDelete}
           >
             <TrashIcon className='w-5 h-5 text-error-400 mr-2' />
             {t('delete')}
@@ -52,7 +54,10 @@ const DropdownMenu = ({
         )}
         <li
           className='flex items-center py-2 px-4 text-neutral-600 hover:bg-neutral-900/10 cursor-pointer'
-          onClick={onClose} // Đóng menu khi chọn báo cáo
+          onClick={() => {
+            openReport(); // Mở modal báo cáo
+            onClose(); // Đóng menu sau khi mở modal
+          }}
         >
           <FlagIcon className='w-5 h-5 text-neutral-600 mr-2' />
           {t('report')}
