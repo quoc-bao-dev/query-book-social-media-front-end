@@ -2,9 +2,8 @@
 import GlobeAlt from '@/components/icons/Globe-alt';
 import Inbox from '@/components/icons/Inbox';
 import MapPin from '@/components/icons/Map-pin';
-import Phone from '@/components/icons/Phone';
-import { PropsWithChildren } from 'react';
 import { useAuth } from '@/store/authSignal';
+import { PropsWithChildren } from 'react';
 import SetCurUserProfileSignal from '../../partials/SetCurUserProfileSignal';
 
 const layout = ({ children }: PropsWithChildren) => {

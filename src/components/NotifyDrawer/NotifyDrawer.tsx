@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { signify } from 'react-signify';
 import { useNotification } from '../Layout/Header';
 import NotifyRow from './NotifyRow';
+import Link from 'next/link';
 
 type UserDrawerType = {
   isShow: boolean;
@@ -28,6 +29,7 @@ const NotifyDrawer = () => {
   const { data: friendRequests, refetch } = useFriendRequestQuery();
   const { data: notification, refetch: refetchNotification } =
     useNotificationQuery();
+  console.log('data:', notification);
 
   const { isShow } = sNotifyDrawer.use();
 
@@ -172,9 +174,11 @@ const NotifyDrawer = () => {
           </ScrollArea>
 
           <div className='px-3 py-6'>
-            <Button className='w-full bg-neutral-900 hover:bg-neutral-700 dark:bg-neutral-200 dark:hover:bg-neutral-200/90'>
-              See all
-            </Button>
+            <Link href='/notifications' passHref>
+              <Button className='w-full bg-neutral-900 hover:bg-neutral-700 dark:bg-neutral-200 dark:hover:bg-neutral-200/90'>
+                See all
+              </Button>
+            </Link>
           </div>
         </div>
       </Drawer>

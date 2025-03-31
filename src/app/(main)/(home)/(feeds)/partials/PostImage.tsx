@@ -8,6 +8,8 @@ type Props = {
 const PostImage = ({ lsImage }: Props) => {
   const { showModal, setImages, setCurIndex } = useListImageDetail();
 
+  console.log('lsImage', lsImage);
+
   const showDetail = (index: number) => () => {
     setImages(lsImage);
     setCurIndex(index);
@@ -54,7 +56,6 @@ const PostImage = ({ lsImage }: Props) => {
   if (lsImage.length === 2) {
     return (
       <div>
-        <div className='absolute inset-0 overflow-hidden rounded-md'></div>
         <div className='relative z-40'>
           <div className='grid grid-cols-2 gap-2 p-2 items-center'>
             <Image
@@ -82,33 +83,19 @@ const PostImage = ({ lsImage }: Props) => {
   if (lsImage.length === 3) {
     return (
       <div>
-        <div className='absolute inset-0 overflow-hidden rounded-md'></div>
         <div className='relative z-40'>
           <div className='grid grid-cols-3 gap-2 p-2 items-end'>
-            <Image
-              onClick={showDetail(0)}
-              src={lsImage[0]}
-              width={1000}
-              height={1000}
-              alt='Hình ảnh phòng'
-              className='w-full rounded-lg shadow mb-4 aspect-square object-cover'
-            />
-            <Image
-              onClick={showDetail(1)}
-              src={lsImage[1]}
-              alt='Khu bếp'
-              className='w-full rounded-lg shadow aspect-square object-cover'
-              width={1000}
-              height={0}
-            />
-            <Image
-              onClick={showDetail(2)}
-              src={lsImage[2]}
-              alt='Nhà vệ sinh'
-              className='w-full rounded-lg shadow mb-4 aspect-square object-cover'
-              width={1000}
-              height={0}
-            />
+            {lsImage.map((_item, index) => (
+              <Image
+                key={index}
+                onClick={showDetail(index)}
+                src={lsImage[index]}
+                width={1000}
+                height={1000}
+                alt={`Ảnh ${index + 1}`}
+                className='w-full rounded-lg shadow mb-4 aspect-square object-cover'
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -118,41 +105,19 @@ const PostImage = ({ lsImage }: Props) => {
   if (lsImage.length === 4) {
     return (
       <div>
-        <div className='absolute inset-0 overflow-hidden rounded-md'></div>
         <div className='relative z-40'>
-          <div className='grid grid-cols-2 gap-[6px] p-2'>
-            <Image
-              onClick={showDetail(0)}
-              src={lsImage[0]}
-              width={1000}
-              height={1000}
-              alt='Hình ảnh phòng'
-              className='w-full rounded-lg shadow aspect-square object-cover'
-            />
-            <Image
-              onClick={showDetail(1)}
-              src={lsImage[1]}
-              alt='Khu bếp'
-              className='w-full rounded-lg shadow aspect-square object-cover'
-              width={1000}
-              height={0}
-            />
-            <Image
-              onClick={showDetail(2)}
-              src={lsImage[2]}
-              alt='Nhà vệ sinh'
-              className='w-full rounded-lg shadow aspect-square object-cover'
-              width={1000}
-              height={0}
-            />
-            <Image
-              onClick={showDetail(3)}
-              src={lsImage[3]}
-              alt='Bồn cầu'
-              className='w-full rounded-lg shadow aspect-square object-cover'
-              width={1000}
-              height={0}
-            />
+          <div className='grid grid-cols-2 gap-[6px] p-[2px]'>
+            {lsImage.map((_item, index) => (
+              <Image
+                key={index}
+                onClick={showDetail(index)}
+                src={lsImage[index]}
+                width={1000}
+                height={1000}
+                alt={`Ảnh ${index + 1}`}
+                className='w-full rounded-lg shadow aspect-square object-cover'
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -162,9 +127,8 @@ const PostImage = ({ lsImage }: Props) => {
   if (lsImage.length >= 5) {
     return (
       <div>
-        <div className='absolute inset-0 overflow-hidden rounded-md'></div>
         <div className='relative z-40'>
-          <div className='grid grid-cols-2 gap-[6px] p-2'>
+          <div className='grid grid-cols-2 gap-[6px] p-[2px]'>
             <Image
               onClick={showDetail(0)}
               src={lsImage[0]}

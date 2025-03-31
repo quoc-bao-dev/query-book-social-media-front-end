@@ -1,6 +1,5 @@
 'use client';
 import { useAuth } from '@/store/authSignal';
-import { on } from 'events';
 import { useEffect, useRef } from 'react';
 
 type AutoResizeTextareaProps = {
