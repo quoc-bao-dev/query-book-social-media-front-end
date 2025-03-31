@@ -9,7 +9,7 @@ const ProfileButton = () => {
   const { user } = sCurUserProfileSignal.use();
 
   return (
-    <div className='relative flex flex-col items-center py-3 px-3 group cursor-pointer'>
+    <div className='relative flex flex-col items-center py-3 px-2 group cursor-pointer'>
       <div className='flex items-center space-x-2'>
         <CreditCard className='fill-primary-500' />
         <span className='text-base font-bold text-neutral-800'>Hồ sơ</span>

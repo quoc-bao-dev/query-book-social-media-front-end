@@ -7,8 +7,9 @@ import { useNotifyDrawer } from './NotifyDrawer';
 
 type Props = {
   notify: NotifyType;
+  time: string;
 };
-const NotifyRow = ({ notify }: Props) => {
+const NotifyRow = ({ notify, time }: Props) => {
   const { close } = useNotifyDrawer();
   const FollowNotify = ({
     userId,
