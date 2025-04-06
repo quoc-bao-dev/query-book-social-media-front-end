@@ -4,11 +4,10 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
 import {
-  useAcceptRequestMutation,
+  useFriendRequestQuery,
   useFriendsQuery,
   useSendRequestMutation,
   useSendRequestsQuery,
-  useFriendRequestQuery,
 } from '@/queries/friend';
 import { useAuth } from '@/store/authSignal';
 
@@ -27,12 +26,11 @@ import ProfileButton from '../[userId]/partials/ProfileButton';
 
 import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 
+import FriendRequestsButton from '../[userId]/partials/FriendRequests';
+import PostOptionsMenu from '../[userId]/partials/PostOptionsMenu';
 import AvatarModal from '../me/(me)/partials/AvatarModal';
 import CoverModal from '../me/(me)/partials/CoverModal';
 import AvatarModalUser from './AvatarModalUser';
-import FriendRequestsButton from '../[userId]/partials/FriendRequests';
-import EllipsisVerticalIcon from '@/components/icons/EllipsisVerticalIcon';
-import PostOptionsMenu from '../[userId]/partials/PostOptionsMenu';
 
 const CoverPage = () => {
   const [isLoading, setIsLoading] = useState(false);
