@@ -32,9 +32,11 @@ const ImageDetailModal = () => {
       <div className='flex z-50'>
         <div className='relative bg-card w-[800px] rounded-lg'>
           <div className='flex w-full relative justify-center items-center h-[580px] pt-3'>
-            <div className='absolute left-5' onClick={prevImage}>
-              <ChevronLeftIcon className='size-12 fill-gray-600 ' />
-            </div>
+            {listImages.length > 1 && (
+              <div className='absolute left-5' onClick={prevImage}>
+                <ChevronLeftIcon className='size-12 text-gray-600' />
+              </div>
+            )}
             <div className='flex h-full max-w-[600px] max-h-[550px] items-center'>
               <Image
                 src={listImages[curIndex]}
@@ -45,9 +47,11 @@ const ImageDetailModal = () => {
               />
             </div>
 
-            <div className='absolute right-5' onClick={nextImage}>
-              <ChevronRightIcon className='size-12 fill-gray-600' />
-            </div>
+            {listImages.length > 1 && (
+              <div className='absolute right-5' onClick={nextImage}>
+                <ChevronRightIcon className='size-12 fill-gray-600' />
+              </div>
+            )}
           </div>
 
           {/* List Images */}

@@ -104,35 +104,6 @@ const ModalCreatePost = () => {
     }
   };
 
-  // const uploadFile = async () => {
-  //   if (imageReview.length === 0) {
-  //     return;
-  //   }
-  //   const formData = new FormData();
-
-  //   for (let i = 0; i < imageReview.length; i++) {
-  //     formData.append('files', imageReview[i]);
-  //   }
-
-  //   console.log('imageReview', imageReview);
-
-  //   try {
-  //     const response = await axiosClient.post(
-  //       `${config.IMAGE_SERVER_URL}/uploads`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           'Content-Type': 'multipart/form-data',
-  //           'x-api-key': config.IMAGE_API_KEY,
-  //         },
-  //       },
-  //     );
-  //     return response.data;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {

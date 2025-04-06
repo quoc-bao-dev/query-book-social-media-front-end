@@ -9,19 +9,7 @@ import { sListFeedDetail, useListFeedDetail } from '../signal/listFeedDetail';
 
 const FeedDetail = () => {
   const { isShow, curIndex, listImages } = sListFeedDetail.use();
-  const { closeModal, setCurIndex } = useListFeedDetail();
-
-  // const nextImage = () => {
-  //   setCurIndex((curIndex + 1) % listImages.length);
-  // };
-
-  // const prevImage = () => {
-  //   if (curIndex <= 0) {
-  //     setCurIndex(listImages.length - 1);
-  //     return;
-  //   }
-  //   setCurIndex(Math.abs(curIndex - 1) % listImages.length);
-  // };
+  const { closeModal } = useListFeedDetail();
 
   return (
     <Modal isOpen={isShow} onClose={closeModal}>

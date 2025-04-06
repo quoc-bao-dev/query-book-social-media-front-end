@@ -55,7 +55,7 @@ const ModalConfirm = () => {
 
   return (
     <Modal isOpen={isShow} onClose={closeConfirm}>
-      <div className='w-[400px] h-[200px] bg-card p-4 rounded-lg'>
+      <div className='w-[350px] bg-card p-4 rounded-lg'>
         <Dialog open={isShow} onOpenChange={closeConfirm}>
           <DialogContent>
             <DialogHeader>
@@ -67,7 +67,7 @@ const ModalConfirm = () => {
                 </div>
               </DialogTitle>
             </DialogHeader>
-            <DialogFooter className='w-full'>
+            <DialogFooter className='w-full mt-5'>
               <div className='flex gap-2 w-full'>
                 <Button
                   className='flex-1'
