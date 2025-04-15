@@ -4,6 +4,7 @@ import ChevronRightIcon2 from '@/components/icons/ChevronRightIcon2';
 import { PropsWithChildren, useState } from 'react';
 import SidebarQnA from './partials/SidebarQnA';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 const Layout = ({ children }: PropsWithChildren) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -15,9 +16,15 @@ const Layout = ({ children }: PropsWithChildren) => {
       <Header />
 
       {/* Section Title */}
-      <div className='pt-20 pb-3 px-8 bg-background'>
-        <h1 className='text-3xl font-extrabold'>{t('topic')}</h1>
-        <h2 className='text-accent-foreground'>{t('title')}</h2>
+      <div className='pt-20 pb-3 bg-background px-8 md:px-0'>
+        <Link
+          href='/qna'
+          className='inline-block tracking-widest text-3xl font-bold mb-3 bg-primary text-white  py-2 px-5 rounded-md'
+        >
+          {t('topic')}
+        </Link>
+
+        <p className='text-accent-foreground'>{t('title')}</p>
       </div>
 
       {/* Layout grid */}

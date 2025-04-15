@@ -26,15 +26,14 @@ const CodeEditor = ({ code, fileType }: CodeEditorProps) => {
     }
   }, [copied]);
 
-  if (!code?.trim()) return null; // Không render nếu không có code
+  if (!code?.trim()) return null;
 
   return (
-    <div className='relative'>
-      {/* Nút clipboard */}
-      <div className='absolute z-20 top-2 right-2 flex flex-col items-center'>
+    <div className='relative group'>
+      <div className='absolute z-20 top-2 right-2 flex flex-col items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
         <button
           onClick={handleCopy}
-          className='w-8 h-8 flex items-center justify-center text-white p-1 transition-all duration-300'
+          className='w-8 h-8 flex items-center justify-center text-white p-1'
         >
           <span className='absolute'>
             {copied ? (
@@ -53,7 +52,6 @@ const CodeEditor = ({ code, fileType }: CodeEditorProps) => {
         </span>
       </div>
 
-      {/* Code Editor */}
       <MonacoEditor
         className='h-[300px] pt-[10px]'
         value={code}

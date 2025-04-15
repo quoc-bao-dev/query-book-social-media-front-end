@@ -19,29 +19,42 @@ interface QuestionPayload {
 }
 
 
-const getAllQuestions = (limit: number, page: number, search: string, topic?: string) =>
+const getAllQuestions = (
+  limit: number,
+  page: number,
+  search: string,
+  topic?: string,
+  hashtag?: string
+) =>
   axiosClient
     .get<HttpResponseWithPagination<QuestionResponse[]>>(
-      `/questions/?limit=${limit}&page=${page}${search ? `&s=${search}` : ''}${topic ? `&topic=${topic}` : ''}`,
+      `/questions/?limit=${limit}&page=${page}` +
+        (search ? `&s=${search}` : '') +
+        (topic ? `&topic=${topic}` : '') +
+        (hashtag ? `&hashtag=${hashtag}` : '')
     )
     .then((response) => response.data);
+
 
     export const useQuestionQuery = ({
       limit = 10,
       page = 1,
       search,
       topic,
+      hashtag,
     }: {
       limit: number;
       page: number;
       search: string;
       topic?: string;
+      hashtag?: string;
     }) => {
       return useQuery({
-        queryKey: ['questions', { limit, page, search, topic }],
-        queryFn: () => getAllQuestions(limit, page, search, topic),
+        queryKey: ['questions', { limit, page, search, topic, hashtag }],
+        queryFn: () => getAllQuestions(limit, page, search, topic, hashtag),
       });
     };
+    
 
 const postCreateQuestion = (payload: QuestionPayload) =>
   axiosClient.post('/questions', payload);

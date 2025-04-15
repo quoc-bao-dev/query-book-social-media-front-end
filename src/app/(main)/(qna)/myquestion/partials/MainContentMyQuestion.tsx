@@ -11,6 +11,8 @@ import PostsMyQuestion from './PostsMyQuestion';
 import SearchBarMyQuestion from './SearchBarMyQuestion';
 import { useTranslations } from 'next-intl';
 import { useAppLoading } from '@/components/Layout/AppLoading';
+import { Plus } from 'lucide-react';
+import Link from 'next/link';
 
 const MainContentMyQuestion = () => {
   const { user } = useAuth();
@@ -60,6 +62,11 @@ const MainContentMyQuestion = () => {
       <div className='flex justify-end items-center mb-4'>
         <AskQuestionButton />
       </div>
+      <Link href='/myquestion?mode=ask'>
+        <button className='md:hidden fixed bottom-16 right-3 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-all z-50'>
+          <Plus className='size-7' />
+        </button>
+      </Link>
 
       {/* Hiển thị loading */}
       {filteredPosts.length > 0 ? (

@@ -1,15 +1,14 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { BookmarkIcon } from 'lucide-react';
-import { useState } from 'react';
 import ChatBubbleOvalLeftIcon from '@/components/icons/ChatBubbleOvalLeftIcon';
 import { useAnswerQuery } from '@/queries/answer';
 import {
   useGetMySaveQuestionQuery,
   useSaveQuestionMutation,
 } from '@/queries/question';
-import ModalComment from './ModalComment';
+import { useQueryClient } from '@tanstack/react-query';
+import { BookmarkIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import HeartIcon from '@/components/icons/HeartIcon';
+import { useState } from 'react';
+import ModalComment from './ModalComment';
 
 type ActionBarProps = {
   id: string;
@@ -63,20 +62,14 @@ const ActionBar = ({ id }: ActionBarProps) => {
 
   return (
     <>
-      <div className='mt-2 flex items-center gap-2 text-gray-600'>
-        {/* love  */}
-        <button className='flex items-center gap-1 text-neutral-600  hover:text-neutral-900 transition'>
-          <HeartIcon className='w-5 h-5 fill-red-600 text-red-600' />
-          <span className='font-semibold'>200</span>
-        </button>
-
+      <div className='mt-2 flex items-center gap-2 text-neutral-600'>
         {/* comment  */}
         {/* Nút mở modal bình luận */}
         <button
           onClick={() => setIsModalOpen(true)}
           className='flex items-center gap-1 text-neutral-600 hover:text-neutral-900 transition'
         >
-          <ChatBubbleOvalLeftIcon className='w-5 h-5' />
+          <ChatBubbleOvalLeftIcon className='size-6' />
           <span className='font-semibold'>{countComment}</span>
         </button>
 
@@ -87,7 +80,7 @@ const ActionBar = ({ id }: ActionBarProps) => {
           disabled={saveMutation.isPending}
         >
           <BookmarkIcon
-            className={`w-5 h-5 transition ${
+            className={`size-6 transition ${
               isSaved ? 'fill-info-500 text-info-200' : 'text-neutral-600'
             }`}
           />

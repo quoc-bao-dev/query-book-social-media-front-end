@@ -14,7 +14,7 @@ const highlightText = (text: string, searchTerm?: string) => {
     'gi',
   );
 
-  const parts = text.split(regex); // Tách text thành mảng dựa trên regex
+  const parts = text.split(regex);
 
   return parts.map((part, index) =>
     regex.test(part) ? (
