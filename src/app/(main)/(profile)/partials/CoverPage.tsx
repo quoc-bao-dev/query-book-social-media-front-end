@@ -31,6 +31,8 @@ import AvatarModal from '../me/(me)/partials/AvatarModal';
 import CoverModal from '../me/(me)/partials/CoverModal';
 import AvatarModalUser from './AvatarModalUser';
 import FriendRequestsButton from '../[userId]/partials/FriendRequests';
+import EllipsisVerticalIcon from '@/components/icons/EllipsisVerticalIcon';
+import PostOptionsMenu from '../[userId]/partials/PostOptionsMenu';
 
 const CoverPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -208,7 +210,7 @@ const CoverPage = () => {
             <div className='md:flex absolute translate-y-[-30%] size-[150px] md:size-[170px] rounded-full bg-muted overflow-hidden p-1 z-50'>
               {user?.avatarUrl ? (
                 <img
-                  src={user?.avatarUrl || '/images/git.png'}
+                  src={user?.avatarUrl || '/images/avatar-trang-4.jpg'}
                   alt='Avatar'
                   className='w-full h-full object-cover rounded-full shadow-lg'
                 />
@@ -318,17 +320,29 @@ const CoverPage = () => {
       {/* Hoso - Baiviet */}
       <div className='bg-card flex justify-end items-center border-t border-gray-200 rounded-b-2xl'>
         <div className='flex justify-center space-x-2 relative pr-4'>
-          <Link href={targetLink} className='block' prefetch>
+          <Link href={targetLink} className='block' prefetch aria-label='Post'>
             <PostButton />
           </Link>
-          <Link href={profileLink} className='block' prefetch>
+          <Link
+            href={profileLink}
+            className='block'
+            prefetch
+            aria-label='Profile'
+          >
             <ProfileButton />
           </Link>
-          <Link href={friendedLink} className='block' prefetch>
+          <Link
+            href={friendedLink}
+            className='block'
+            prefetch
+            aria-label='Friends'
+          >
             <Friended />
           </Link>
         </div>
+        <PostOptionsMenu />
       </div>
+
       {/* Hoso - Baiviet */}
 
       {/* Mode */}
