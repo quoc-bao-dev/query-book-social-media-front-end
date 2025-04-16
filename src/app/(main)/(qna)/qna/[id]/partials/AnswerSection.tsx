@@ -427,7 +427,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
       {showScrollButton && (
         <button
           onClick={scrollToTop}
-          className='fixed bottom-32 right-[40%] p-2 bg-primary-500 rounded-full shadow-lg hover:bg-primary-600 transition-colors duration-300'
+          className='fixed bottom-32 right-[40%] p-2 text-neutral-100 bg-primary-500 rounded-full shadow-lg hover:bg-primary-600 transition-colors duration-300'
           aria-label='Scroll to top'
         >
           <ChevronDoubleUpIcon className='size-6' />

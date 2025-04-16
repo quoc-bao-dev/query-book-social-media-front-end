@@ -162,7 +162,7 @@ export const useEditAnswerMutation = (questionId: string) => {
       queryClient.invalidateQueries({ queryKey: ['answers', questionId] });
       Swal.fire({
               title: t("editSuccessTitle"),
-              text: t("editSuccessText"),
+              text: t("editanswerSuccessText"),
               icon: "success",
               confirmButtonColor: "#22c55e",
               timer: 2000,

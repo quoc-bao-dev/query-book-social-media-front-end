@@ -32,7 +32,12 @@
   "SidebarQnA": {
     "qna": "Q&A",
     "myquestion": "My Question",
-    "mysave": "My Save"
+    "mysave": "My Save",
+    "filter": "Filter",
+    "searchhashtag": "Search Hashtag",
+    "enterhashtag" : "Enter Hashtag",
+    "selecttopic": "Select Topic",
+    "selectatopic": "Select a topic"
   },
   "MainContentQnA": {
     "recentquestions": "Recent Questions",
@@ -154,6 +159,7 @@
   "deleteRetryButton": "Try Again",
   "editSuccessTitle": "Edit Successful",
   "editSuccessText": "Your question has been updated successfully.",
+  "editanswerSuccessText": "Your answer has been updated successfully.",
   "editErrorTitle": "Edit Failed",
   "copycode": "Coppied !",
   "editErrorText": "There was an error updating the question."

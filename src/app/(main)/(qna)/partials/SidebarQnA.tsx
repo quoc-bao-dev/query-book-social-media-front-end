@@ -91,30 +91,30 @@ export default function SidebarQnA() {
       <div className='my-6 border-t border-gray-300'></div>
 
       {/* Bộ lọc hashtag và chủ đề */}
-      <div className='mt-6 p-4 bg-background rounded-xl shadow-md border border-gray-200'>
+      <div className='mt-6 p-4 bg-background rounded-xl'>
         <div className='flex justify-center font-semibold text-xl pb-5'>
-          Filter
+          {t('filter')}
         </div>
         {/* Tìm kiếm hashtag */}
         <div className='mb-4'>
-          <label className='text-sm font-medium text-gray-700 mb-1 block'>
-            Search Hashtag
+          <label className='text-sm font-medium text-neutral-700 mb-1 block'>
+            {t('searchhashtag')}
           </label>
           <div className='flex justify-around items-center gap-2'>
             <input
               type='text'
               value={hashtag}
               onChange={(e) => setHashtag(e.target.value)}
-              placeholder='Enter hashtag...'
-              className='w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none'
+              placeholder={t('enterhashtag')}
+              className='w-full px-4 py-2 placeholder:text-neutral-500 rounded-lg shadow-sm focus:ring-2 focus:ring-neutral-500 focus:outline-none'
             />
           </div>
         </div>
 
         {/* Lọc theo chủ đề */}
         <div>
-          <label className='text-sm font-medium text-gray-700 mb-1 block'>
-            Select Topic
+          <label className='text-sm font-medium text-neutral-700 mb-1 block'>
+            {t('selecttopic')}
           </label>
           {fetchError ? (
             <p className='text-red-500'>Failed to load topics</p>
@@ -123,10 +123,10 @@ export default function SidebarQnA() {
               <select
                 value={selectedTopic}
                 onChange={(e) => setSelectedTopic(e.target.value)}
-                className='w-full p-2 border border-gray-300 rounded-lg appearance-none focus:ring-2 focus:ring-primary-500'
+                className='w-full p-2 rounded-lg appearance-none focus:ring-2 focus:ring-neutral-500'
               >
                 <option value='' hidden>
-                  Select a topic
+                  {t('selectatopic')}
                 </option>
                 {data?.map((topic: TopicResponse) => (
                   <option key={topic._id} value={topic._id}>
@@ -135,7 +135,7 @@ export default function SidebarQnA() {
                 ))}
               </select>
               <ChevronDown
-                className='absolute right-3 top-3 text-gray-500 pointer-events-none'
+                className='absolute right-3 top-3 text-neutral-700 pointer-events-none'
                 size={18}
               />
             </div>

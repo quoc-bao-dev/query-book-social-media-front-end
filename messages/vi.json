@@ -31,7 +31,12 @@
   "SidebarQnA": {
     "qna": "Hỏi Đáp",
     "myquestion": "Câu Hỏi Của Tôi",
-    "mysave": "Đã Lưu"
+    "mysave": "Đã Lưu",
+    "filter": "Bộ Lọc",
+    "searchhashtag": "Tìm Thẻ",
+    "enterhashtag" : "Nhập thẻ",
+    "selecttopic": "chọn chủ đề",
+    "selectatopic": "Lựa chọn một chủ đề"
   },
 
 "MainContentQnA": {
@@ -157,6 +162,7 @@
   "deleteRetryButton": "Thử lại",
   "editSuccessTitle": "Chỉnh sửa thành công",
   "editSuccessText": "Câu hỏi của bạn đã được cập nhật thành công.",
+  "editanswerSuccessText": "Câu trả lời của bạn đã được cập nhật thành công.",
   "editErrorTitle": "Chỉnh sửa thất bại",
   "copycode": "Đã Copy !",
   "editErrorText": "Có lỗi xảy ra khi cập nhật câu hỏi."
