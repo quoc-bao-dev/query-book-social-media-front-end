@@ -14,8 +14,6 @@ const Page = () => {
     user?.id ?? '',
   );
 
-  console.log('Data', listWork);
-
   const { data: jobTitlesResponse } = useJobTitleQuery();
 
   const formatDate = (dateString: string | null | undefined): string => {

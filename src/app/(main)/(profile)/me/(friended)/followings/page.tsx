@@ -10,7 +10,6 @@ const Page = () => {
   const { user } = sCurUserProfileSignal.use();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
-  console.log(user);
 
   if (!user) {
     return <div>Loading...</div>;
