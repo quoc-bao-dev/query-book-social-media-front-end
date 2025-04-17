@@ -17,6 +17,7 @@ const ReportReasonList = ({ onClose }: { onClose: () => void }) => {
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [pageId, setPageId] = useState<string | null>(null);
 
+  // Lấy ID từ URL
   useEffect(() => {
     const path = window.location.pathname;
     const id = path.split('/')[1];
@@ -43,11 +44,6 @@ const ReportReasonList = ({ onClose }: { onClose: () => void }) => {
       };
 
       createReport(reportData);
-
-      console.log('ID lý do:', selectedReasonId);
-      console.log('Nội dung lý do:', selectedReasonContent);
-      console.log('Thông tin bổ sung:', additionalInfo);
-      console.log('ID trang cá nhân:', pageId);
     } else {
       swal.fire({
         icon: 'warning',
