@@ -62,7 +62,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
 
   const scrollToTop = () => {
     window.scrollTo({
-      top: 800,
+      top: 0,
       behavior: 'smooth',
     });
   };
@@ -274,12 +274,16 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
               lastCommentRef.current = el;
             }
           }}
-          className={`relative mt-5 pl-6 border-l-2 border-primary-500
+          className={`
+            relative pl-6 border-l-2 border-primary-500
+            transition-all max-w-max duration-500 ease-in-out
+            pr-6 pt-2
             ${
               highlightedCommentId === item._id
-                ? 'bg-primary-500/25 transition max-w-max'
-                : ''
-            }`}
+                ? 'bg-primary-500/25  rounded-xl'
+                : 'bg-transparent'
+            }
+          `}
         >
           {item.votes ? (
             <Vote
@@ -427,13 +431,13 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
       {showScrollButton && (
         <button
           onClick={scrollToTop}
-          className='fixed bottom-32 right-[40%] p-2 text-neutral-100 bg-primary-500 rounded-full shadow-lg hover:bg-primary-600 transition-colors duration-300'
+          className='fixed bottom-32 right-[40%] p-2 text-white bg-primary-500 rounded-full shadow-lg hover:bg-primary-600 transition-colors duration-300'
           aria-label='Scroll to top'
         >
           <ChevronDoubleUpIcon className='size-6' />
         </button>
       )}
-      <div className='sticky z-30 translate-x-[-48px] bottom-8 left-0 w-[114%] bg-card mx-auto pb-14 pt-3 md:py-4 md:bottom-0'>
+      <div className='sticky z-30 translate-x-[-50px] bottom-8 left-0 w-[113%] bg-card mx-auto pb-14 pt-3 md:py-4 md:bottom-0'>
         {images.length > 0 && (
           <div className='flex items-center gap-2 py-2 '>
             {images.map((image, index) => {

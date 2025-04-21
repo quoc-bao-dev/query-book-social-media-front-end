@@ -272,12 +272,15 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     lastCommentRef.current = el;
                   }
                 }}
-                className={`relative mt-5 ml-14 pl-6 border-l-2 border-primary-500
+                className={`
+                  relative mt-5 ml-14 pl-6 pr-6 pt-2 border-l-2 border-primary-500
+                   transition-all duration-500 ease-in-out max-w-max
                   ${
                     highlightedCommentId === item._id
-                      ? 'bg-primary-500/25  max-w-max transition'
-                      : ''
-                  }`}
+                      ? 'bg-primary-500/25 rounded-xl'
+                      : 'bg-transparent'
+                  }
+                `}
               >
                 <div className='absolute left-[-5px] top-1/2 -translate-y-1/2'>
                   {typeof item.votes !== 'undefined' ? (
@@ -503,6 +506,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                 className='w-10 h-10 rounded-full'
                 fallBack={user?.fullName}
               />
+
               <input
                 ref={inputRef}
                 type='text'
