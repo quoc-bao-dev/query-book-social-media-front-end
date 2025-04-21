@@ -274,10 +274,10 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                 }}
                 className={`
                   relative mt-5 ml-14 pl-6 pr-6 pt-2 border-l-2 border-primary-500
-                   transition-all duration-500 ease-in-out max-w-max
+                   transition-all duration-500 ease-in-out
                   ${
                     highlightedCommentId === item._id
-                      ? 'bg-primary-500/25 rounded-xl'
+                      ? 'bg-primary-500/25 rounded-xl max-w-max'
                       : 'bg-transparent'
                   }
                 `}

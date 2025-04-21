@@ -6,8 +6,8 @@ import { TopicResponse } from '@/types/topic';
 import { Bookmark, ChevronDown, Home, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function SidebarQnA() {
   const [selectedTopic, setSelectedTopic] = useState('');
@@ -16,6 +16,25 @@ export default function SidebarQnA() {
   const pathname = usePathname();
   const t = useTranslations('SidebarQnA');
   const { data, error: fetchError } = useGetAllTopic();
+  const router = useRouter();
+
+  const handleSelectTopic = (topicId: string) => {
+    setSelectedTopic(topicId);
+    const searchParams = new URLSearchParams(window.location.search);
+    if (topicId) {
+      searchParams.set('topic', topicId);
+    } else {
+      searchParams.delete('topic');
+    }
+    router.push(`/qna?${searchParams.toString()}`);
+  };
+
+  useEffect(() => {
+    const topicFromParam = new URLSearchParams(window.location.search).get(
+      'topic',
+    );
+    if (topicFromParam) setSelectedTopic(topicFromParam);
+  }, []);
 
   return (
     <div className='bg-card h-full p-6 flex flex-col'>
@@ -122,7 +141,7 @@ export default function SidebarQnA() {
             <div className='relative'>
               <select
                 value={selectedTopic}
-                onChange={(e) => setSelectedTopic(e.target.value)}
+                onChange={(e) => handleSelectTopic(e.target.value)}
                 className='w-full p-2 rounded-lg appearance-none focus:ring-2 focus:ring-neutral-500'
               >
                 <option value='' hidden>

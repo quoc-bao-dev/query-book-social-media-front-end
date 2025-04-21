@@ -1,14 +1,17 @@
 'use client';
 import Header from '@/components/Layout/Header';
 import ChevronRightIcon2 from '@/components/icons/ChevronRightIcon2';
-import { PropsWithChildren, useState } from 'react';
-import SidebarQnA from './partials/SidebarQnA';
+import { useAuth } from '@/store/authSignal';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { PropsWithChildren, useState } from 'react';
+import SidebarQnA from './partials/SidebarQnA';
+import WelcomeToastModal from './partials/WelcomeToastModal';
 
 const Layout = ({ children }: PropsWithChildren) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const t = useTranslations('Layout');
+  const { user } = useAuth();
 
   return (
     <div className='w-full max-w-[1300px] mx-auto relative'>
@@ -16,15 +19,20 @@ const Layout = ({ children }: PropsWithChildren) => {
       <Header />
 
       {/* Section Title */}
-      <div className='pt-20 pb-3 bg-background px-8 md:px-0'>
-        <Link
-          href='/qna'
-          className='inline-block tracking-widest text-3xl font-bold mb-3 bg-primary text-white  py-2 px-5 rounded-md'
-        >
-          {t('topic')}
-        </Link>
+      <div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-8 md:px-0 pt-20 pb-6 bg-background'>
+        {/* Tiêu đề và mô tả */}
+        <div>
+          <Link
+            href='/qna'
+            className='inline-block tracking-widest text-3xl font-bold mb-3 bg-primary text-white py-2 px-5 rounded-md shadow-md hover:bg-primary/90 transition'
+          >
+            {t('topic')}
+          </Link>
+          <p className='text-muted-foreground text-base'>{t('title')}</p>
+        </div>
 
-        <p className='text-accent-foreground'>{t('title')}</p>
+        {/* Welcome user */}
+        <WelcomeToastModal user={user} t={t} />
       </div>
 
       {/* Layout grid */}

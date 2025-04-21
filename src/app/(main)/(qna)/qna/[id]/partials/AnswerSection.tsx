@@ -276,11 +276,11 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           }}
           className={`
             relative pl-6 border-l-2 border-primary-500
-            transition-all max-w-max duration-500 ease-in-out
+            transition-all duration-500 ease-in-out
             pr-6 pt-2
             ${
               highlightedCommentId === item._id
-                ? 'bg-primary-500/25  rounded-xl'
+                ? 'bg-primary-500/25  rounded-xl  max-w-max'
                 : 'bg-transparent'
             }
           `}
@@ -334,7 +334,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
 
             {item.images && <ImageRender images={item.images} />}
             {item.code?.code && (
-              <div className=' border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
+              <div className=' border border-gray-300 rounded-lg overflow-hidden shadow-sm mt-3'>
                 {editingAnswerId === item._id ? (
                   <div>
                     <MonacoEditor

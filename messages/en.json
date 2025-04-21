@@ -127,7 +127,10 @@
   },
   "Layout": {
     "topic": "Topic",
-    "title":"Ask questions, get answers, and engage with the community"
+    "title":"Ask questions, get answers, and engage with the community",
+    "welcomeback": "Welcome back",
+"doyouhavequestion": "Do you have any questions today?",
+"askaquestion": "Ask a question now!"
   },
 
   "deleteAnswer": {
