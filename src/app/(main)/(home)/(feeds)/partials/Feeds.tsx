@@ -20,12 +20,15 @@ const Feeds = () => {
   const { user } = useAuth();
   const { open } = useModalCreateFeed();
   // const { showModal, setImages, setCurIndex } = useListImageDetail();
-  const { showModal, setImages, setCurIndex } = useListImageDetailFeed();
+  const { showModal, setImages, setCurIndex, setAuTh } =
+    useListImageDetailFeed();
 
   // Query dữ liệu từ sever
   const { data } = useStoryQuery();
   // Lấy dữ liệu gán vào biến stories
   const stories = data?.data.data;
+
+  // console.log('groupStories', groupedStories);
 
   // Tạo groupStories
   useEffect(() => {
@@ -70,10 +73,11 @@ const Feeds = () => {
     open();
   };
 
-  const showDetail = (images: string[]) => () => {
+  const showDetail = (images: string[], item: any) => () => {
     setImages(images);
     setCurIndex(0);
     showModal();
+    setAuTh(item);
   };
 
   return (
@@ -112,7 +116,7 @@ const Feeds = () => {
         .map((item, index) => (
           <div
             key={index}
-            onClick={showDetail(item.images)}
+            onClick={showDetail(item.images, item)}
             className='w-[115px] h-[204px] rounded-xl bg-slate-200 relative flex justify-center '
           >
             <Avatar
