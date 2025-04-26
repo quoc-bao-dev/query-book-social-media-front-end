@@ -47,7 +47,7 @@ const PostOptionsMenu = () => {
       {isMenuOpen && !isReportOpen && (
         <div
           ref={menuRef}
-          className='absolute right-0 mt-2 w-64 bg-white shadow-xl rounded-lg p-1 z-50 transition-all duration-200 ease-out transform origin-top-right backdrop-blur-lg'
+          className='absolute right-0 mt-2 w-64 bg-card shadow-xl rounded-lg p-1 z-50 transition-all duration-200 ease-out transform origin-top-right backdrop-blur-lg'
         >
           <ul className='divide-y divide-gray-200'>
             <li

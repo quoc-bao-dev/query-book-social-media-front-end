@@ -12,8 +12,6 @@ const ManageLinks = () => {
   const { user } = useAuth();
   const [isAddingLink, setIsAddingLink] = useState(false);
 
-  console.log('User Data:', user);
-
   return user ? (
     <>
       <SetCurUserProfileSignal user={user} />

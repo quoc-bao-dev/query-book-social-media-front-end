@@ -18,14 +18,18 @@ import { AddressRes } from '@/types/address';
 
 const Page = () => {
   const { user } = useAuth();
+  console.log('Chào Moi', user);
+
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingHandle, setEditingHandl] = useState(false);
   const [isEditingBio, setEditingBio] = useState(false);
+  const [isEditingHobbies, setIsEditingHobbies] = useState(false);
 
   const [firstName, setFirstName] = useState(user?.firstName || '');
   const [lastName, setLastName] = useState(user?.lastName || '');
   const [handle, setHandle] = useState(user?.handle || '');
   const [bio, setBio] = useState(user?.bio || '');
+  const [hobbies, setHobbies] = useState('');
 
   const { mutateAsync, isError } = useUpdateUserProfileMutation();
 
@@ -54,7 +58,6 @@ const Page = () => {
   };
   const toggleEditingHandle = () => {
     setEditingHandl(!isEditingHandle);
-    // Reset giá trị khi hủy chỉnh sửa
     if (!isEditingHandle) {
       setHandle(user?.handle || '');
     }
@@ -65,6 +68,12 @@ const Page = () => {
     // Reset giá trị khi hủy chỉnh sửa
     if (!isEditingBio) {
       setBio(user?.bio || '');
+    }
+  };
+  const toggleEditingHobbies = () => {
+    setIsEditingHobbies(!isEditingHobbies);
+    if (!isEditingHobbies) {
+      setHobbies('');
     }
   };
 
@@ -297,6 +306,7 @@ const Page = () => {
             </div>
           )}
         </div>
+
         <div className='px-4 pt-4'>
           {/* Phần hiển thị thông tin và nút chỉnh sửa */}
           <div className='flex items-center justify-between w-full'>
@@ -316,7 +326,7 @@ const Page = () => {
             {/* Nút chỉnh sửa */}
             <div className='flex'>
               <button
-                // onClick={toggleEditingHandle}
+                onClick={toggleEditingHobbies}
                 className='flex items-center justify-center w-9 h-9 rounded-full bg-gray-200 hover:bg-gray-300 transition'
               >
                 <Pen className='text-neutral-800' />
@@ -325,13 +335,12 @@ const Page = () => {
           </div>
 
           {/* Form chỉnh sửa */}
-          {isEditingHandle && (
+          {isEditingHobbies && (
             <div className='w-2/4 flex items-center pt-4 justify-between'>
-              {/* Trường Họ */}
               <div className='flex-1 mr-4'>
                 <div className='relative'>
                   <FloatInput
-                    label='Tên người dùng'
+                    label='Sở thích'
                     value={handle}
                     onChange={(e) => setHandle(e.target.value)}
                   />
@@ -386,30 +395,25 @@ const Page = () => {
               </button>
             </div>
           </div>
-          <div className='grid grid-cols-2 gap-4 mb-4 pt-4'>
-            <div>
-              <FloatInput label='Tỉnh/Thành phố *' />
-              <select>
-                {provinces?.map((province: { code: string; name: string }) => (
-                  <option key={province.code}>{province.name}</option>
-                ))}
-              </select>
+          {/* <div className='grid grid-cols-2 gap-4 mb-4 pt-4'>
+              <div>
+                <FloatInput label='Tỉnh/Thành phố *' />
+              </div>
+
+              <div>
+                <FloatInput label='Quận/Huyện *' />
+              </div>
+
+              <div>
+                <FloatInput label='Phường/Xã *' />
+              </div>
             </div>
 
-            <div>
-              <FloatInput label='Quận/Huyện *' />
-            </div>
-
-            <div>
-              <FloatInput label='Phường/Xã *' />
-            </div>
-          </div>
-
-          <div className='w-full'>
-            <FloatInput label='Địa chỉ cụ thể *' />
-          </div>
+            <div className='w-full'>
+              <FloatInput label='Địa chỉ cụ thể *' />
+            </div> */}
           {/* Nút xác nhận và hủy */}
-          <div className='flex justify-end space-x-2 mt-4'>
+          {/* <div className='flex justify-end space-x-2 mt-4'>
             <button
               className='w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer'
               aria-label='Hủy'
@@ -422,7 +426,7 @@ const Page = () => {
             >
               <Check className='text-primary-500' />
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

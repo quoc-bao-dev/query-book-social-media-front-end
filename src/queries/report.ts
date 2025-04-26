@@ -35,3 +35,35 @@ export const useCreateReportMutation = (postId: string) => {
     },
   });
 };
+// Get Account Report Reason
+const reportGetAccount = () => axiosClient.get('/report-reason/account');
+
+export const useGetAccountReportQuery = () =>
+  useQuery({
+    queryKey: ['accountReport'],
+    queryFn: reportGetAccount,
+    select: (data) => data.data.data, // Chỉ lấy phần dữ liệu quan trọng từ response
+  });
+
+// Create Report
+const reportCreateAccoutAccount = (userId: string, payload: CreateStoryPayload) =>
+  axiosClient.post(`/report/account/${userId}`, payload);
+
+export const useCreateAccountReportMutation = (userId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: CreateStoryPayload) => reportCreateAccoutAccount(userId, payload),
+    onSuccess: () => {
+      //hành động fetch lại data
+      queryClient.invalidateQueries({ queryKey: ['accountReport'] });
+      //Thông báo upload thanh cong
+      swal.fire({
+        text: 'Báo cáo thành công!',
+        icon: 'success',
+        confirmButtonColor: '#0abf7e',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    },
+  });
+};
