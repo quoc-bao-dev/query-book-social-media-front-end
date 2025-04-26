@@ -11,6 +11,7 @@ import {
   useListImageDetailFeed,
 } from '../signal/listImageDeltaiFeed';
 import { cn } from '@/lib/utils';
+import Avatar from '@/components/common/Avatar';
 
 const ProcessingBar = ({
   isActive,
@@ -35,8 +36,9 @@ const ProcessingBar = ({
 };
 
 const ImageDetailFeedModal = () => {
-  const { isShow, listImages, curIndex } = sListImageDetailFeed.use();
+  const { isShow, listImages, curIndex, auTh } = sListImageDetailFeed.use();
   const { closeModal, setCurIndex } = useListImageDetailFeed();
+  console.log('auTh', auTh);
 
   const nextImage = () => {
     setCurIndex((curIndex + 1) % listImages.length);
@@ -59,55 +61,61 @@ const ImageDetailFeedModal = () => {
 
   return (
     <Modal isOpen={isShow} onClose={closeModal}>
-      <div className='flex z-50'>
-        <div className='relative bg-card w-[500px] rounded-lg'>
-          <div className='flex w-full relative justify-center items-center h-[580px] pt-3'>
-            {listImages.length > 1 && (
-              <div className='' onClick={prevImage}>
-                <ChevronLeftIcon className='size-10 ' />
-              </div>
-            )}
-            <div className='w-[406px] max-h-[500px]  max flex justify-center mt-10'>
-              <Image
-                src={listImages[curIndex]}
-                alt=''
-                className=' w-auto object-contain  rounded-md'
-                width={1000}
-                height={1000}
-              />
-            </div>
-
-            {listImages.length > 1 && (
-              <div className='' onClick={nextImage}>
-                <ChevronRightIcon className='size-10' />
-              </div>
-            )}
+      <div className='z-50'>
+        <div className='relative flex justify-center bg-gray-900 w-[395px] h-[700px] mx-auto rounded-lg'>
+          {/* Author */}
+          <div className='absolute top-5 left-5 flex items-center'>
+            <Avatar src={auTh.avatarUrl} className='' />
+            <span className='font-bold ml-2 text-gray-200'>
+              {auTh.userName}
+            </span>
           </div>
 
-          {/* List Images */}
-          <div className=' max-w-[600px] mx-auto py-2'>
-            <div className='flex w-full justify-center items-end gap-2 h-[100px]'>
-              <div className='h-3 w-full  flex gap-2 px-2'>
-                {listImages.map((_, index) => (
-                  <div
-                    key={index}
-                    onClick={() => setCurIndex(index)}
-                    className={cn(
-                      'relative flex-1 h-full bg-gray-300 rounded-full overflow-hidden cursor-pointer',
-                      {
-                        'bg-gray-300': index > curIndex,
-                      },
-                    )}
-                  >
-                    <ProcessingBar
-                      isActive={index === curIndex}
-                      isSeen={index < curIndex}
-                    />
-                  </div>
-                ))}
-              </div>
+          {listImages.length > 1 && (
+            <div className='' onClick={prevImage}>
+              <ChevronLeftIcon className='size-10 absolute top-1/2 left-2 text-white' />
+            </div>
+          )}
+
+          {/* Image */}
+          <Image
+            src={listImages[curIndex]}
+            alt=''
+            className='w-full object-contain rounded-md'
+            width={1000}
+            height={1000}
+          />
+
+          <div className='absolute bottom-1  flex w-full justify-center items-end gap-2 h-[100px]'>
+            <div className='h-3 w-full flex gap-2 px-2'>
+              {listImages.map((_, index) => (
+                <div
+                  key={index}
+                  onClick={() => setCurIndex(index)}
+                  className={cn(
+                    'relative flex-1 h-full bg-gray-300 rounded-full overflow-hidden cursor-pointer',
+                    {
+                      'bg-gray-300': index > curIndex,
+                    },
+                  )}
+                >
+                  <ProcessingBar
+                    isActive={index === curIndex}
+                    isSeen={index < curIndex}
+                  />
+                </div>
+              ))}
             </div>
           </div>
+
+          {/* Next button */}
+          {listImages.length > 1 && (
+            <div className='' onClick={nextImage}>
+              <ChevronRightIcon className='size-10 absolute top-1/2 right-2 text-white' />
+            </div>
+          )}
+
+          {/* Close button */}
           <div
             onClick={closeModal}
             className='absolute top-1 rounded-full right-1 w-6 h-6 bg-gray-300 justify-center items-center flex'
