@@ -11,22 +11,20 @@ import SearchBarQnA from './SearchBarQnA';
 import { useTranslations } from 'next-intl';
 
 const MainContentQnA = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [curPage, setCurPage] = useState(1);
-
   const { setLoading } = useAppLoading();
-
   const param = useSearchParams();
   const mode = param.get('mode');
+  const search = param.get('search') || '';
   const t = useTranslations('MainContentQnA');
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [curPage, setCurPage] = useState(1);
 
   const { data: questionResponse, isLoading } = useQuestionQuery({
     limit: 10,
     page: curPage,
-    search: searchTerm,
+    search: searchTerm || search,
   });
-
-  // const { data, paginnation } = questionResponse;
 
   const lsQuestions = questionResponse?.data;
   const pagination = questionResponse?.pagination;
@@ -34,10 +32,12 @@ const MainContentQnA = () => {
   useEffect(() => {
     setLoading(isLoading);
   }, [isLoading, setLoading]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Điều kiện kiểm tra mode đặt ngay trước return
   if (mode === 'detail') {
     return <MainContentDetailQnA />;
   }
@@ -63,6 +63,7 @@ const MainContentQnA = () => {
               hashtags={q.hashtags}
               question={q.question}
               createdAt={q.createdAt!}
+              topic={q.topic || { name: 'Unknown' }} // ✅ Tránh lỗi nếu topic bị undefined
             />
           ))
       ) : (

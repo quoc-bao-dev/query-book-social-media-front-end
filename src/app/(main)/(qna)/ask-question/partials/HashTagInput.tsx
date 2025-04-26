@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 type HashTagInputProps = {
   onChange: (data: string[]) => void;
@@ -11,11 +11,11 @@ const HashTagInput = ({ onChange }: HashTagInputProps) => {
   const t = useTranslations('AskQuestion');
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && input.trim() !== '') {
+    if (e.key === 'Enter' && input.trim()) {
       e.preventDefault();
-      if (!hashtags.includes(input.trim())) {
-        setHashtags([...hashtags, input.trim()]);
-      }
+      setHashtags((prev) =>
+        prev.includes(input.trim()) ? prev : [...prev, input.trim()],
+      );
       setInput('');
     }
   };
@@ -24,9 +24,9 @@ const HashTagInput = ({ onChange }: HashTagInputProps) => {
     onChange(hashtags);
   }, [hashtags, onChange]);
 
-  const removeHashtag = (tag: string) => {
-    setHashtags(hashtags.filter((t) => t !== tag));
-  };
+  const removeHashtag = useCallback((tag: string) => {
+    setHashtags((prev) => prev.filter((t) => t !== tag));
+  }, []);
 
   return (
     <div>

@@ -5,18 +5,26 @@ import Modal from '@/components/common/Modal';
 import ChatBubbleOvalLeftIcon from '@/components/icons/ChatBubbleOvalLeftIcon';
 import CodeIcon from '@/components/icons/CodeIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+
+import { Button } from '@/components/common/Button';
 import SendIcon from '@/components/icons/SendIcon';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { useAnswerMutation, useAnswerQuery } from '@/queries/answer';
+import {
+  useAnswerMutation,
+  useAnswerQuery,
+  useEditAnswerMutation,
+} from '@/queries/answer';
 import { useAuth } from '@/store/authSignal';
 import { uploadImages } from '@/utils/uploadUtils';
+import { ChevronDoubleUpIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, vi } from 'date-fns/locale';
 import { ImageIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import LanguageSeletor from '../../ask-question/partials/LanguageSeletor';
 import { QuestionSchema } from '../../ask-question/schema/questionSchema';
@@ -32,26 +40,82 @@ type ModalCommentProps = {
   id: string;
 };
 const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
+  // 1. Hooks và State
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
-  const [hasCode, setHasCode] = useState(false); // State để kiểm tra có code không
+  const [hasCode, setHasCode] = useState(false);
   const [visibleComments, setVisibleComments] = useState(5);
   const [images, setImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
+  const [editedContent, setEditedContent] = useState('');
+  const [editedCode, setEditedCode] = useState('');
+  const [highlightedCommentId, setHighlightedCommentId] = useState<
+    string | null
+  >(null);
+  const [isPending, setIsPending] = useState(false);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  const commentRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const lastCommentRef = useRef<HTMLDivElement | null>(null);
+  const commentsContainerRef = useRef<HTMLDivElement>(null);
+
+  // 2. API Hooks (Queries & Mutations)
+  const { user } = useAuth();
+  const currentUserId = user?.id;
+
+  const { data } = useAnswerQuery(id);
+  const editAnswerMutation = useEditAnswerMutation(id);
+  const { mutateAsync } = useAnswerMutation(id);
+
+  // 3. Form Handling
+  const {
+    control,
+    watch,
+    reset,
+    formState: {},
+  } = useForm<QuestionSchema>({
+    resolver: zodResolver(questionSchema),
+  });
+
+  const code = watch('code');
+
+  // 4. Localization
   const t = useTranslations('ModalComment');
   const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
   const getLocale = (locale: string) => {
     return locale === 'vi' ? vi : enUS;
   };
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  // 5. Handlers (Event Functions)
+  const handleEdit = (answerId: string, content: string, code?: string) => {
+    setEditingAnswerId(answerId);
+    setEditedContent(content);
+    if (code) {
+      setEditedCode(code); // Nếu có code, chỉnh sửa code thay vì nội dung text
+    }
+  };
 
-  const { user } = useAuth();
-  const currentUserId = user?.id;
+  const handleSaveEdit = async (answerId: string) => {
+    if (editedContent.trim()) {
+      await editAnswerMutation.mutateAsync({
+        answerId,
+        payload: {
+          content: editedContent,
+          code: { fileType: 'javascript', code: editedCode }, // Cập nhật code
+        },
+      });
+      setEditingAnswerId(null);
+      setEditedContent('');
+      setEditedCode('');
+    }
+  };
 
-  const { data } = useAnswerQuery(id);
+  const handleCancelEdit = () => {
+    setEditingAnswerId(null);
+  };
 
   const handleUploadIamges = () => {
     const input = document.createElement('input');
@@ -75,29 +139,21 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
       }
     };
   };
+
   const handleSave = () => {
     if (code?.trim()) {
-      setHasCode(true); // Đánh dấu là có code
-      setShowCodeEditor(false); // Ẩn modal
+      setHasCode(true);
+      setShowCodeEditor(false);
     }
   };
-  const { mutateAsync } = useAnswerMutation(id);
-  const {
-    control,
-    watch,
-    reset,
-    formState: {},
-  } = useForm<QuestionSchema>({
-    resolver: zodResolver(questionSchema),
-  });
-
-  const code = watch('code');
 
   const handleSubmit = async () => {
     const answer = inputRef.current?.value?.trim();
     const trimmedCode = code?.trim();
 
     if (!answer && !trimmedCode && images.length === 0) return;
+
+    setIsPending(true); // Bắt đầu loading
 
     let uploadedImages: string[] = [];
     if (images.length > 0) {
@@ -106,6 +162,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
         uploadedImages = uploadResult?.files.map((file) => file.filename) || [];
       } catch (error) {
         console.error('Upload failed', error);
+        setIsPending(false);
         return;
       }
     }
@@ -123,6 +180,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
     };
 
     await mutateAsync(payload);
+    setIsPending(false); // Kết thúc loading
 
     if (inputRef.current) inputRef.current.value = '';
     reset();
@@ -131,9 +189,11 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
     setShowCodeEditor(false);
     setSelectedLanguage('typescript');
   };
+
   const handleShowMore = () => {
-    setVisibleComments((prev) => prev + 4); // Hiển thị thêm 4 bình luận
+    setVisibleComments((prev) => prev + 4);
   };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -141,9 +201,19 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
     }
   };
 
+  const handleScroll = () => {
+    if (commentsContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } =
+        commentsContainerRef.current;
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
+      setShowScrollToTop(isNearBottom);
+    }
+  };
+
+  // 6. Data Processing (Before Render)
   const sortedData = data
     ?.map((item) => {
-      const votes = item.votes || []; // Đảm bảo votes luôn là mảng
+      const votes = item.votes || [];
       const totalVotes =
         votes.filter((v) => v.voteType === 'up').length -
         votes.filter((v) => v.voteType === 'down').length;
@@ -151,6 +221,20 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
       return { ...item, totalVotes };
     })
     .sort((a, b) => b.totalVotes - a.totalVotes);
+
+  // 7. useEffect (Side Effects)
+  useEffect(() => {
+    if (highlightedCommentId) {
+      setTimeout(() => {
+        commentRefs.current[highlightedCommentId]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }, 100);
+
+      setTimeout(() => setHighlightedCommentId(null), 3000);
+    }
+  }, [sortedData, highlightedCommentId]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -166,29 +250,50 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
 
           <button
             onClick={onClose}
-            className='text-gray-500 hover:text-gray-700 transition text-xl font-bold'
+            className='text-neutral-700 hover:text-neutral-300 transition text-xl font-bold'
           >
-            ✕
+            <XCircleIcon className='size-8' />
           </button>
         </div>
 
         {/* Nội dung bình luận */}
-        <div className='mt-4 space-y-4 overflow-y-auto max-h-[60vh] pr-2 scrollbar scrollbar-w-[4px] scrollbar-thumb-gray-400 scrollbar-track-transparent'>
+        <div
+          ref={commentsContainerRef}
+          onScroll={handleScroll}
+          className='mt-4 space-y-4 overflow-y-auto max-h-[60vh] pr-2 scrollbar scrollbar-w-[4px] scrollbar-thumb-gray-400 scrollbar-track-transparent'
+        >
           {sortedData && sortedData.length > 0 ? (
-            sortedData.slice(0, visibleComments).map((item) => (
+            sortedData.slice(0, visibleComments).map((item, index, arr) => (
               <div
                 key={item._id}
-                className='relative mt-5 ml-14 pl-6 border-l-2 border-neutral-100'
+                ref={(el) => {
+                  commentRefs.current[item._id] = el;
+                  if (index === arr.length - 1) {
+                    lastCommentRef.current = el;
+                  }
+                }}
+                className={`
+                  relative mt-5 ml-14 pl-6 pr-6 pt-2 border-l-2 border-primary-500
+                   transition-all duration-500 ease-in-out
+                  ${
+                    highlightedCommentId === item._id
+                      ? 'bg-primary-500/25 rounded-xl max-w-max'
+                      : 'bg-transparent'
+                  }
+                `}
               >
                 <div className='absolute left-[-5px] top-1/2 -translate-y-1/2'>
-                  {item.votes ? (
+                  {typeof item.votes !== 'undefined' ? (
                     <Vote
                       questionId={id}
                       answerId={item._id}
                       votes={item.votes}
+                      onVote={() => setHighlightedCommentId(item._id)}
                     />
                   ) : (
-                    <>placeholder</>
+                    <div className='flex items-center justify-center text-neutral-400'>
+                      No votes yet
+                    </div>
                   )}
                 </div>
 
@@ -206,29 +311,81 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                       answerId={item._id}
                       questionId={item.questionId}
                       isOwner={currentUserId === item.userId._id}
+                      onEdit={() =>
+                        handleEdit(item._id, item.content, item.code?.code)
+                      }
                     />
                   </div>
-                  <p className='mt-1 text-lg text-neutral-600'>
-                    {item.content}
-                  </p>
-
-                  {item.images && <ImageRender images={item.images} />}
-                  {item.code?.code && (
-                    <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
-                      <MonacoEditor
-                        className='h-[300px]'
-                        value={item.code.code}
-                        theme='vs-dark'
-                        language={item.code.fileType || 'javascript'}
-                        options={{
-                          readOnly: true,
-                          domReadOnly: true,
-                          minimap: { enabled: false },
-                          scrollBeyondLastLine: false,
-                        }}
+                  {editingAnswerId === item._id ? (
+                    <div className='mt-1'>
+                      <textarea
+                        value={editedContent}
+                        onChange={(e) => setEditedContent(e.target.value)}
+                        className='w-full p-2 border-2 border-neutral-500 rounded-lg '
+                        rows={3}
                       />
                     </div>
+                  ) : (
+                    <p className='mt-1 text-lg text-neutral-700 whitespace-pre-wrap break-words'>
+                      {item.content}
+                    </p>
                   )}
+
+                  {item.images && <ImageRender images={item.images} />}
+
+                  {item.code?.code && (
+                    <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
+                      {editingAnswerId === item._id ? (
+                        <div>
+                          <MonacoEditor
+                            className='h-[300px]'
+                            value={editedCode}
+                            theme='vs-dark'
+                            language={item.code.fileType || 'javascript'}
+                            options={{
+                              readOnly: false,
+                              domReadOnly: false,
+                              minimap: { enabled: false },
+                              scrollBeyondLastLine: false,
+                            }}
+                            onChange={(newValue) =>
+                              setEditedCode(newValue || '')
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <MonacoEditor
+                          className='h-[300px]'
+                          value={item.code.code}
+                          theme='vs-dark'
+                          language={item.code.fileType || 'javascript'}
+                          options={{
+                            readOnly: true,
+                            domReadOnly: true,
+                            minimap: { enabled: false },
+                            scrollBeyondLastLine: false,
+                          }}
+                        />
+                      )}
+                    </div>
+                  )}
+                  {editingAnswerId === item._id && (
+                    <div className='flex gap-2 mt-2 justify-end'>
+                      <Button
+                        onClick={() => handleSaveEdit(item._id)}
+                        className='px-4 py-2 rounded-md'
+                      >
+                        {t('save')}
+                      </Button>
+                      <Button
+                        onClick={handleCancelEdit}
+                        className='px-4 py-2 bg-neutral-400 hover:bg-error-500 rounded-md'
+                      >
+                        {t('cancel')}
+                      </Button>
+                    </div>
+                  )}
+
                   <div className='mt-2 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
                     <p>
                       {item.createdAt &&
@@ -262,6 +419,23 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
             </p>
           )}
 
+          {showScrollToTop && (
+            <button
+              onClick={() => {
+                commentsContainerRef.current?.scrollTo({
+                  top: 0,
+                  behavior: 'smooth',
+                });
+              }}
+              className='fixed bottom-40 right-1/2 bg-primary-500 hover:bg-primary-600 text-white rounded-full p-2 shadow-lg transition-all duration-300 z-50'
+              style={{
+                transform: 'translateX(50%)',
+              }}
+            >
+              <ChevronDoubleUpIcon className='size-6' />
+            </button>
+          )}
+
           {data && visibleComments < data.length && (
             <button
               onClick={handleShowMore}
@@ -270,13 +444,14 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
               {t('morecomment')}
             </button>
           )}
+
           <ModalError
             isOpen={isErrorModalOpen}
             onClose={() => setIsErrorModalOpen(false)}
             message={errorMessage || ''}
           />
 
-          <div className='border-t pt-4 bg-card sticky bottom-0'>
+          <div className='border-t pt-4 bg-card sticky bottom-[-1px]'>
             {images.length > 0 && (
               <div className='ml-12  flex gap-2 py-2 z-50'>
                 {images.map((image, index) => {
@@ -313,7 +488,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     onClick={handleUploadIamges}
                     className='flex items-center justify-center size-28 border-2 border-dashed border-gray-400 rounded-lg hover:bg-gray-100'
                   >
-                    <span className='text-2xl text-gray-500'>+</span>
+                    <span className='text-2xl text-neutral-500'>+</span>
                   </button>
                 )}
                 <button
@@ -324,12 +499,14 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                 </button>
               </div>
             )}
+            {/* Input bình luận */}
             <div className='sm:z-50 z-50 pb-1 flex items-center gap-2'>
               <Avatar
                 src={user?.avatarUrl}
                 className='w-10 h-10 rounded-full'
                 fallBack={user?.fullName}
               />
+
               <input
                 ref={inputRef}
                 type='text'
@@ -338,7 +515,7 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     ? t('phinput', { name: user?.fullName })
                     : t('phinputNoName') // Nếu không có tên, dùng một chuỗi thay thế
                 }
-                className='w-[80%]  p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+                className='w-[80%]  placeholder-neutral-400 focus:placeholder-neutral-600  p-2 border border-primary-500 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
                 onKeyDown={handleKeyDown}
               />
 
@@ -347,13 +524,13 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                   className='p-2 rounded-lg hover:text-primary-600'
                   onClick={handleUploadIamges}
                 >
-                  <ImageIcon className='w-6 h-6' />
+                  <ImageIcon className='size-6' strokeWidth={2} />
                 </button>
                 <button
                   onClick={() => setShowCodeEditor(true)}
                   className='relative p-2 rounded-lg hover:text-primary-600'
                 >
-                  <CodeIcon className='w-6 h-6' />
+                  <CodeIcon className='size-6' />
 
                   {/* Hiển thị dấu chấm đỏ nếu có code */}
                   {hasCode && (
@@ -367,10 +544,15 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     onOpenChange={setShowCodeEditor}
                   >
                     <DialogContent className='max-w-2xl bg-card p-5 rounded-lg'>
+                      {/* Ẩn DialogTitle để tránh lỗi accessibility */}
+                      <VisuallyHidden>
+                        <DialogTitle>{t('codesnippet')}</DialogTitle>
+                      </VisuallyHidden>
+
                       <p className='text-2xl text-center font-semibold text-neutral-900'>
                         {t('codesnippet')}
                       </p>
-                      <p className=' text-neutral-900 font-semibold'>
+                      <p className='text-neutral-900 font-semibold'>
                         {t('selectlanguage')}
                       </p>
                       <LanguageSeletor
@@ -386,29 +568,28 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                             <MonacoEditor
                               onChange={field.onChange}
                               language={selectedLanguage}
-                              value={field.value} // Sử dụng field.value để cập nhật giá trị
+                              value={field.value}
                               height={400}
                               theme='vs-dark'
                             />
 
-                            <div className='flex justify-end gap-4 mt-4'>
-                              {/* Nút Clear Code */}
-                              <button
+                            <div className='flex justify-end gap-2 mt-4'>
+                              <Button
                                 onClick={() => {
-                                  field.onChange(''); // Xóa code trong Monaco Editor
-                                  setHasCode(false); // Ẩn dấu chấm đỏ trên icon Code
+                                  field.onChange('');
+                                  setHasCode(false);
                                 }}
-                                className='px-4 py-2 rounded-lg bg-error-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-error-200 hover:shadow-lg active:scale-95'
+                                className='px-4 py-2 rounded-lg bg-neutral-400 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-error-200 hover:shadow-lg active:scale-95'
                               >
                                 {t('clear')}
-                              </button>
+                              </Button>
 
-                              <button
+                              <Button
                                 onClick={handleSave}
-                                className='px-4 py-2 rounded-lg bg-info-500 text-white shadow-md transition-all duration-300 ease-in-out hover:bg-info-600 hover:shadow-lg active:scale-95'
+                                className='px-4 py-2 rounded-lg text-white shadow-md transition-all duration-300 ease-in-out hover:bg-primary-400 hover:shadow-lg active:scale-95'
                               >
                                 {t('save')}
-                              </button>
+                              </Button>
                             </div>
                           </div>
                         )}
@@ -416,18 +597,26 @@ const ModalComment = ({ isOpen, onClose, id }: ModalCommentProps) => {
                     </DialogContent>
                   </Dialog>
                 )}
+
                 <button
+                  disabled={isPending}
                   onClick={handleSubmit}
-                  className='p-2 rounded-lg hover:text-primary-600'
+                  className={`p-2 rounded-full flex items-center justify-center ${
+                    isPending
+                      ? 'cursor-not-allowed opacity-50'
+                      : 'hover:text-primary-500'
+                  }`}
                 >
-                  <SendIcon />
+                  {isPending ? (
+                    <div className='h-6 w-6 border-4 border-transparent border-t-neutral-900 border-l-neutral-900 rounded-full animate-spin'></div>
+                  ) : (
+                    <SendIcon className='size-6' />
+                  )}
                 </button>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Input bình luận */}
       </div>
     </Modal>
   );

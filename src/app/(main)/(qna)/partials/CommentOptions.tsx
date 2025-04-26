@@ -8,41 +8,42 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useModalReportPost } from '../../(home)/(feeds)/partials/ModalReport';
 
 interface CommentOptionsProps {
   answerId: string;
   questionId: string;
   isOwner: boolean;
-  onEdit: () => void; // Nhận callback function
+  onEdit: () => void;
 }
 
 const CommentOptions = ({
   answerId,
   questionId,
   isOwner,
-  onEdit, // Nhận prop onEditClick
+  onEdit,
 }: CommentOptionsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { mutate: deleteAnswer } = useDeleteAnswerMutation(questionId);
+  const { openReport } = useModalReportPost(); // Lấy hàm mở modal báo cáo
   const t = useTranslations('DropdownMenu');
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     deleteAnswer(answerId);
-  };
-  console.log('dhbfbds', onEdit);
+  }, [deleteAnswer, answerId]);
 
-  // Đóng menu khi click ra ngoài
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  }, []);
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [handleClickOutside]);
 
   return (
     <div className='relative' ref={menuRef}>
@@ -59,15 +60,13 @@ const CommentOptions = ({
           <ul className='space-y-2'>
             {isOwner && (
               <li
-                className='group flex items-center py-2 px-4 text-gray-700 cursor-pointer rounded-md hover:bg-neutral-900/10'
+                className='group flex items-center py-2 px-4 text-neutral-600 cursor-pointer rounded-md hover:bg-neutral-900/10'
                 onClick={() => {
                   onEdit();
-                  console.log('jksdhjsdjgh', onEdit);
-
-                  setIsOpen(false); // Đóng menu sau khi click
+                  setIsOpen(false);
                 }}
               >
-                <PencilSquareIcon className='w-5 h-5 text-gray-700 mr-2 ' />
+                <PencilSquareIcon className='size-5 text-neutral-600 mr-2 ' />
                 <span>{t('edit')}</span>
               </li>
             )}
@@ -76,12 +75,16 @@ const CommentOptions = ({
                 className='group flex items-center py-2 px-4 text-red-600 cursor-pointer rounded-md hover:bg-neutral-900/10'
                 onClick={handleDelete}
               >
-                <TrashIcon className='w-5 h-5 text-red-600 mr-2 ' />
+                <TrashIcon className='size-5 text-red-600 mr-2 ' />
                 <span>{t('delete')}</span>
               </li>
             )}
-            <li className='group flex items-center py-2 px-4 text-gray-700 cursor-pointer rounded-md hover:bg-neutral-900/10'>
-              <FlagIcon className='w-5 h-5 text-gray-700 mr-2 ' />
+            {/* Nút mở modal báo cáo */}
+            <li
+              className='group flex items-center py-2 px-4 text-neutral-600 cursor-pointer rounded-md hover:bg-neutral-900/10'
+              onClick={openReport}
+            >
+              <FlagIcon className='size-5 text-neutral-600 mr-2 ' />
               <span>{t('report')}</span>
             </li>
           </ul>

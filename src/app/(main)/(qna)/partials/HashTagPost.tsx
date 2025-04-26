@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface HashTagPostProps {
-  hashtags: { name: string }[];
+  hashtags?: { name: string }[];
 }
 
 const HashTagPost = ({ hashtags }: HashTagPostProps) => {
@@ -9,9 +9,9 @@ const HashTagPost = ({ hashtags }: HashTagPostProps) => {
 
   return (
     <div className='mt-2'>
-      {hashtags.map((tag, index) => (
+      {hashtags.map((tag) => (
         <span
-          key={index}
+          key={tag.name}
           className='text-xs bg-info-100 text-info-500 px-2 py-1 mr-1 rounded-md cursor-pointer'
         >
           #{tag.name}

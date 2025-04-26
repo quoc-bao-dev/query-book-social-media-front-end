@@ -1,17 +1,11 @@
 'use client';
 import Header from '@/components/Layout/Header';
 import ChevronRightIcon2 from '@/components/icons/ChevronRightIcon2';
-import { useAuth } from '@/store/authSignal';
-import { useTranslations } from 'next-intl';
-import Link from 'next/link';
 import { PropsWithChildren, useState } from 'react';
-import SidebarQnA from './partials/SidebarQnA';
-import WelcomeToastModal from './partials/WelcomeToastModal';
+import SidebarSearch from './partials/SidebarSearch';
 
 const Layout = ({ children }: PropsWithChildren) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const t = useTranslations('Layout');
-  const { user } = useAuth();
 
   return (
     <div className='w-full max-w-[1300px] mx-auto relative'>
@@ -19,20 +13,9 @@ const Layout = ({ children }: PropsWithChildren) => {
       <Header />
 
       {/* Section Title */}
-      <div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-8 md:px-0 pt-20 pb-6 bg-background'>
-        {/* Tiêu đề và mô tả */}
-        <div>
-          <Link
-            href='/qna'
-            className='inline-block tracking-widest text-3xl font-bold mb-3 bg-primary text-white py-2 px-5 rounded-md shadow-md hover:bg-primary/90 transition'
-          >
-            {t('topic')}
-          </Link>
-          <p className='text-muted-foreground text-base'>{t('title')}</p>
-        </div>
-
-        {/* Welcome user */}
-        <WelcomeToastModal user={user} t={t} />
+      <div className='pt-20 pb-3 px-8 bg-background'>
+        <h1 className='text-3xl font-extrabold'>Trang Tìm Kiếm</h1>
+        <h2 className='text-accent-foreground'>Trang tìm kiếm toàn cục </h2>
       </div>
 
       {/* Layout grid */}
@@ -52,7 +35,7 @@ const Layout = ({ children }: PropsWithChildren) => {
   fixed top-0 mt-4 left-0 h-full w-64 z-50 
   ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
         >
-          <SidebarQnA />
+          <SidebarSearch />
 
           {/* Button Toggle Sidebar */}
           {!isSidebarOpen && (

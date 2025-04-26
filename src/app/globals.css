@@ -377,4 +377,17 @@ body {
   scroll-behavior: smooth; /* Thêm hiệu ứng cuộn mượt mà */
 }
 
+@layer utilities {
+  .animate-fade-in {
+    @apply transition-opacity duration-700 ease-out opacity-0;
+    animation: fadeIn 0.7s forwards;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+}
+
 

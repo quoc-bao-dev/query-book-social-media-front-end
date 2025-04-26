@@ -29,6 +29,7 @@ const ModalError = ({ isOpen, onClose, message }: ModalErrorProps) => {
 
         {/* Nút đóng modal */}
         <button
+          type='button'
           className='mt-6 px-5 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-all'
           onClick={onClose}
         >
