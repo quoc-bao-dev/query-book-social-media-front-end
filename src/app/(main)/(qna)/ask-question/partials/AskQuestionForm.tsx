@@ -18,14 +18,20 @@ import { useTranslations } from 'next-intl';
 import { useAppLoading } from '@/components/Layout/AppLoading';
 
 export default function AskQuestionForm() {
+  // State
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
-  const { mutateAsync, isPending } = useCreateQuestionMutation();
-  const [images, setImages] = useState<File[]>([]); // State lưu ảnh
+  const [images, setImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const { loading, done } = useAppLoading(); // Sử dụng loading
+
+  // Mutations & Loading
+  const { mutateAsync, isPending } = useCreateQuestionMutation();
+  const { loading, done } = useAppLoading();
+
+  // Translations
   const t = useTranslations('AskQuestion');
 
+  // Form handling
   const {
     register,
     control,
@@ -35,7 +41,7 @@ export default function AskQuestionForm() {
     resolver: zodResolver(questionSchema),
   });
 
-  // Chọn ảnh
+  // Xử lý chọn ảnh
   const handleUploadImages = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -60,6 +66,7 @@ export default function AskQuestionForm() {
     };
   };
 
+  // Xử lý submit form
   const onSubmit = async (data: QuestionSchema) => {
     loading(); // Bật trạng thái loading
     let uploadedImages: string[] = [];

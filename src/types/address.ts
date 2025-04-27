@@ -6,6 +6,9 @@ export interface AddressRes {
     name_with_type: string;
     code: string;
     isDeleted: boolean;
+    with_type?: string;
+    withType?: string;
+
 }
 interface Province {
     code: string;

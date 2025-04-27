@@ -1,15 +1,14 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { BookmarkIcon } from 'lucide-react';
-import { useState } from 'react';
 import ChatBubbleOvalLeftIcon from '@/components/icons/ChatBubbleOvalLeftIcon';
 import { useAnswerQuery } from '@/queries/answer';
 import {
   useGetMySaveQuestionQuery,
   useSaveQuestionMutation,
 } from '@/queries/question';
-import ModalComment from './ModalComment';
+import { useQueryClient } from '@tanstack/react-query';
+import { BookmarkIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import HeartIcon from '@/components/icons/HeartIcon';
+import { useState } from 'react';
+import ModalComment from './ModalComment';
 
 type ActionBarProps = {
   id: string;
@@ -24,57 +23,53 @@ type SavedQuestion = {
 
 const ActionBar = ({ id }: ActionBarProps) => {
   const queryClient = useQueryClient();
-  const { data: answerData } = useAnswerQuery(id);
-  const countComment = answerData?.length || 0;
+  const t = useTranslations('ActionBar');
 
+  const { data: answerData } = useAnswerQuery(id);
   const { data: savedQuestions } = useGetMySaveQuestionQuery();
   const saveMutation = useSaveQuestionMutation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const t = useTranslations('ActionBar');
 
+  const QUERY_KEY = {
+    SAVED_QUESTIONS: ['my-save-question'],
+  };
+
+  const countComment = answerData?.length || 0;
   const isSaved = savedQuestions?.some((item) => item.questionId._id === id);
 
   const handleSaveQuestion = async () => {
     if (saveMutation.isPending) return;
 
     queryClient.setQueryData<SavedQuestion[]>(
-      ['my-save-question'],
-      (oldData) => {
-        if (!oldData) return [];
+      QUERY_KEY.SAVED_QUESTIONS,
+      (prev) => {
+        if (!prev) return [];
         return isSaved
-          ? oldData.filter((item) => item.questionId._id !== id)
-          : [...oldData, { questionId: { _id: id } }];
+          ? prev.filter((item) => item.questionId._id !== id)
+          : [...prev, { questionId: { _id: id } }];
       },
     );
 
     try {
       await saveMutation.mutateAsync(id);
-      queryClient.invalidateQueries({ queryKey: ['my-save-question'] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY.SAVED_QUESTIONS });
     } catch (error) {
       console.error('Lỗi khi lưu câu hỏi:', error);
-
-      //return if error
-      queryClient.setQueryData(['my-save-question'], savedQuestions);
+      queryClient.setQueryData(QUERY_KEY.SAVED_QUESTIONS, savedQuestions);
     }
   };
 
   return (
     <>
-      <div className='mt-2 flex items-center gap-2 text-gray-600'>
-        {/* love  */}
-        <button className='flex items-center gap-1 text-neutral-600  hover:text-neutral-900 transition'>
-          <HeartIcon className='w-5 h-5 fill-red-600 text-red-600' />
-          <span className='font-semibold'>200</span>
-        </button>
-
+      <div className='mt-2 flex items-center gap-2 text-neutral-600'>
         {/* comment  */}
         {/* Nút mở modal bình luận */}
         <button
           onClick={() => setIsModalOpen(true)}
           className='flex items-center gap-1 text-neutral-600 hover:text-neutral-900 transition'
         >
-          <ChatBubbleOvalLeftIcon className='w-5 h-5' />
+          <ChatBubbleOvalLeftIcon className='size-6' />
           <span className='font-semibold'>{countComment}</span>
         </button>
 
@@ -85,7 +80,7 @@ const ActionBar = ({ id }: ActionBarProps) => {
           disabled={saveMutation.isPending}
         >
           <BookmarkIcon
-            className={`w-5 h-5 transition ${
+            className={`size-6 transition ${
               isSaved ? 'fill-info-500 text-info-200' : 'text-neutral-600'
             }`}
           />

@@ -3,7 +3,7 @@ export type QuestionResponse = {
   hashtags: Hashtag[];
   _id: string;
   userId: UserId;
-  topic: string;
+  topic: Topic;
   title: string;
   question: string;
   vote: any[];
@@ -22,6 +22,10 @@ interface UserId {
   avatarUrl?: string;
 }
 
+interface Topic {
+  name: string
+  _id:string
+}
 interface Avatar {
   _id: string;
   file: string;

@@ -6,6 +6,8 @@ const getAllProvince = () =>
     axiosClient
         .get('https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1', {
             baseURL: '',
+            withCredentials: false, // Tắt nếu không cần xác thực
+
         })
         .then((res) => res.data.data.data as AddressRes[]);
 
@@ -16,6 +18,8 @@ const getDistrictByProvince = (provinceId: string) =>
             }limit=-1`,
             {
                 baseURL: '',
+                withCredentials: false, // Tắt nếu không cần xác thực
+
             },
         )
         .then((res) => res.data.data.data);
@@ -27,6 +31,8 @@ const getWardByDistrict = (districtId: string) =>
             }limit=-1`,
             {
                 baseURL: '',
+                withCredentials: false, // Tắt nếu không cần xác thực
+
             },
         )
         .then((res) => res.data.data.data);

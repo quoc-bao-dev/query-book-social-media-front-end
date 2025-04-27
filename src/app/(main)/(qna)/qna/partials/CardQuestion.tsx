@@ -16,6 +16,7 @@ type Props = {
   question: string;
   createdAt: string;
   votes?: number;
+  topic: { name: string }; // 🆕 Thêm topic vào props
 };
 
 const CardQuestion = ({
@@ -26,17 +27,17 @@ const CardQuestion = ({
   question,
   name,
   createdAt,
+  topic,
 }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  // Fetch số lượng bình luận từ API
   const { data: answerData } = useAnswerQuery(id);
+
   const countComment = answerData?.length || 0;
+
   const t = useTranslations('CardQuestion');
   const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
-  const getLocale = (locale: string) => {
-    return locale === 'vi' ? vi : enUS;
-  };
+  const getLocale = (locale: string) => (locale === 'vi' ? vi : enUS);
 
   return (
     <div
@@ -46,15 +47,6 @@ const CardQuestion = ({
     >
       {/* Nội dung chính */}
       <div className='flex items-center pl-6'>
-        {/* <div className='w-10 flex flex-col items-center'>
-          {votes && votes >= 0 ? (
-            <ArrowUp size={20} className='text-success-500' />
-          ) : (
-            <ArrowDown size={20} className='text-error-500' />
-          )}
-          <span className='text-gray-600'>{votes}</span>
-        </div> */}
-
         <div className='flex-1 flex flex-col'>
           <Link
             href={`/qna/${id}`}
@@ -101,6 +93,7 @@ const CardQuestion = ({
               </span>
             ))}
           </div>
+          <p className='text-sm text-neutral-500'>Topic: {topic.name}</p>
         </div>
       </div>
 

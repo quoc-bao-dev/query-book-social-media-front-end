@@ -15,34 +15,65 @@ import Fire from '@/components/icons/Fire';
 import Document from '@/components/icons/Document';
 import { useAddressQuery } from '@/queries/address';
 import { AddressRes } from '@/types/address';
+interface AddressOption {
+  code: string;
+  name: string;
+}
 
 const Page = () => {
   const { user } = useAuth();
+  console.log(user);
+
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingHandle, setEditingHandl] = useState(false);
   const [isEditingBio, setEditingBio] = useState(false);
+  const [isEditingInterests, setIsEditingInterests] = useState(false);
 
   const [firstName, setFirstName] = useState(user?.firstName || '');
   const [lastName, setLastName] = useState(user?.lastName || '');
   const [handle, setHandle] = useState(user?.handle || '');
   const [bio, setBio] = useState(user?.bio || '');
+  const [interests, setInterests] = useState<string[]>(user?.interests || []);
 
   const { mutateAsync, isError } = useUpdateUserProfileMutation();
 
   const [province, setProvince] = useState<AddressRes | null>();
   const [district, setDistrict] = useState<AddressRes | null>();
   const [ward, setWard] = useState<AddressRes | null>();
+  const [detail, setDetail] = useState('');
+
+  const handleDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDetail(e.target.value);
+  };
 
   const { data: provinces } = useAddressQuery({ mode: 'provinces' });
+
   const { data: districts } = useAddressQuery({
-    mode: 'provinces',
-    code: province?.code,
+    mode: 'districts', // Mode đã được chỉnh sửa đúng
+    code: province?.code, // Province code được lấy từ dữ liệu tỉnh
   });
+
   const { data: wards } = useAddressQuery({
-    mode: 'provinces',
-    code: district?.code,
+    mode: 'wards', // Mode đã được chỉnh sửa đúng
+    code: district?.code, // District code được lấy từ dữ liệu quận
   });
-  console.log('Tinh', provinces);
+
+  const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedProvince = provinces.find(
+      (p: AddressOption) => p.code === e.target.value,
+    );
+    setProvince(selectedProvince || null);
+    setDistrict(null);
+    setWard(null);
+  };
+
+  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedDistrict = districts.find(
+      (d: AddressOption) => d.code === e.target.value,
+    );
+    setDistrict(selectedDistrict || null);
+    setWard(null);
+  };
 
   const toggleEditing = () => {
     setIsEditing(!isEditing);
@@ -54,7 +85,6 @@ const Page = () => {
   };
   const toggleEditingHandle = () => {
     setEditingHandl(!isEditingHandle);
-    // Reset giá trị khi hủy chỉnh sửa
     if (!isEditingHandle) {
       setHandle(user?.handle || '');
     }
@@ -65,6 +95,12 @@ const Page = () => {
     // Reset giá trị khi hủy chỉnh sửa
     if (!isEditingBio) {
       setBio(user?.bio || '');
+    }
+  };
+  const toggleEditingHobbies = () => {
+    setIsEditingInterests(!isEditingInterests);
+    if (!isEditingInterests) {
+      setInterests([]);
     }
   };
 
@@ -103,6 +139,44 @@ const Page = () => {
       setEditingBio(false); // Tắt chế độ chỉnh sửa sau khi lưu thành công
     } catch (error) {
       console.error('Failed to update profile:', error);
+    }
+  };
+  const handleSaveInterests = async () => {
+    try {
+      console.log('Dữ liệu gửi đi:', interests); // Kiểm tra dữ liệu interests
+
+      const payload = {
+        interests,
+      };
+
+      await mutateAsync(payload);
+      setIsEditingInterests(false); // Tắt chế độ chỉnh sửa sau khi lưu thành công
+
+      // Thông báo sau khi gửi thành công
+      console.log('Cập nhật sở thích thành công!');
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
+  };
+  const handleSaveAddress = async () => {
+    try {
+      const payload = {
+        address: [
+          ...(user?.address || []),
+          {
+            province: province?.name || '',
+            district: district?.name || '',
+            ward: ward?.name || '',
+            address: detail || '',
+            country: 'Vietnam',
+          },
+        ],
+      };
+
+      await mutateAsync(payload);
+      console.log('Cập nhật địa chỉ thành công:', payload);
+    } catch (error) {
+      console.error('Lỗi khi cập nhật địa chỉ:', error);
     }
   };
 
@@ -231,11 +305,6 @@ const Page = () => {
               </div>
             )}
           </div>
-          {isError && (
-            <div className='text-red-500'>
-              Có lỗi xảy ra khi cập nhật thông tin.
-            </div>
-          )}
         </div>
 
         <div className='px-4 pt-4'>
@@ -297,6 +366,7 @@ const Page = () => {
             </div>
           )}
         </div>
+
         <div className='px-4 pt-4'>
           {/* Phần hiển thị thông tin và nút chỉnh sửa */}
           <div className='flex items-center justify-between w-full'>
@@ -316,7 +386,7 @@ const Page = () => {
             {/* Nút chỉnh sửa */}
             <div className='flex'>
               <button
-                // onClick={toggleEditingHandle}
+                onClick={toggleEditingHobbies}
                 className='flex items-center justify-center w-9 h-9 rounded-full bg-gray-200 hover:bg-gray-300 transition'
               >
                 <Pen className='text-neutral-800' />
@@ -325,15 +395,14 @@ const Page = () => {
           </div>
 
           {/* Form chỉnh sửa */}
-          {isEditingHandle && (
+          {isEditingInterests && (
             <div className='w-2/4 flex items-center pt-4 justify-between'>
-              {/* Trường Họ */}
               <div className='flex-1 mr-4'>
                 <div className='relative'>
                   <FloatInput
-                    label='Tên người dùng'
-                    value={handle}
-                    onChange={(e) => setHandle(e.target.value)}
+                    label='Sở thích'
+                    value={interests}
+                    onChange={(e) => setInterests([e.target.value])}
                   />
                 </div>
               </div>
@@ -343,14 +412,13 @@ const Page = () => {
                 <button
                   className='w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer'
                   aria-label='Hủy'
-                  onClick={toggleEditingHandle}
                 >
                   <Xmark className='text-red-500' />
                 </button>
                 <button
                   className='w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer'
                   aria-label='Xác nhận'
-                  onClick={handleSaveHandle}
+                  onClick={handleSaveInterests}
                 >
                   <Check className='text-primary-500' />
                 </button>
@@ -386,27 +454,90 @@ const Page = () => {
               </button>
             </div>
           </div>
-          <div className='grid grid-cols-2 gap-4 mb-4 pt-4'>
-            <div>
-              <FloatInput label='Tỉnh/Thành phố *' />
-              <select>
-                {provinces?.map((province: { code: string; name: string }) => (
-                  <option key={province.code}>{province.name}</option>
+          <div className='grid grid-cols-2 gap-4 mb-6 pt-4'>
+            {/* Dropdown Tỉnh/Thành phố */}
+            <div className='col-span-1'>
+              <label
+                htmlFor='province'
+                className='block text-sm font-medium text-gray-700 mb-1'
+              >
+                Tỉnh/Thành phố *
+              </label>
+              <select
+                id='province'
+                value={province?.code || ''}
+                onChange={handleProvinceChange}
+                className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
+              >
+                <option value=''>Chọn Tỉnh/Thành phố</option>
+                {provinces?.map((p: AddressOption) => (
+                  <option key={p.code} value={p.code}>
+                    {p.name}
+                  </option>
                 ))}
               </select>
             </div>
 
-            <div>
-              <FloatInput label='Quận/Huyện *' />
+            {/* Dropdown Quận/Huyện */}
+            <div className='col-span-1'>
+              <label
+                htmlFor='district'
+                className='block text-sm font-medium text-gray-700 mb-1'
+              >
+                Quận/Huyện *
+              </label>
+              <select
+                id='district'
+                value={district?.code || ''}
+                onChange={handleDistrictChange}
+                disabled={!province}
+                className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:opacity-50'
+              >
+                <option value=''>Chọn Quận/Huyện</option>
+                {districts?.map((d: AddressOption) => (
+                  <option key={d.code} value={d.code}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <div>
-              <FloatInput label='Phường/Xã *' />
+            {/* Dropdown Phường/Xã */}
+            <div className='col-span-2'>
+              <label
+                htmlFor='ward'
+                className='block text-sm font-medium text-gray-700 mb-1'
+              >
+                Phường/Xã *
+              </label>
+              <select
+                id='ward'
+                value={ward?.code || ''}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setWard(
+                    wards.find((w: AddressOption) => w.code === e.target.value),
+                  )
+                }
+                disabled={!district}
+                className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:opacity-50'
+              >
+                <option value=''>Chọn Phường/Xã</option>
+                {wards?.map((w: AddressOption) => (
+                  <option key={w.code} value={w.code}>
+                    {w.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
           <div className='w-full'>
-            <FloatInput label='Địa chỉ cụ thể *' />
+            <FloatInput
+              label='Địa chỉ cụ thể *'
+              name='detail'
+              value={detail}
+              onChange={handleDetailChange} // Đảm bảo truyền onChange vào để cập nhật state
+            />
           </div>
           {/* Nút xác nhận và hủy */}
           <div className='flex justify-end space-x-2 mt-4'>
@@ -419,11 +550,17 @@ const Page = () => {
             <button
               className='w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer'
               aria-label='Xác nhận'
+              onClick={handleSaveAddress}
             >
               <Check className='text-primary-500' />
             </button>
           </div>
         </div>
+        {isError && (
+          <div className='text-error-900 '>
+            Có lỗi xảy ra khi cập nhật thông tin.
+          </div>
+        )}
       </div>
     </div>
   );

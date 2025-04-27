@@ -16,7 +16,7 @@ export type QuestionId = {
   question?: string;
   images? : string[];
 
-  vote?: any[];
+  vote?: string[];
   __v?: number;
   createdAt?: string;
   updatedAt?: string;

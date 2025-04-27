@@ -23,10 +23,6 @@ const Page = () => {
   const { user } = useAuth();
   const userId = user?.id;
 
-  //FIXME: fix this state
-  const [text, setText] = useState('');
-  console.log(text);
-
   const { mutate, isPending } = useCreateWorkMutation();
   const [isFormVisible, setIsFormVisible] = useState(false);
   const { mutate: deleteWork } = useDeleteWorkMutation();
@@ -202,234 +198,224 @@ const Page = () => {
     );
   };
 
+  const handleContentChange = (value?: string) => {
+    const cleanContent = DOMPurify.sanitize(value || '', {
+      ALLOWED_TAGS: [], // Không cho phép bất kỳ thẻ HTML nào
+      ALLOWED_ATTR: [], // Không cho phép thuộc tính như style, class, id, v.v.
+    });
+
+    setFormData((prev) => ({ ...prev, content: cleanContent }));
+  };
+
   return (
-    <div>
-      <SetCurUserProfileSignal user={user} />
-
-      <div className='h-fit md:w-[698px] mt-4 border border-b rounded-2xl bg-card p-4'>
-        <div className='flex justify-between items-center mb-4'>
-          <div className='flex items-center space-x-3'>
-            <User className='text-primary-500' />
-            <span className='font-bold text-neutral-950'>
-              Kinh nghiệm làm việc:
-            </span>
-          </div>
-          <button
-            type='button'
-            onClick={() => setIsFormVisible(!isFormVisible)}
-            className='p-1 hover:bg-gray-100 rounded-full'
-          >
-            <Pen className='w-6 h-6' />
-          </button>
-        </div>
-
-        {isFormVisible && (
-          <form onSubmit={handleSubmit} className='mt-4'>
-            {/* Job Title Selection */}
-            <div className='mb-4'>
-              <label className='block text-sm font-medium text-gray-700 mb-1'>
-                Vị trí công việc *
-              </label>
-              <select
-                name='jobTitleId'
-                value={formData.jobTitleId}
-                onChange={handleChange}
-                className={`w-full p-2 border rounded-md ${
-                  errors.jobTitleId ? 'border-red-500' : 'border-gray-300'
-                }`}
-                disabled={isLoadingJobs}
-              >
-                <option value=''>Chọn vị trí...</option>
-                {jobTitles.map((job) => (
-                  <option key={job.id} value={job.id}>
-                    {job.title}
-                  </option>
-                ))}
-              </select>
-              <ErrorMessage message={errors.jobTitleId} />
+    <>
+      <div>
+        <div className='h-fit md:w-[698px] mt-4 border border-b rounded-2xl bg-card p-4'>
+          <div className='flex justify-between items-center mb-4'>
+            <div className='flex items-center space-x-3'>
+              <User className='text-primary-500' />
+              <span className='font-bold text-neutral-950'>
+                Kinh nghiệm làm việc:
+              </span>
             </div>
-
-            {/* Company Input */}
-            <div className='mb-4'>
-              <FloatInput
-                type='text'
-                name='company'
-                label='Công ty *'
-                value={formData.company}
-                onChange={handleChange}
-                error={!!errors.company}
-              />
-              <ErrorMessage message={errors.company} />
-            </div>
-
-            {/* Description Input */}
-            <div className='mb-4'>
-              <FloatInput
-                type='text'
-                name='description'
-                label='Mô tả công việc *'
-                value={formData.description}
-                onChange={handleChange}
-                error={!!errors.description}
-              />
-              <ErrorMessage message={errors.description} />
-            </div>
-
-            {/* Content Textarea */}
-            <div className='mt-4 '>
-              <label className='block text-sm font-medium text-gray-700 mb-1 '>
-                Nội dung công việc *
-              </label>
-              <Tiptap
-                value={formData.content!}
-                onChange={(value) =>
-                  setFormData({ ...formData, content: value })
-                }
-              />
-            </div>
-
-            {/* Date Inputs */}
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
-              <div>
-                <FloatInput
-                  type='date'
-                  name='startDate'
-                  label='Ngày bắt đầu *'
-                  value={formData.startDate}
-                  onChange={handleChange}
-                  error={!!errors.startDate}
-                />
-                <ErrorMessage message={errors.startDate} />
-              </div>
-              <div>
-                <FloatInput
-                  type='date'
-                  name='endDate'
-                  label='Ngày kết thúc'
-                  value={formData.endDate}
-                  onChange={handleChange}
-                  error={!!errors.endDate}
-                />
-                <ErrorMessage message={errors.endDate} />
-              </div>
-            </div>
-
-            {/* Submit Button */}
             <button
-              type='submit'
-              disabled={isPending}
-              className={`w-full py-2 rounded-md font-semibold transition-colors ${
-                isPending
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-primary-500 hover:bg-primary-600 text-white'
-              }`}
+              type='button'
+              onClick={() => setIsFormVisible(!isFormVisible)}
+              className='p-1 hover:bg-gray-100 rounded-full'
             >
-              {isPending
-                ? 'Đang xử lý...'
-                : isEditing
-                ? 'Cập nhật kinh nghiệm'
-                : 'Thêm kinh nghiệm'}
+              <Pen className='w-6 h-6' />
             </button>
+          </div>
 
-            {errorMessage && (
-              <div className='mt-3 p-2 bg-red-100 text-red-700 rounded-md flex items-center gap-2'>
-                <ExclamationCircleIcon className='w-5 h-5' />
-                {errorMessage}
+          {isFormVisible && (
+            <form onSubmit={handleSubmit} className='mt-4'>
+              {/* Job Title Selection */}
+              <div className='mb-4'>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>
+                  Vị trí công việc *
+                </label>
+                <select
+                  name='jobTitleId'
+                  value={formData.jobTitleId}
+                  onChange={handleChange}
+                  className={`w-full p-2 border rounded-md bg-card ${
+                    errors.jobTitleId ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  disabled={isLoadingJobs}
+                >
+                  <option value='' className='bg-gray-200 text-gray-700'>
+                    Chọn vị trí...
+                  </option>
+                  {jobTitles.map((job) => (
+                    <option
+                      key={job.id}
+                      value={job.id}
+                      className='bg-gray-100 text-gray-800'
+                    >
+                      {job.title}
+                    </option>
+                  ))}
+                </select>
+                <ErrorMessage message={errors.jobTitleId} />
               </div>
-            )}
-          </form>
-        )}
 
-        <div>
-          {isLoadingWork ? (
-            <p className='text-gray-500'>Đang tải dữ liệu...</p>
-          ) : listWork && listWork.length > 0 ? (
-            <ul className='mt-2 space-y-4'>
-              {listWork.map((work: WorkExperience) => {
-                const jobTitle =
-                  jobTitles.find((job) => job.id === work.jobTitleId)?.title ||
-                  'Không xác định';
+              {/* Company Input */}
+              <div className='mb-4'>
+                <FloatInput
+                  type='text'
+                  name='company'
+                  label='Công ty *'
+                  value={formData.company}
+                  onChange={handleChange}
+                  error={!!errors.company}
+                />
+                <ErrorMessage message={errors.company} />
+              </div>
 
-                return (
-                  <li
-                    key={work._id}
-                    className='border p-4 rounded-lg bg-white shadow-sm'
-                  >
-                    <div className='flex justify-between items-start'>
-                      <div>
-                        <h3 className='text-lg font-semibold'>{jobTitle}</h3>
-                        <p className='text-gray-600'>{work.company}</p>
-                        <div className='mt-2 text-sm text-gray-500'>
-                          <p>
-                            {formatDate(work.startDate)} -{' '}
-                            {formatDate(work.endDate)}
-                          </p>
+              {/* Description Input */}
+              <div className='mb-4'>
+                <FloatInput
+                  type='text'
+                  name='description'
+                  label='Mô tả công việc *'
+                  value={formData.description}
+                  onChange={handleChange}
+                  error={!!errors.description}
+                />
+                <ErrorMessage message={errors.description} />
+              </div>
+
+              {/* Content Textarea */}
+              <div className='mt-4'>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>
+                  Nội dung công việc *
+                </label>
+                <Tiptap
+                  value={formData.content}
+                  onChange={handleContentChange}
+                />
+              </div>
+
+              {/* Date Inputs */}
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
+                <div>
+                  <FloatInput
+                    type='date'
+                    name='startDate'
+                    label='Ngày bắt đầu *'
+                    value={formData.startDate}
+                    onChange={handleChange}
+                    error={!!errors.startDate}
+                  />
+                  <ErrorMessage message={errors.startDate} />
+                </div>
+                <div>
+                  <FloatInput
+                    type='date'
+                    name='endDate'
+                    label='Ngày kết thúc'
+                    value={formData.endDate}
+                    onChange={handleChange}
+                    error={!!errors.endDate}
+                  />
+                  <ErrorMessage message={errors.endDate} />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type='submit'
+                disabled={isPending}
+                className={`w-full py-2 rounded-md font-semibold transition-colors ${
+                  isPending
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-primary-500 hover:bg-primary-600 text-white'
+                }`}
+              >
+                {isPending
+                  ? 'Đang xử lý...'
+                  : isEditing
+                  ? 'Cập nhật kinh nghiệm'
+                  : 'Thêm kinh nghiệm'}
+              </button>
+
+              {errorMessage && (
+                <div className='mt-3 p-2 bg-red-100 text-red-700 rounded-md flex items-center gap-2'>
+                  <ExclamationCircleIcon className='w-5 h-5' />
+                  {errorMessage}
+                </div>
+              )}
+            </form>
+          )}
+
+          <div>
+            {isLoadingWork ? (
+              <p className='text-gray-500'>Đang tải dữ liệu...</p>
+            ) : listWork && listWork.length > 0 ? (
+              <ul className='mt-1 space-y-4'>
+                {listWork.map((work) => {
+                  const jobTitle =
+                    jobTitles.find((job) => job.id === work.jobTitleId)
+                      ?.title || 'Không xác định';
+                  return (
+                    <li
+                      key={work._id}
+                      className='border rounded-lg bg-card shadow-sm'
+                    >
+                      <div className='max-w-2xl mx-auto space-y-8'>
+                        {/* Work Experience Item */}
+                        <div className='space-y-3 p-3 relative'>
+                          {/* Action buttons ở góc phải */}
+                          <div className='absolute top-3 right-1 flex gap-2'>
+                            <button
+                              onClick={() => handleEdit(work)}
+                              className='text-primary-600 hover:text-primary-700'
+                              title='Chỉnh sửa'
+                            >
+                              <Pen className='w-5 h-5' />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(work._id)}
+                              className='text-error-600 hover:text-error-700'
+                              title='Xóa'
+                            ></button>
+                          </div>
+
+                          <div className='space-y-1'>
+                            <div className='text-gray-600'>
+                              {new Date(work.startDate).getFullYear()} -{' '}
+                              {new Date(work.endDate).getFullYear()}
+                            </div>
+                            <h3 className='text-lg font-semibold'>
+                              {jobTitle}
+                            </h3>
+                            <p className='text-gray-500 text-sm'>
+                              {work.description}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                      <div className='flex gap-2'>
-                        <button
-                          onClick={() => handleEdit(work)}
-                          className='text-blue-600 hover:text-blue-800'
-                          title='Chỉnh sửa'
-                        >
-                          <Pen className='w-5 h-5' />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(work._id)}
-                          className='text-red-600 hover:text-red-800'
-                          title='Xóa'
-                        >
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            className='h-5 w-5'
-                            viewBox='0 0 20 20'
-                            fill='currentColor'
-                          >
-                            <path
-                              fillRule='evenodd'
-                              d='M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z'
-                              clipRule='evenodd'
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    {work.description && (
-                      <p className='mt-2 text-gray-600'>
-                        <span className='font-medium'>Mô tả:</span>{' '}
-                        {work.description}
-                      </p>
-                    )}
-                    {work.content && (
-                      <p className='mt-2 text-gray-600'>
-                        <span className='font-medium'>Nội dung:</span>
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: DOMPurify.sanitize(work.content),
-                          }}
-                        ></div>
-                      </p>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          ) : (
-            !isFormVisible && (
-              <div
-                className='flex items-center gap-2 cursor-pointer group'
-                onClick={() => setIsFormVisible(true)}
-              >
-                <PlusIcon className='text-neutral-800 group-hover:text-neutral-600 transition-colors duration-300' />
-                <p className="text-neutral-500 relative w-fit after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
-                  Thêm công việc
-                </p>
-              </div>
-            )
-          )}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              !isFormVisible && (
+                <div
+                  className='flex items-center gap-2 cursor-pointer group'
+                  onClick={() => setIsFormVisible(true)}
+                >
+                  <PlusIcon className='text-neutral-800 group-hover:text-neutral-600 transition-colors duration-300' />
+                  <p className='text-neutral-500 group-hover:underline'>
+                    Thêm công việc
+                  </p>
+                </div>
+              )
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

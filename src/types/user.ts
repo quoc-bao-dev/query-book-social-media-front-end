@@ -40,17 +40,17 @@ export type UserProfileResponse = {
   friends: Friend[];
   followers: Follower[];
   followings: Following[];
-  interests: any[];
+  interests: string[];
   address: Address[];
   createdAt: string;
 };
 
-type Address={
- province: string;
- district: string;
- ward: string;
- address: string;
- country: string;
+type Address = {
+  province: string;
+  district: string;
+  ward: string;
+  address: string;
+  country: string;
 };
 
 type Friend = {
