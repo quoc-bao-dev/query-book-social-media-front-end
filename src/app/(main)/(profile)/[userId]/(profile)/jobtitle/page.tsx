@@ -5,6 +5,7 @@ import { useJobTitleQuery } from '@/queries/jobTitle';
 import { useGetWork } from '@/queries/workexperience';
 import { WorkExperience } from '@/types/workexperience';
 import { sCurUserProfileSignal } from '../../../signal/curUserProfileSignal';
+import Pen from '@/components/icons/Pencil';
 
 const Page = () => {
   const { user } = sCurUserProfileSignal.use();
@@ -54,27 +55,29 @@ const Page = () => {
                   return (
                     <li
                       key={work._id}
-                      className='border p-4 rounded-lg mt-2 shadow-md bg-gray-100'
+                      className='border rounded-lg bg-card shadow-sm'
                     >
-                      <p className='text-lg font-semibold'>
-                        Vị Trí: {jobTitle}
-                      </p>
-                      <p>
-                        <strong>Công ty:</strong> {work.company}
-                      </p>
-                      <p>
-                        <strong>Nội dung:</strong> {work.content}
-                      </p>
-                      <p>
-                        <strong>Mô tả:</strong> {work.description}
-                      </p>
+                      <div className='max-w-2xl mx-auto space-y-8'>
+                        {/* Work Experience Item */}
+                        <div className='space-y-3 p-3 relative'>
+                          {/* Action buttons ở góc phải */}
 
-                      <p>
-                        <strong>Bắt đầu:</strong> {formatDate(work.startDate)}
-                      </p>
-                      <p>
-                        <strong>Kết thúc:</strong> {formatDate(work.endDate)}
-                      </p>
+                          <div className='space-y-1'>
+                            <div className='text-gray-600'>
+                              {new Date(work.startDate).getFullYear()} -{' '}
+                              {new Date(work.endDate).getFullYear()}
+                            </div>
+                            <h3 className='text-lg font-semibold'>
+                              {jobTitle}
+                            </h3>
+                            <p className='text-gray-500 text-sm'>
+                              {work.description}
+                            </p>
+                          </div>
+
+                          <hr className='border-gray-200' />
+                        </div>
+                      </div>
                     </li>
                   );
                 })}

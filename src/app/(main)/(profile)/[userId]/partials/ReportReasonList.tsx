@@ -17,7 +17,6 @@ const ReportReasonList = ({ onClose }: { onClose: () => void }) => {
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [pageId, setPageId] = useState<string | null>(null);
 
-  // Lấy ID từ URL
   useEffect(() => {
     const path = window.location.pathname;
     const id = path.split('/')[1];
@@ -37,10 +36,10 @@ const ReportReasonList = ({ onClose }: { onClose: () => void }) => {
   };
 
   const handleSubmit = () => {
-    if (selectedReasonId && selectedReasonContent && pageId) {
+    if (selectedReasonId && additionalInfo) {
       const reportData = {
         reason: selectedReasonId,
-        content: selectedReasonContent,
+        content: additionalInfo,
       };
 
       createReport(reportData);

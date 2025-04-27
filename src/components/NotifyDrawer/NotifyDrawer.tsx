@@ -29,7 +29,6 @@ const NotifyDrawer = () => {
   const { data: friendRequests, refetch } = useFriendRequestQuery();
   const { data: notification, refetch: refetchNotification } =
     useNotificationQuery();
-  console.log('data:', notification);
 
   const { isShow } = sNotifyDrawer.use();
 
