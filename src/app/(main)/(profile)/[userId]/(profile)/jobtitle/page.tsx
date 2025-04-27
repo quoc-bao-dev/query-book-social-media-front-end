@@ -46,7 +46,7 @@ const Page = () => {
             {isLoadingWork ? (
               <p className='text-gray-500'>Đang tải dữ liệu...</p>
             ) : listWork && listWork.length > 0 ? (
-              <ul className='mt-2'>
+              <ul className='mt-1 space-y-4'>
                 {listWork.map((work: WorkExperience) => {
                   const jobTitle =
                     jobTitles.find((job) => job.id === work.jobTitleId)
@@ -74,8 +74,6 @@ const Page = () => {
                               {work.description}
                             </p>
                           </div>
-
-                          <hr className='border-gray-200' />
                         </div>
                       </div>
                     </li>

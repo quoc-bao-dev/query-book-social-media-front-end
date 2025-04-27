@@ -366,7 +366,7 @@ const Page = () => {
                         {/* Work Experience Item */}
                         <div className='space-y-3 p-3 relative'>
                           {/* Action buttons ở góc phải */}
-                          <div className='absolute top-4 right-4 flex gap-2'>
+                          <div className='absolute top-3 right-1 flex gap-2'>
                             <button
                               onClick={() => handleEdit(work)}
                               className='text-primary-600 hover:text-primary-700'
