@@ -15,6 +15,8 @@ const LinkForm = ({ onClose }: LinkFormProps) => {
   const { mutateAsync, isPending } = useUpdateUserProfileMutation();
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
+  const [name, setName] = useState('');
+
   const [titleError, setTitleError] = useState<string | null>(null);
   const [urlError, setUrlError] = useState<string | null>(null);
 

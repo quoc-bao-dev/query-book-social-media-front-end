@@ -3,11 +3,13 @@ type ListImageDetailFeed = {
     listImages: string[];
     curIndex: number;
     isShow: boolean;
+    auTh: string[];
 };
 export const sListImageDetailFeed = signify<ListImageDetailFeed>({
     listImages: [],
     curIndex: 0,
     isShow: false,
+    auTh: [],
 });
 
 export const useListImageDetailFeed = () => {
@@ -23,6 +25,9 @@ export const useListImageDetailFeed = () => {
         },
         closeModal: () => {
             sListImageDetailFeed.set((n) => (n.value.isShow = false));
+        },
+        setAuTh: (auTh: string[]) => {
+            sListImageDetailFeed.set((n) => (n.value.auTh = auTh));
         },
     };
 };

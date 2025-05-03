@@ -47,6 +47,7 @@ const patchUpdateUserProfile = (payload: any) =>
   axiosClient.patch('/users/profile', payload);
 
 export const useUpdateUserProfileMutation = () => {
+
   return useMutation({
     mutationFn: patchUpdateUserProfile,
     onSuccess: async () => {
