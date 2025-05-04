@@ -13,12 +13,13 @@ export async function POST(request: Request) {
       password,
     });
 
-    const { accessToken, refreshToken } = await res.data;
+    const { accessToken, refreshToken, twoFaToken } = await res.data;
 
     const response = NextResponse.json({
       message: 'Login success',
       accessToken,
       refreshToken,
+      twoFaToken,
     });
 
     setCookies(response).accessTokenNext(accessToken);
@@ -37,6 +38,6 @@ export async function POST(request: Request) {
     }
 
     if (error)
-      return NextResponse.json({ message: 'Login failed' }, { status: 500 });
+      return NextResponse.json({ message: httpError.message }, { status: 500 });
   }
 }

@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LoginSchema, loginSchema } from '../schemas';
 import { config } from '@/config';
+import { swal } from '@/utils/swal';
 
 function FormLogin() {
   const [message, setMessage] = useState('');
@@ -73,10 +74,15 @@ function FormLogin() {
       const status = response.status;
 
       if (status === 200) {
-        const { accessToken, refreshToken } = response.data;
-        tokenManager.setAccessToken(accessToken);
-        tokenManager.setRefreshToken(refreshToken);
-        router.push('/');
+        if (response?.data.twoFaToken) {
+          const token = response?.data.twoFaToken;
+          router.push(`verify-otp-2fa?token=${token}`);
+        } else {
+          const { accessToken, refreshToken } = response.data;
+          tokenManager.setAccessToken(accessToken);
+          tokenManager.setRefreshToken(refreshToken);
+          router.push('/');
+        }
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -86,6 +92,14 @@ function FormLogin() {
         }
         if (message === 'User is not active') {
           setIsShowActive(true);
+        }
+
+        if (message === 'User is blocked') {
+          swal.fire({
+            title: 'Account Blocked',
+            text: 'Your account has been blocked. Please contact support for assistance.',
+            icon: 'error',
+          });
         }
       }
     }
@@ -99,7 +113,6 @@ function FormLogin() {
           <FloatInput
             {...register('email')}
             error={!!errors.email}
-            defaultValue={'pythagore1102@gmail.com'}
             type='email'
             label='Email address'
             className='h-[50px]'
@@ -114,7 +127,6 @@ function FormLogin() {
           </Link>
           <PasswordInput
             {...register('password')}
-            defaultValue={'password1234'}
             error={!!errors.password}
             label='Password'
             className='h-[50px]'
