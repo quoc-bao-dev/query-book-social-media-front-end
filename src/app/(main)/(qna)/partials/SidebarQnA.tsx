@@ -2,8 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { useGetAllTopic } from '@/queries/topic';
-import { TopicResponse } from '@/types/topic';
-import { Bookmark, ChevronDown, Home, User } from 'lucide-react';
+import { Bookmark, Home, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -107,9 +106,9 @@ export default function SidebarQnA() {
         </ul>
       </nav>
 
-      <div className='my-6 border-t border-gray-300'></div>
+      {/* <div className='my-6 border-t border-gray-300'></div> */}
 
-      <div className='mt-6 p-4 bg-background rounded-xl'>
+      {/* <div className='mt-6 p-4 bg-background rounded-xl'>
         <div className='flex justify-center font-semibold text-xl pb-5'>
           {t('filter')}
         </div>
@@ -157,7 +156,7 @@ export default function SidebarQnA() {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
