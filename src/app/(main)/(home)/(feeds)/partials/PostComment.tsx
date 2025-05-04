@@ -74,7 +74,9 @@ const PostComment = ({
 
   const handleComment = async () => {
     setIsLoading(true);
+
     if (!inputRef.current?.value || isLoading) {
+      setIsLoading(false);
       return;
     }
 
