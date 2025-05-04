@@ -2,6 +2,7 @@
 'use client';
 
 import Avatar from '@/components/common/Avatar';
+import { Button } from '@/components/common/Button';
 import ChatBubbleOvalLeftIcon from '@/components/icons/ChatBubbleOvalLeftIcon';
 import CodeIcon from '@/components/icons/CodeIcon';
 import HeartIcon from '@/components/icons/HeartIcon';
@@ -17,48 +18,99 @@ import { uploadImages } from '@/utils/uploadUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import MonacoEditor from '@monaco-editor/react';
 import { formatDistanceToNow } from 'date-fns';
+import { enUS, vi } from 'date-fns/locale';
 import { ImageIcon } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import LanguageSeletor from '../../../ask-question/partials/LanguageSeletor';
 import { QuestionSchema } from '../../../ask-question/schema/questionSchema';
+import CommentOptions from '../../../partials/CommentOptions';
 import ImageRender from '../../../partials/ImageRender';
 import ModalError from '../../../partials/ModalError';
-import { questionSchema } from '../schema/questionSchema';
 import Vote from '../../../partials/Vote';
-import { useTranslations } from 'next-intl';
-import { enUS, vi } from 'date-fns/locale';
-import CommentOptions from '../../../partials/CommentOptions';
+import { questionSchema } from '../schema/questionSchema';
+import { ChevronDoubleUpIcon } from '@heroicons/react/24/solid';
 
 type AnswerSectionProps = {
   questionId: string;
 };
 
 const AnswerSection = ({ questionId }: AnswerSectionProps) => {
+  // Hooks liên quan đến state
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('typescript');
-  const [hasCode, setHasCode] = useState(false); // State để kiểm tra có code không
+  const [hasCode, setHasCode] = useState(false);
   const [visibleComments, setVisibleComments] = useState(4);
   const [images, setImages] = useState<File[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState('');
+  const [editedCode, setEditedCode] = useState('');
+  const [highlightedCommentId, setHighlightedCommentId] = useState<
+    string | null
+  >(null);
+  const [isPending, setIsPending] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
-  const handleEdit = (answerId: string, content: string) => {
-    console.log('Editing answer:', answerId, 'with content:', content); // Debug
+  // Refs
+  const inputRef = useRef<HTMLInputElement>(null);
+  const commentRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const lastCommentRef = useRef<HTMLDivElement | null>(null);
+  const answerSectionRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  // Hooks liên quan đến dữ liệu
+  const { user } = useAuth();
+  const currentUserId = user?.id;
+
+  const { data } = useAnswerQuery(questionId);
+  const editAnswerMutation = useEditAnswerMutation(questionId);
+  const { mutateAsync } = useAnswerMutation(questionId);
+
+  const t = useTranslations('ModalComment');
+  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
+  const getLocale = (locale: string) => (locale === 'vi' ? vi : enUS);
+
+  // useForm hook
+  const {
+    control,
+    watch,
+    reset,
+    formState: {},
+  } = useForm<QuestionSchema>({
+    resolver: zodResolver(questionSchema),
+  });
+  const code = watch('code');
+
+  // Xử lý chỉnh sửa câu trả lời
+  const handleEdit = (answerId: string, content: string, code?: string) => {
     setEditingAnswerId(answerId);
     setEditedContent(content);
+    if (code) {
+      setEditedCode(code); // Nếu có code, chỉnh sửa code thay vì nội dung text
+    }
   };
 
   const handleSaveEdit = async (answerId: string) => {
     if (editedContent.trim()) {
       await editAnswerMutation.mutateAsync({
         answerId,
-        payload: { content: editedContent },
+        payload: {
+          content: editedContent,
+          code: { fileType: 'javascript', code: editedCode }, // Cập nhật code
+        },
       });
       setEditingAnswerId(null);
       setEditedContent('');
+      setEditedCode('');
     }
   };
 
@@ -66,31 +118,26 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     setEditingAnswerId(null);
   };
 
-  const editAnswerMutation = useEditAnswerMutation(questionId);
-  const t = useTranslations('ModalComment');
-  const locale = t('locale'); // Ví dụ: "en" hoặc "vi"
-  const getLocale = (locale: string) => {
-    return locale === 'vi' ? vi : enUS;
-  };
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const { user } = useAuth();
-  const currentUserId = user?.id;
-
-  const { data } = useAnswerQuery(questionId);
-
+  // Xử lý hiển thị thêm bình luận
   const handleShowMore = () => {
-    setVisibleComments((prev) => prev + 4); // Hiển thị thêm 4 bình luận
+    setVisibleComments((prev) => prev + 4);
+    setTimeout(() => {
+      lastCommentRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 100);
   };
 
+  // Xử lý lưu code
   const handleSave = () => {
     if (code?.trim()) {
-      setHasCode(true); // Đánh dấu là có code
-      setShowCodeEditor(false); // Ẩn modal
+      setHasCode(true);
+      setShowCodeEditor(false);
     }
   };
-  // FIXME
+
+  // Xử lý upload ảnh
   const handleUploadIamges = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -116,23 +163,14 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     };
   };
 
-  const { mutateAsync } = useAnswerMutation(questionId);
-  const {
-    control,
-    watch,
-    reset,
-    formState: {},
-  } = useForm<QuestionSchema>({
-    resolver: zodResolver(questionSchema),
-  });
-
-  const code = watch('code');
-
+  // Xử lý gửi câu trả lời
   const handleSubmit = async () => {
     const answer = inputRef.current?.value?.trim();
     const trimmedCode = code?.trim();
 
     if (!answer && !trimmedCode && images.length === 0) return;
+
+    setIsPending(true); // Bắt đầu loading
 
     let uploadedImages: string[] = [];
     if (images.length > 0) {
@@ -141,6 +179,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
         uploadedImages = uploadResult?.files.map((file) => file.filename) || [];
       } catch (error) {
         console.error('Upload failed', error);
+        setIsPending(false);
         return;
       }
     }
@@ -148,7 +187,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     const payload = {
       questionId,
       content: answer || '',
-      images: uploadedImages, // Gửi ảnh lên server
+      images: uploadedImages,
       ...(trimmedCode && {
         code: {
           fileType: selectedLanguage,
@@ -157,18 +196,18 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
       }),
     };
 
-    // console.log('hahaha', payload);
-
     await mutateAsync(payload);
+    setIsPending(false); // Kết thúc loading
 
     if (inputRef.current) inputRef.current.value = '';
     reset();
-    setImages([]); // Reset ảnh sau khi gửi
+    setImages([]);
     setHasCode(false);
     setShowCodeEditor(false);
     setSelectedLanguage('typescript');
   };
 
+  // Xử lý sự kiện Enter để gửi bình luận
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -176,16 +215,10 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     }
   };
 
-  console.log('Cấu trúc của data:', data);
-  data?.forEach((item) => {
-    if (Array.isArray(item.votes)) {
-      console.log(`Cấu trúc votes tại item:`, item.votes);
-    }
-  });
-
+  // Sắp xếp dữ liệu câu trả lời dựa trên số vote
   const sortedData = data
     ?.map((item) => {
-      const votes = item.votes || []; // Đảm bảo votes luôn là mảng
+      const votes = item.votes || [];
       const totalVotes =
         votes.filter((v) => v.voteType === 'up').length -
         votes.filter((v) => v.voteType === 'down').length;
@@ -194,25 +227,77 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     })
     .sort((a, b) => b.totalVotes - a.totalVotes);
 
+  // useEffect để theo dõi comment nổi bật
+  useEffect(() => {
+    if (highlightedCommentId) {
+      setTimeout(() => {
+        commentRefs.current[highlightedCommentId]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }, 100);
+
+      setTimeout(() => setHighlightedCommentId(null), 3000);
+    }
+  }, [sortedData, highlightedCommentId]);
+
+  // Debug log dữ liệu câu trả lời
+  console.log('Cấu trúc của data:', data);
+  data?.forEach((item) => {
+    if (Array.isArray(item.votes)) {
+      console.log(`Cấu trúc votes tại item:`, item.votes);
+    }
+  });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (lastCommentRef.current) {
+        const commentRect = lastCommentRef.current.getBoundingClientRect();
+        // Show button when last comment is in viewport (or slightly above)
+        const isLastCommentVisible = commentRect.top <= window.innerHeight;
+        setShowScrollButton(isLastCommentVisible);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [sortedData]); // Add sortedData to dependency array
+
   return (
-    <div>
-      {sortedData?.slice(0, visibleComments).map((item) => (
+    <div ref={answerSectionRef}>
+      {sortedData?.slice(0, visibleComments).map((item, index, arr) => (
         <div
           key={item._id}
-          className='relative mt-5 pl-6 border-l-2 border-neutral-100'
+          ref={(el) => {
+            commentRefs.current[item._id] = el;
+            if (index === arr.length - 1) {
+              lastCommentRef.current = el;
+            }
+          }}
+          className={`
+            relative pl-6 border-l-2 border-primary-500
+            transition-all duration-500 ease-in-out
+            pr-6 pt-2
+            ${
+              highlightedCommentId === item._id
+                ? 'bg-primary-500/25  rounded-xl  max-w-max'
+                : 'bg-transparent'
+            }
+          `}
         >
           {item.votes ? (
             <Vote
               questionId={questionId}
               answerId={item._id}
               votes={item.votes}
+              onVote={() => setHighlightedCommentId(item._id)} // Lưu ID bình luận sau khi vote
             />
           ) : (
             <>placehodle</>
           )}
 
-          <div className='mb-14'>
-            <div className='flex items-center gap-3'>
+          <div className='mb-14 '>
+            <div className='flex items-center gap-3 z-20'>
               <Avatar
                 src={item.userId.avatarUrl!}
                 className='w-10 h-10 rounded-full'
@@ -225,54 +310,85 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
                 answerId={item._id}
                 questionId={item.questionId}
                 isOwner={currentUserId === item.userId._id}
-                onEdit={() => handleEdit(item._id, item.content)}
+                onEdit={() =>
+                  handleEdit(item._id, item.content, item.code?.code)
+                }
               />
             </div>
-            {editingAnswerId === item._id ? (
-              <div className='mt-1'>
-                <textarea
-                  value={editedContent}
-                  onChange={(e) => setEditedContent(e.target.value)}
-                  className='w-full p-2 border border-gray-300 rounded-md'
-                  rows={3}
-                />
-                <div className='flex gap-2 mt-2'>
-                  <button
-                    onClick={() => handleSaveEdit(item._id)}
-                    className='px-4 py-2 bg-blue-500 text-white rounded-md'
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={handleCancelEdit}
-                    className='px-4 py-2 bg-gray-500 text-white rounded-md'
-                  >
-                    Cancel
-                  </button>
-                </div>
+            {item.content && (
+              <div className='mt-3'>
+                {editingAnswerId === item._id ? (
+                  <textarea
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    className='w-full p-2 '
+                    rows={3}
+                  />
+                ) : (
+                  <p className=' text-lg text-neutral-700 whitespace-pre-wrap break-words'>
+                    {item.content}
+                  </p>
+                )}
               </div>
-            ) : (
-              <p className='mt-1 text-lg text-neutral-600'>{item.content}</p>
             )}
 
             {item.images && <ImageRender images={item.images} />}
             {item.code?.code && (
-              <div className='mt-3 border border-gray-300 rounded-lg overflow-hidden shadow-sm'>
-                <MonacoEditor
-                  className='h-[300px]'
-                  value={item.code.code}
-                  theme='vs-dark'
-                  language={item.code.fileType || 'javascript'}
-                  options={{
-                    readOnly: true,
-                    domReadOnly: true,
-                    minimap: { enabled: false },
-                    scrollBeyondLastLine: false,
-                  }}
-                />
+              <div className=' border border-gray-300 rounded-lg overflow-hidden shadow-sm mt-3'>
+                {editingAnswerId === item._id ? (
+                  <div>
+                    <MonacoEditor
+                      className='h-[300px]'
+                      value={editedCode}
+                      theme='vs-dark'
+                      language={item.code.fileType || 'javascript'}
+                      options={{
+                        readOnly: false,
+                        domReadOnly: false,
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                      }}
+                      onChange={(newValue) => setEditedCode(newValue || '')}
+                    />
+                  </div>
+                ) : (
+                  <MonacoEditor
+                    className='h-[300px]'
+                    value={item.code.code}
+                    theme='vs-dark'
+                    language={item.code.fileType || 'javascript'}
+                    options={{
+                      readOnly: true,
+                      domReadOnly: true,
+                      minimap: { enabled: false },
+                      scrollBeyondLastLine: false,
+                    }}
+                  />
+                )}
               </div>
             )}
-            <div className='mt-2 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
+
+            {(item.code?.code || item.content) && (
+              <div className='flex mt-2 justify-end'>
+                {editingAnswerId === item._id ? (
+                  <div className='flex gap-2'>
+                    <Button
+                      onClick={() => handleSaveEdit(item._id)}
+                      className='px-4 py-2 rounded-md'
+                    >
+                      {t('save')}
+                    </Button>
+                    <Button
+                      onClick={handleCancelEdit}
+                      className='px-4 py-2 bg-neutral-400 hover:bg-error-500 rounded-md'
+                    >
+                      {t('cancel')}
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
+            )}
+            <div className='mt-1 flex justify-start items-center gap-4 text-neutral-700 text-sm'>
               <p>
                 {item.createdAt &&
                   (new Date().getTime() - new Date(item.createdAt).getTime() <
@@ -312,9 +428,18 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
           {t('morecomment')}
         </button>
       )}
-      <div className='sticky translate-x-[-48px] bottom-8 left-0 w-full bg-card mx-auto pb-14 pt-3 md:py-4 md:bottom-0'>
+      {showScrollButton && (
+        <button
+          onClick={scrollToTop}
+          className='fixed bottom-32 right-[40%] p-2 text-white bg-primary-500 rounded-full shadow-lg hover:bg-primary-600 transition-colors duration-300'
+          aria-label='Scroll to top'
+        >
+          <ChevronDoubleUpIcon className='size-6' />
+        </button>
+      )}
+      <div className='sticky z-30 translate-x-[-50px] bottom-8 left-0 w-[113%] bg-card mx-auto pb-14 pt-3 md:py-4 md:bottom-0'>
         {images.length > 0 && (
-          <div className='flex items-center gap-2 py-2 z-50'>
+          <div className='flex items-center gap-2 py-2 '>
             {images.map((image, index) => {
               const imageUrl =
                 image instanceof File ? URL.createObjectURL(image) : '';
@@ -359,8 +484,8 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
             </button>
           </div>
         )}
-
-        <div className='mt-4 flex items-center gap-2'>
+        {/* input bình luận */}
+        <div className='mt-4 bg-card flex items-center gap-2'>
           <Avatar
             src={user?.avatarUrl}
             className='w-10 h-10 rounded-full'
@@ -374,7 +499,7 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
                 ? t('phinput', { name: user?.fullName })
                 : t('phinputNoName') // Nếu không có tên, dùng một chuỗi thay thế
             }
-            className='w-[80%] p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+            className='w-[70%] placeholder-neutral-400 focus:placeholder-neutral-600 p-2 border border-primary-500 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
             onKeyDown={handleKeyDown}
           />
 
@@ -450,10 +575,19 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
               </Dialog>
             )}
             <button
+              disabled={isPending}
               onClick={handleSubmit}
-              className='p-2 rounded-lg hover:text-primary-600'
+              className={`p-2 rounded-full flex items-center justify-center ${
+                isPending
+                  ? 'cursor-not-allowed opacity-50'
+                  : 'hover:text-primary-500'
+              }`}
             >
-              <SendIcon />
+              {isPending ? (
+                <div className='h-6 w-6 border-4 border-transparent border-t-neutral-900 border-l-neutral-900 rounded-full animate-spin'></div>
+              ) : (
+                <SendIcon className='size-6' />
+              )}
             </button>
           </div>
         </div>

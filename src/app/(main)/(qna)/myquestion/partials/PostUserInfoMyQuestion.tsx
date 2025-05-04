@@ -13,6 +13,8 @@ interface PostUserInfoProps {
   createdAt: string;
   questionId: string;
   isOwner: boolean;
+  onEdit: () => void; //  Thêm prop này
+  onDelete: () => void; //  Thêm prop này
 }
 
 const PostUserInfoMyQuestion = ({
@@ -21,17 +23,16 @@ const PostUserInfoMyQuestion = ({
   createdAt,
   questionId,
   isOwner,
+  onEdit, //  Nhận prop này từ cha
+  onDelete,
 }: PostUserInfoProps) => {
-  const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const [showMenu, setShowMenu] = useState(false);
 
   const t = useTranslations('CardQuestion');
   const locale = t('locale');
-  const getLocale = (locale: string) => {
-    return locale === 'vi' ? vi : enUS;
-  };
 
-  console.log('DropdownMenu isOwner:', isOwner);
+  const getLocale = (locale: string) => (locale === 'vi' ? vi : enUS);
 
   const nameParts = fullName ? fullName.split(' ') : [''];
 
@@ -71,8 +72,11 @@ const PostUserInfoMyQuestion = ({
       </div>
 
       <div className='relative'>
-        <button onClick={() => setShowMenu(!showMenu)}>
-          <EllipsisVerticalIcon className='h-6 w-6 text-gray-500' />
+        <button
+          onClick={() => setShowMenu(!showMenu)}
+          className='p-2 rounded-full hover:bg-gray-200 transition-all duration-200'
+        >
+          <EllipsisVerticalIcon className='h-6 w-6' />
         </button>
 
         {showMenu && (
@@ -80,6 +84,8 @@ const PostUserInfoMyQuestion = ({
             questionId={questionId}
             isOwner={isOwner}
             onClose={() => setShowMenu(false)}
+            onEdit={onEdit}
+            onDelete={onDelete}
           />
         )}
       </div>

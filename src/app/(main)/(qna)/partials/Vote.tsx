@@ -7,9 +7,10 @@ type VoteProps = {
   votes: { user: { _id: string }; voteType: 'up' | 'down' }[];
   answerId: string;
   questionId: string;
+  onVote?: (answerId: string) => void; // Thêm prop này
 };
 
-const Vote = ({ votes, answerId, questionId }: VoteProps) => {
+const Vote = ({ votes, answerId, questionId, onVote }: VoteProps) => {
   const { user } = useAuth();
 
   const { mutateAsync } = useVoteAnswerMutation(questionId);
@@ -17,6 +18,7 @@ const Vote = ({ votes, answerId, questionId }: VoteProps) => {
   const handleVote = (type: 'up' | 'down') => async () => {
     await mutateAsync({ answerId, type });
     // Gọi API cập nhật vote ở đây nếu có
+    if (onVote) onVote(answerId); // Gọi hàm onVote sau khi vote
   };
 
   // Kiểm tra xem user đã vote chưa
@@ -40,7 +42,7 @@ const Vote = ({ votes, answerId, questionId }: VoteProps) => {
         } hover:bg-success-600`}
       >
         <VoteUpIcon
-          className={`w-6 h-6 ${upVoted ? 'text-white' : 'text-neutral-800'}`}
+          className={`w-5 h-5 ${upVoted ? 'text-white' : 'text-neutral-800'}`}
         />
       </button>
       <span className='text-lg font-semibold text-gray-700'>{totalVotes}</span>
@@ -52,7 +54,7 @@ const Vote = ({ votes, answerId, questionId }: VoteProps) => {
         } hover:bg-error-500/70`}
       >
         <VoteDownIcon
-          className={`w-6 h-6 ${downVoted ? 'text-white' : 'text-neutral-800'}`}
+          className={`w-5 h-5 ${downVoted ? 'text-white' : 'text-neutral-800'}`}
         />
       </button>
     </div>

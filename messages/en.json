@@ -32,7 +32,12 @@
   "SidebarQnA": {
     "qna": "Q&A",
     "myquestion": "My Question",
-    "mysave": "My Save"
+    "mysave": "My Save",
+    "filter": "Filter",
+    "searchhashtag": "Search Hashtag",
+    "enterhashtag" : "Enter Hashtag",
+    "selecttopic": "Select Topic",
+    "selectatopic": "Select a topic"
   },
   "MainContentQnA": {
     "recentquestions": "Recent Questions",
@@ -57,6 +62,7 @@
     "clearall": "Clear All",
     "clear": "Clear Code",
     "save": "Save",
+    "cancel": "Cancel",
     "comment" : "Comment",
     "like" : "Like",
     "reply" : "Reply",
@@ -77,7 +83,10 @@
     "locale": "en",
     "justnow": "Just now",
     "by": "by",
+    "save": "Save",
+    "cancel": "Cancel",
     "comment": "Comment"
+
   },
   "DropdownMenu": {
     "edit": "Edit",
@@ -118,7 +127,10 @@
   },
   "Layout": {
     "topic": "Topic",
-    "title":"Ask questions, get answers, and engage with the community"
+    "title":"Ask questions, get answers, and engage with the community",
+    "welcomeback": "Welcome back",
+"doyouhavequestion": "Do you have any questions today?",
+"askaquestion": "Ask a question now!"
   },
 
   "deleteAnswer": {
@@ -133,7 +145,7 @@
   },
 
   "question" : {
-    "successTitle": "🎉 Success!",
+    "successTitle": "Success",
   "successText": "Your question has been posted successfully.",
   "confirmButtonText": "Go to My Questions",
   "errorTitle": "Error!",
@@ -145,8 +157,14 @@
   "deleteCancelButton": "Cancel",
   "deleteSuccessTitle": "🗑 Deleted!",
   "deleteSuccessText": "The question has been permanently removed.",
-  "deleteErrorTitle": "❌ Deletion Failed!",
+  "deleteErrorTitle": "Deletion Failed!",
   "deleteErrorText": "Something went wrong. Please try again.",
-  "deleteRetryButton": "🔄 Try Again"
+  "deleteRetryButton": "Try Again",
+  "editSuccessTitle": "Edit Successful",
+  "editSuccessText": "Your question has been updated successfully.",
+  "editanswerSuccessText": "Your answer has been updated successfully.",
+  "editErrorTitle": "Edit Failed",
+  "copycode": "Coppied !",
+  "editErrorText": "There was an error updating the question."
   }
 }

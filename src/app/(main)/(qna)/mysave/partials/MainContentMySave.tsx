@@ -1,7 +1,7 @@
 'use client';
 
 import { useGetMySaveQuestionQuery } from '@/queries/question';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PostsMySave from './PostsMySave';
 import SearchBarMySave from './SearchBarMySave';
 import { useTranslations } from 'next-intl';
@@ -10,30 +10,31 @@ import { SaveQuestionResponse } from '@/types/saveQuestion';
 
 const MainContentMySave = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { setLoading } = useAppLoading();
 
+  const { setLoading } = useAppLoading();
   const { data, isLoading } = useGetMySaveQuestionQuery(); // Lấy trạng thái loading từ query
   const t = useTranslations('MainContentQnA');
 
+  // Cập nhật trạng thái loading của ứng dụng
   useEffect(() => {
-    setLoading(isLoading); // Cập nhật trạng thái loading của ứng dụng
+    setLoading(isLoading);
   }, [isLoading, setLoading]);
 
+  // Cuộn lên đầu trang khi component mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Lọc theo title từ questionId
-  const filteredData: SaveQuestionResponse[] = Array.isArray(data)
-    ? data.filter((post: SaveQuestionResponse) => {
-        const lowerCaseSearch = searchTerm.toLowerCase().trim();
-        const title = post.questionId?.title
-          ? post.questionId.title.toLowerCase()
-          : '';
+  // Lọc theo title từ questionId, dùng useMemo để tối ưu
+  const filteredData = useMemo(() => {
+    const lowerCaseSearch = searchTerm.toLowerCase().trim();
 
-        return title.includes(lowerCaseSearch);
-      })
-    : [];
+    return Array.isArray(data)
+      ? data.filter((post) =>
+          post.questionId?.title?.toLowerCase().includes(lowerCaseSearch),
+        )
+      : [];
+  }, [data, searchTerm]);
 
   return (
     <div className='mx-auto p-4 bg-background max-h-full pt-[65px]'>
