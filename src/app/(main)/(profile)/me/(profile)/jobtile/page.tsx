@@ -15,9 +15,10 @@ import {
 import { useAuth } from '@/store/authSignal';
 import { WorkExperience } from '@/types/workexperience';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import SetCurUserProfileSignal from '../../../partials/SetCurUserProfileSignal';
 import DOMPurify from 'dompurify';
+import Swal from 'sweetalert2';
 
 const Page = () => {
   const { user } = useAuth();
@@ -69,9 +70,9 @@ const Page = () => {
       newErrors.description = 'Mô tả không quá 500 ký tự';
     }
 
-    if (!formData.content.trim()) {
+    if (!formData.content!.trim()) {
       newErrors.content = 'Vui lòng nhập nội dung công việc';
-    } else if (formData.content.length > 1000) {
+    } else if (formData.content!.length > 1000) {
       newErrors.content = 'Nội dung không quá 1000 ký tự';
     }
 
@@ -132,23 +133,43 @@ const Page = () => {
     if (isEditing && formData._id) {
       updateWork(payload, {
         onSuccess: () => {
-          alert('Cập nhật thành công');
+          Swal.fire({
+            icon: 'success',
+            title: 'Cập nhật thành công',
+            showConfirmButton: false,
+            timer: 1500,
+          });
           resetForm();
         },
         onError: (error) => {
           console.error('Lỗi:', error);
           setErrorMessage('Lỗi khi cập nhật');
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi khi cập nhật',
+            text: error?.message || '',
+          });
         },
       });
     } else {
       mutate(payload, {
         onSuccess: () => {
-          alert('Thêm thành công');
+          Swal.fire({
+            icon: 'success',
+            title: 'Thêm thành công',
+            showConfirmButton: false,
+            timer: 1500,
+          });
           resetForm();
         },
         onError: (error) => {
           console.error('Lỗi:', error);
           setErrorMessage('Lỗi khi thêm');
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi khi thêm',
+            text: error?.message || '',
+          });
         },
       });
     }
@@ -161,6 +182,11 @@ const Page = () => {
     });
     setIsEditing(true);
     setIsFormVisible(true);
+
+    // Cuộn đến form sau khi hiện
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100); // Delay nhẹ để form kịp hiện ra
   };
 
   const handleDelete = (id: string) => {
@@ -207,9 +233,11 @@ const Page = () => {
     setFormData((prev) => ({ ...prev, content: cleanContent }));
   };
 
+  const formRef = useRef<HTMLDivElement | null>(null);
+
   return (
     <>
-      <div>
+      <div ref={formRef}>
         <div className='h-fit md:w-[698px] mt-4 border border-b rounded-2xl bg-card p-4'>
           <div className='flex justify-between items-center mb-4'>
             <div className='flex items-center space-x-3'>
@@ -326,7 +354,7 @@ const Page = () => {
               <button
                 type='submit'
                 disabled={isPending}
-                className={`w-full py-2 rounded-md font-semibold transition-colors ${
+                className={`w-full py-2 mb-4 rounded-md font-semibold transition-colors ${
                   isPending
                     ? 'bg-gray-400 cursor-not-allowed'
                     : 'bg-primary-500 hover:bg-primary-600 text-white'
@@ -358,10 +386,7 @@ const Page = () => {
                     jobTitles.find((job) => job.id === work.jobTitleId)
                       ?.title || 'Không xác định';
                   return (
-                    <li
-                      key={work._id}
-                      className='border rounded-lg bg-card shadow-sm'
-                    >
+                    <li key={work._id} className='border rounded-lg bg-card'>
                       <div className='max-w-2xl mx-auto space-y-8'>
                         {/* Work Experience Item */}
                         <div className='space-y-3 p-3 relative'>
@@ -378,7 +403,9 @@ const Page = () => {
                               onClick={() => handleDelete(work._id)}
                               className='text-error-600 hover:text-error-700'
                               title='Xóa'
-                            ></button>
+                            >
+                              <Pen className='w-5 h-5' />
+                            </button>
                           </div>
 
                           <div className='space-y-1'>

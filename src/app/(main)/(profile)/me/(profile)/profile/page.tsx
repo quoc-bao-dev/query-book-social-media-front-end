@@ -3,18 +3,25 @@
 import FloatInput from '@/components/common/FloatInput';
 import At from '@/components/icons/At-symbol';
 import Check from '@/components/icons/Check';
+import Document from '@/components/icons/Document';
+import Fire from '@/components/icons/Fire';
+import MapPin from '@/components/icons/Map-pin';
 import Pen from '@/components/icons/Pencil';
 import User from '@/components/icons/User';
 import Xmark from '@/components/icons/X-mark';
+import { Switch } from '@/components/ui/switch';
+import {
+  useAddresQuery,
+  useAddressQuery,
+  useCreateAddress,
+} from '@/queries/address';
 import { useUpdateUserProfileMutation } from '@/queries/user';
 import { useAuth } from '@/store/authSignal';
-import { useState } from 'react';
-import SetCurUserProfileSignal from '../../../partials/SetCurUserProfileSignal';
-import MapPin from '@/components/icons/Map-pin';
-import Fire from '@/components/icons/Fire';
-import Document from '@/components/icons/Document';
-import { useAddressQuery } from '@/queries/address';
 import { AddressRes } from '@/types/address';
+import { useEffect, useState } from 'react';
+import { string } from 'zod';
+import SetCurUserProfileSignal from '../../../partials/SetCurUserProfileSignal';
+
 interface AddressOption {
   code: string;
   name: string;
@@ -22,20 +29,19 @@ interface AddressOption {
 
 const Page = () => {
   const { user } = useAuth();
-  console.log(user);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingHandle, setEditingHandl] = useState(false);
   const [isEditingBio, setEditingBio] = useState(false);
-  const [isEditingInterests, setIsEditingInterests] = useState(false);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
 
   const [firstName, setFirstName] = useState(user?.firstName || '');
   const [lastName, setLastName] = useState(user?.lastName || '');
   const [handle, setHandle] = useState(user?.handle || '');
   const [bio, setBio] = useState(user?.bio || '');
-  const [interests, setInterests] = useState<string[]>(user?.interests || []);
 
-  const { mutateAsync, isError } = useUpdateUserProfileMutation();
+  const { mutateAsync, isError, isPending } = useUpdateUserProfileMutation();
+  const { mutateAsync: updateAddress, isError: isErrors } = useCreateAddress();
 
   const [province, setProvince] = useState<AddressRes | null>();
   const [district, setDistrict] = useState<AddressRes | null>();
@@ -49,13 +55,13 @@ const Page = () => {
   const { data: provinces } = useAddressQuery({ mode: 'provinces' });
 
   const { data: districts } = useAddressQuery({
-    mode: 'districts', // Mode đã được chỉnh sửa đúng
-    code: province?.code, // Province code được lấy từ dữ liệu tỉnh
+    mode: 'districts',
+    code: province?.code,
   });
 
   const { data: wards } = useAddressQuery({
-    mode: 'wards', // Mode đã được chỉnh sửa đúng
-    code: district?.code, // District code được lấy từ dữ liệu quận
+    mode: 'wards',
+    code: district?.code,
   });
 
   const handleProvinceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -97,10 +103,9 @@ const Page = () => {
       setBio(user?.bio || '');
     }
   };
-  const toggleEditingHobbies = () => {
-    setIsEditingInterests(!isEditingInterests);
-    if (!isEditingInterests) {
-      setInterests([]);
+  const toggleEditingAddress = () => {
+    setIsEditingAddress(!isEditingAddress);
+    if (!isEditingAddress) {
     }
   };
 
@@ -141,44 +146,38 @@ const Page = () => {
       console.error('Failed to update profile:', error);
     }
   };
-  const handleSaveInterests = async () => {
-    try {
-      console.log('Dữ liệu gửi đi:', interests); // Kiểm tra dữ liệu interests
-
-      const payload = {
-        interests,
-      };
-
-      await mutateAsync(payload);
-      setIsEditingInterests(false); // Tắt chế độ chỉnh sửa sau khi lưu thành công
-
-      // Thông báo sau khi gửi thành công
-      console.log('Cập nhật sở thích thành công!');
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-    }
-  };
   const handleSaveAddress = async () => {
     try {
-      const payload = {
-        address: [
-          ...(user?.address || []),
-          {
-            province: province?.name || '',
-            district: district?.name || '',
-            ward: ward?.name || '',
-            address: detail || '',
-            country: 'Vietnam',
-          },
-        ],
+      const newAddress = {
+        province: province?.name || '',
+        district: district?.name || '',
+        ward: ward?.name || '',
+        address: detail || '',
+        country: 'Vietnam',
+        provinceSlug: province?.slug || '',
+        provinceWithType: province?.name_with_type || '',
+        districtSlug: district?.slug || '',
+        districtWithType: district?.name_with_type || '',
+        wardSlug: ward?.slug || '',
+        wardWithType: ward?.name_with_type || '',
       };
 
-      await mutateAsync(payload);
-      console.log('Cập nhật địa chỉ thành công:', payload);
+      await updateAddress(newAddress);
+      toggleEditingAddress();
     } catch (error) {
       console.error('Lỗi khi cập nhật địa chỉ:', error);
     }
   };
+
+  const toggle2FAEnable = async (val: boolean) => {
+    const payload = {
+      isTwoFactorAuthEnabled: val,
+    };
+
+    await mutateAsync(payload);
+  };
+
+  const { data: address } = useAddresQuery();
 
   return (
     <div className=''>
@@ -368,48 +367,129 @@ const Page = () => {
         </div>
 
         <div className='px-4 pt-4'>
-          {/* Phần hiển thị thông tin và nút chỉnh sửa */}
           <div className='flex items-center justify-between w-full'>
             {/* Thông tin liên hệ */}
             <div className='flex items-center space-x-3'>
-              <Fire className='fill-primary-500' />
+              <MapPin className='fill-primary-500' />
               <span className='text-base font-semibold text-neutral-800'>
-                Sở thích:{' '}
-                <span className='font-bold text-neutral-950'>
-                  {user?.interests?.length
-                    ? user.interests.join(', ')
-                    : 'Chưa có sở thích'}
-                </span>
+                Địa chỉ:
+                {!address && (
+                  <span className='font-bold text-neutral-950'>
+                    Chưa có địa chỉ
+                  </span>
+                )}
               </span>
+              {address && (
+                <div className='font-bold text-neutral-950'>
+                  {address.address}, {address.ward}, {address.district},{' '}
+                  {address.province}
+                </div>
+              )}
             </div>
 
             {/* Nút chỉnh sửa */}
             <div className='flex'>
               <button
-                onClick={toggleEditingHobbies}
+                onClick={toggleEditingAddress}
                 className='flex items-center justify-center w-9 h-9 rounded-full bg-gray-200 hover:bg-gray-300 transition'
               >
                 <Pen className='text-neutral-800' />
               </button>
             </div>
           </div>
+          {isEditingAddress && (
+            <div>
+              <div className='grid grid-cols-2 gap-4 mb-6 pt-4'>
+                {/* Dropdown Tỉnh/Thành phố */}
+                <div className='col-span-1'>
+                  <label
+                    htmlFor='province'
+                    className='block text-sm font-medium text-gray-700 mb-1'
+                  >
+                    Tỉnh/Thành phố *
+                  </label>
+                  <select
+                    id='province'
+                    value={province?.code || ''}
+                    onChange={handleProvinceChange}
+                    className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
+                  >
+                    <option value=''>Chọn Tỉnh/Thành phố</option>
+                    {provinces?.map((p: AddressOption) => (
+                      <option key={p.code} value={p.code}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-          {/* Form chỉnh sửa */}
-          {isEditingInterests && (
-            <div className='w-2/4 flex items-center pt-4 justify-between'>
-              <div className='flex-1 mr-4'>
-                <div className='relative'>
-                  <FloatInput
-                    label='Sở thích'
-                    value={interests}
-                    onChange={(e) => setInterests([e.target.value])}
-                  />
+                {/* Dropdown Quận/Huyện */}
+                <div className='col-span-1'>
+                  <label
+                    htmlFor='district'
+                    className='block text-sm font-medium text-gray-700 mb-1'
+                  >
+                    Quận/Huyện *
+                  </label>
+                  <select
+                    id='district'
+                    value={district?.code || ''}
+                    onChange={handleDistrictChange}
+                    disabled={!province}
+                    className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:opacity-50'
+                  >
+                    <option value=''>Chọn Quận/Huyện</option>
+                    {districts?.map((d: AddressOption) => (
+                      <option key={d.code} value={d.code}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Dropdown Phường/Xã */}
+                <div className='col-span-2'>
+                  <label
+                    htmlFor='ward'
+                    className='block text-sm font-medium text-gray-700 mb-1'
+                  >
+                    Phường/Xã *
+                  </label>
+                  <select
+                    id='ward'
+                    value={ward?.code || ''}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      setWard(
+                        wards.find(
+                          (w: AddressOption) => w.code === e.target.value,
+                        ),
+                      )
+                    }
+                    disabled={!district}
+                    className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:opacity-50'
+                  >
+                    <option value=''>Chọn Phường/Xã</option>
+                    {wards?.map((w: AddressOption) => (
+                      <option key={w.code} value={w.code}>
+                        {w.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
+              <div className='w-full'>
+                <FloatInput
+                  label='Địa chỉ cụ thể *'
+                  name='detail'
+                  value={detail}
+                  onChange={handleDetailChange} // Đảm bảo truyền onChange vào để cập nhật state
+                />
+              </div>
               {/* Nút xác nhận và hủy */}
-              <div className='flex space-x-2'>
+              <div className='flex justify-end space-x-2 mt-4'>
                 <button
+                  onClick={toggleEditingAddress}
                   className='w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer'
                   aria-label='Hủy'
                 >
@@ -418,7 +498,7 @@ const Page = () => {
                 <button
                   className='w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer'
                   aria-label='Xác nhận'
-                  onClick={handleSaveInterests}
+                  onClick={handleSaveAddress}
                 >
                   <Check className='text-primary-500' />
                 </button>
@@ -428,134 +508,34 @@ const Page = () => {
         </div>
 
         <div className='px-4 py-4'>
+          {/* Phần hiển thị thông tin và nút chỉnh sửa */}
           <div className='flex items-center justify-between w-full'>
             {/* Thông tin liên hệ */}
             <div className='flex items-center space-x-3'>
-              <MapPin className='fill-primary-500' />
+              <Fire className='fill-primary-500' />
               <span className='text-base font-semibold text-neutral-800'>
-                Địa chỉ:{' '}
+                Xác thực 2 bước:{' '}
                 <span className='font-bold text-neutral-950'>
-                  <span className='font-bold text-neutral-950'>
-                    {user?.address?.length
-                      ? `${user.address[0].address}, ${user.address[0].ward}, ${user.address[0].district}, ${user.address[0].province}, ${user.address[0].country}`
-                      : 'Chưa có địa chỉ'}
-                  </span>
+                  {user?.interests?.length
+                    ? user.interests.join(', ')
+                    : 'Chưa bật'}
                 </span>
               </span>
             </div>
 
             {/* Nút chỉnh sửa */}
             <div className='flex'>
-              <button
-                onClick={toggleEditingHandle}
-                className='flex items-center justify-center w-9 h-9 rounded-full bg-gray-200 hover:bg-gray-300 transition'
-              >
-                <Pen className='text-neutral-800' />
-              </button>
+              <div className='pt-1'>
+                <Switch
+                  checked={user?.isTwoFactorAuthEnabled}
+                  onCheckedChange={toggle2FAEnable}
+                  disabled={isPending}
+                />
+              </div>
             </div>
-          </div>
-          <div className='grid grid-cols-2 gap-4 mb-6 pt-4'>
-            {/* Dropdown Tỉnh/Thành phố */}
-            <div className='col-span-1'>
-              <label
-                htmlFor='province'
-                className='block text-sm font-medium text-gray-700 mb-1'
-              >
-                Tỉnh/Thành phố *
-              </label>
-              <select
-                id='province'
-                value={province?.code || ''}
-                onChange={handleProvinceChange}
-                className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
-              >
-                <option value=''>Chọn Tỉnh/Thành phố</option>
-                {provinces?.map((p: AddressOption) => (
-                  <option key={p.code} value={p.code}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Dropdown Quận/Huyện */}
-            <div className='col-span-1'>
-              <label
-                htmlFor='district'
-                className='block text-sm font-medium text-gray-700 mb-1'
-              >
-                Quận/Huyện *
-              </label>
-              <select
-                id='district'
-                value={district?.code || ''}
-                onChange={handleDistrictChange}
-                disabled={!province}
-                className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:opacity-50'
-              >
-                <option value=''>Chọn Quận/Huyện</option>
-                {districts?.map((d: AddressOption) => (
-                  <option key={d.code} value={d.code}>
-                    {d.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Dropdown Phường/Xã */}
-            <div className='col-span-2'>
-              <label
-                htmlFor='ward'
-                className='block text-sm font-medium text-gray-700 mb-1'
-              >
-                Phường/Xã *
-              </label>
-              <select
-                id='ward'
-                value={ward?.code || ''}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setWard(
-                    wards.find((w: AddressOption) => w.code === e.target.value),
-                  )
-                }
-                disabled={!district}
-                className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:opacity-50'
-              >
-                <option value=''>Chọn Phường/Xã</option>
-                {wards?.map((w: AddressOption) => (
-                  <option key={w.code} value={w.code}>
-                    {w.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className='w-full'>
-            <FloatInput
-              label='Địa chỉ cụ thể *'
-              name='detail'
-              value={detail}
-              onChange={handleDetailChange} // Đảm bảo truyền onChange vào để cập nhật state
-            />
-          </div>
-          {/* Nút xác nhận và hủy */}
-          <div className='flex justify-end space-x-2 mt-4'>
-            <button
-              className='w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer'
-              aria-label='Hủy'
-            >
-              <Xmark className='text-red-500' />
-            </button>
-            <button
-              className='w-7 h-7 bg-gray-200 flex items-center justify-center rounded-full hover:bg-gray-300 transition cursor-pointer'
-              aria-label='Xác nhận'
-              onClick={handleSaveAddress}
-            >
-              <Check className='text-primary-500' />
-            </button>
           </div>
         </div>
+
         {isError && (
           <div className='text-error-900 '>
             Có lỗi xảy ra khi cập nhật thông tin.

@@ -2,11 +2,9 @@
 
 import UserGroup from '@/components/icons/User-group';
 import { usePathname } from 'next/navigation';
-import { sCurUserProfileSignal } from '../../signal/curUserProfileSignal';
 
 const Friended = () => {
   const pathname = usePathname(); // Lấy đường dẫn hiện tại
-  const { user } = sCurUserProfileSignal.use();
 
   return (
     <div className='relative flex flex-col items-center py-3 px-2 group cursor-pointer'>

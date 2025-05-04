@@ -82,12 +82,6 @@ const FollowedButton: React.FC<FollowedButtonProps> = ({
             <X className='w-5 h-5 mr-2 text-error-500 ' />
             <div className='font-bold'>Hủy theo dõi</div>
           </button>
-
-          {/* Báo cáo - đặt dưới cùng */}
-          <button className='flex items-center w-full px-4 py-2 text-left text-gray-800 hover:bg-gray-300'>
-            <Flag className='w-4 h-4 mr-3 text-error-500' />
-            <div className='font-bold'>Báo cáo</div>
-          </button>
         </div>
       )}
     </div>
