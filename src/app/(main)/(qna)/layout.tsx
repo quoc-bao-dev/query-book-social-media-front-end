@@ -19,7 +19,7 @@ const Layout = ({ children }: PropsWithChildren) => {
       <Header />
 
       {/* Section Title */}
-      <div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-8 md:px-0 pt-20 pb-6 bg-background'>
+      <div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-8 md:px-0 pt-10 pb-6 bg-background'>
         {/* Tiêu đề và mô tả */}
         <div>
           <Link

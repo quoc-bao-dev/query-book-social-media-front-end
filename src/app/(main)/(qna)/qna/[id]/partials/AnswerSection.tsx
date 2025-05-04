@@ -215,7 +215,6 @@ const AnswerSection = ({ questionId }: AnswerSectionProps) => {
     }
   };
 
-  // Sắp xếp dữ liệu câu trả lời dựa trên số vote
   const sortedData = data
     ?.map((item) => {
       const votes = item.votes || [];

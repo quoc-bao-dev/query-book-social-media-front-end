@@ -25,7 +25,7 @@ export default function WelcomeToastModal({
       }, 5000);
 
       return () => clearTimeout(autoMinimize);
-    }, 5000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
