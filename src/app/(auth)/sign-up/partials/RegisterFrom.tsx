@@ -65,50 +65,46 @@ const RegisterFrom = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <h2 className='text-xl font-semibold py-5'>Sign up to your account</h2>
       {message && <div className=' text-red-500'>{message}</div>}
-      <div className='py-5'>
+      <div className='py-2'>
         <FloatInput
           {...register('email')}
           error={!!errors.email}
           type='email'
           label='Email'
           className='h-[50px]'
-          defaultValue='quocbaodev1102@gmail.com'
         />
         {errors.email && (
           <p className='text-red-500 pt-1'>{errors.email.message}</p>
         )}
       </div>
-      <div className='py-5'>
+      <div className='py-2'>
         <FloatInput
           {...register('username')}
           error={!!errors.username}
           label='User Name'
           className='h-[50px]'
-          defaultValue='Quoc_Bao_Dev'
         />
         {errors.username && (
           <p className='text-red-500 pt-1'>{errors.username.message}</p>
         )}
       </div>
-      <div className='py-5'>
+      <div className='py-2'>
         <PasswordInput
           {...register('password')}
           error={!!errors.password}
           label='Password'
           className='h-[50px]'
-          defaultValue='Pass1234@'
         />
         {errors.password && (
           <p className='text-red-500 pt-1'>{errors.password.message}</p>
         )}
       </div>
-      <div className='py-5'>
+      <div className='py-2'>
         <PasswordInput
           {...register('confirmPassword')}
           error={!!errors.confirmPassword}
           label='Confirm Password'
           className='h-[50px]'
-          defaultValue='Pass1234@'
         />
         {errors.confirmPassword && (
           <p className='text-red-500 pt-1'>{errors.confirmPassword.message}</p>
