@@ -107,10 +107,9 @@ export default function SidebarQnA() {
         </ul>
       </nav>
 
-      {/* <div className='my-6 border-t border-gray-300'></div> */}
+      <div className='my-6 border-t border-gray-300'></div>
 
-      {/* Bộ lọc hashtag và chủ đề */}
-      {/* <div className='mt-6 p-4 bg-background rounded-xl'>
+      <div className='mt-6 p-4 bg-background rounded-xl'>
         <div className='flex justify-center font-semibold text-xl pb-5'>
           {t('filter')}
         </div>
@@ -158,7 +157,7 @@ export default function SidebarQnA() {
             </div>
           )}
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }
