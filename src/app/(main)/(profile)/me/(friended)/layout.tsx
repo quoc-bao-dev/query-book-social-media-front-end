@@ -13,7 +13,7 @@ const Layout = ({ children }: PropsWithChildren) => {
   const followers = `/me/followers`; // Đường dẫn đến trang personal
   const followings = `/me/followings`; // Đường dẫn đến trang personal
 
-  const pathname = usePathname(); // Lấy đường dẫn hiện tại
+  const pathname = usePathname();
   const { user: userMe } = useAuth();
 
   return (

@@ -164,7 +164,7 @@ export default ({
 
   return (
     <>
-      <div className='p-2 bg-gray-100 rounded-md shadow-sm'>
+      <div className='p-2 bg-card rounded-md'>
         <div className='flex items-center gap-1'>
           {editorAction.map((action, index) => (
             <ActionButton

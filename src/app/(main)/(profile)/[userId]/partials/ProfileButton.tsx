@@ -20,7 +20,8 @@ const ProfileButton = () => {
       pathname === '/me/profile' ||
       pathname === '/me/jobtile' ||
       pathname === '/me/socials' ||
-      pathname === `/${user?.id}/profile`
+      pathname === `/${user?.id}/profile` ||
+      pathname === `/${user?.id}/jobtitle`
         ? 'opacity-100 scale-x-100'
         : 'opacity-0'
     }

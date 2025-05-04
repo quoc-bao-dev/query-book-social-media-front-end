@@ -75,7 +75,7 @@ const page = () => {
                     Địa chỉ:{''}
                     {!address && (
                       <span className='font-bold text-neutral-950'>
-                        Chưa có địa chỉ
+                        {''} Chưa có địa chỉ
                       </span>
                     )}
                   </span>

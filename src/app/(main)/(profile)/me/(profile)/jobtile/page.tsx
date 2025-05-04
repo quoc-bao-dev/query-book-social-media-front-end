@@ -5,6 +5,7 @@ import Tiptap from '@/components/common/TipTap';
 import Pen from '@/components/icons/Pencil';
 import PlusIcon from '@/components/icons/PlusIcon';
 import User from '@/components/icons/User';
+import Xmark from '@/components/icons/X-mark';
 import { useJobTitleQuery } from '@/queries/jobTitle';
 import {
   useCreateWorkMutation,
@@ -15,9 +16,8 @@ import {
 import { useAuth } from '@/store/authSignal';
 import { WorkExperience } from '@/types/workexperience';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { useRef, useState } from 'react';
-import SetCurUserProfileSignal from '../../../partials/SetCurUserProfileSignal';
 import DOMPurify from 'dompurify';
+import { useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 
 const Page = () => {
@@ -191,21 +191,34 @@ const Page = () => {
 
   const handleDelete = (id: string) => {
     if (!id) {
-      alert('Lỗi: ID không hợp lệ!');
+      Swal.fire('Lỗi', 'ID không hợp lệ!', 'error');
       return;
     }
 
-    if (confirm('Bạn có chắc chắn muốn xóa công việc này không?')) {
-      deleteWork(id, {
-        onSuccess: () => {
-          alert(`Xóa thành công công việc có ID: ${id}`);
-        },
-        onError: (error) => {
-          console.error('Lỗi:', error);
-          alert(`Xóa thất bại! Công việc có ID: ${id} không tồn tại.`);
-        },
-      });
-    }
+    Swal.fire({
+      title: 'Bạn có chắc chắn?',
+      text: 'Bạn có chắc chắn muốn xóa công việc này không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteWork(id, {
+          onSuccess: () => {
+            Swal.fire('Thành công', 'success');
+          },
+          onError: (error) => {
+            console.error('Lỗi:', error);
+            Swal.fire(
+              'Thất bại',
+              `Không thể xóa. Công việc có ID: ${id} không tồn tại.`,
+              'error',
+            );
+          },
+        });
+      }
+    });
   };
 
   const formatDate = (dateString: string | null | undefined): string => {
@@ -314,7 +327,7 @@ const Page = () => {
               </div>
 
               {/* Content Textarea */}
-              <div className='mt-4'>
+              <div className='mt-4 bg-card'>
                 <label className='block text-sm font-medium text-gray-700 mb-1'>
                   Nội dung công việc *
                 </label>
@@ -404,15 +417,19 @@ const Page = () => {
                               className='text-error-600 hover:text-error-700'
                               title='Xóa'
                             >
-                              <Pen className='w-5 h-5' />
+                              <Xmark className='w-5 h-5' />
                             </button>
                           </div>
 
                           <div className='space-y-1'>
                             <div className='text-gray-600'>
                               {new Date(work.startDate).getFullYear()} -{' '}
-                              {new Date(work.endDate).getFullYear()}
+                              {new Date(work.startDate).getFullYear() ===
+                              new Date(work.endDate).getFullYear()
+                                ? 'Nay'
+                                : new Date(work.endDate).getFullYear()}
                             </div>
+
                             <h3 className='text-lg font-semibold'>
                               {jobTitle}
                             </h3>

@@ -77,7 +77,7 @@ const ReportReasonList = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-30'>
-      <div className='bg-white border border-gray-300 rounded-lg shadow-lg w-[648px] p-4 relative'>
+      <div className='bg-card border border-gray-300 rounded-lg shadow-lg w-[648px] p-4 relative'>
         {/* Nút đóng */}
         <button
           className='absolute top-3 right-3 text-gray-900 hover:text-gray-900'

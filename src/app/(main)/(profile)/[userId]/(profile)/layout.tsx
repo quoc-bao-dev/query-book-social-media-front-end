@@ -1,14 +1,13 @@
 import Academic from '@/components/icons/Academic';
 import Document from '@/components/icons/Document';
-import Maill from '@/components/icons/Maill';
 import UserCircle from '@/components/icons/User-circle';
 import { config } from '@/config';
 import httpClient from '@/httpClient/httpClient';
 import { HttpResponse } from '@/types/common';
 import { UserProfileResponse } from '@/types/user';
 
-import SetCurUserProfileSignal from '../../partials/SetCurUserProfileSignal';
 import Link from 'next/link';
+import SetCurUserProfileSignal from '../../partials/SetCurUserProfileSignal';
 
 type PageProps = {
   params: { userId: string };
@@ -43,7 +42,7 @@ const Layout = async ({ params, children }: PageProps) => {
               <div className='h-10 md:w-72 flex items-center mt-2 pl-2 space-x-2.5 mx-auto my-auto hover:bg-primary-100/50 hover:text-primary-500 rounded-md text-neutral-800 '>
                 <UserCircle />
                 <span className='lg:block font-semibold text-sm '>
-                  Thông tin cá nhân
+                  Thông tin cá nhâns
                 </span>
               </div>
             </Link>

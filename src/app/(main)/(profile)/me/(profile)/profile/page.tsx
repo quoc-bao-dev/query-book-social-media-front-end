@@ -43,10 +43,10 @@ const Page = () => {
   const { mutateAsync, isError, isPending } = useUpdateUserProfileMutation();
   const { mutateAsync: updateAddress, isError: isErrors } = useCreateAddress();
 
-  const [province, setProvince] = useState<AddressRes | null>();
-  const [district, setDistrict] = useState<AddressRes | null>();
-  const [ward, setWard] = useState<AddressRes | null>();
-  const [detail, setDetail] = useState('');
+  const [province, setProvince] = useState<AddressRes | null>(null);
+  const [district, setDistrict] = useState<AddressRes | null>(null);
+  const [ward, setWard] = useState<AddressRes | null>(null);
+  const [detail, setDetail] = useState<string>('');
 
   const handleDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDetail(e.target.value);
@@ -371,20 +371,19 @@ const Page = () => {
             {/* Thông tin liên hệ */}
             <div className='flex items-center space-x-3'>
               <MapPin className='fill-primary-500' />
-              <span className='text-base font-semibold text-neutral-800'>
-                Địa chỉ:
-                {!address && (
+              <div className='text-base font-semibold text-neutral-800'>
+                Địa chỉ:{' '}
+                {address ? (
+                  <span className='font-bold text-neutral-950'>
+                    {address.address}, {address.ward}, {address.district},{' '}
+                    {address.province}
+                  </span>
+                ) : (
                   <span className='font-bold text-neutral-950'>
                     Chưa có địa chỉ
                   </span>
                 )}
-              </span>
-              {address && (
-                <div className='font-bold text-neutral-950'>
-                  {address.address}, {address.ward}, {address.district},{' '}
-                  {address.province}
-                </div>
-              )}
+              </div>
             </div>
 
             {/* Nút chỉnh sửa */}
@@ -412,7 +411,7 @@ const Page = () => {
                     id='province'
                     value={province?.code || ''}
                     onChange={handleProvinceChange}
-                    className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
+                    className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-card'
                   >
                     <option value=''>Chọn Tỉnh/Thành phố</option>
                     {provinces?.map((p: AddressOption) => (
@@ -436,7 +435,7 @@ const Page = () => {
                     value={district?.code || ''}
                     onChange={handleDistrictChange}
                     disabled={!province}
-                    className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:opacity-50'
+                    className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-card disabled:opacity-50'
                   >
                     <option value=''>Chọn Quận/Huyện</option>
                     {districts?.map((d: AddressOption) => (
@@ -466,7 +465,7 @@ const Page = () => {
                       )
                     }
                     disabled={!district}
-                    className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:opacity-50'
+                    className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-card disabled:opacity-50'
                   >
                     <option value=''>Chọn Phường/Xã</option>
                     {wards?.map((w: AddressOption) => (
