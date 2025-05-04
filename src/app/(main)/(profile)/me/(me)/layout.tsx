@@ -62,7 +62,6 @@ const layout = ({ children }: PropsWithChildren) => {
                 </span>
               ) : (
                 <div className='block text-sm text-neutral-900 break-words'>
-                  {address.address}, {address.ward}, {address.district},{' '}
                   {address.province}
                 </div>
               )}
@@ -97,7 +96,6 @@ const layout = ({ children }: PropsWithChildren) => {
                       {link.title}
                     </a>
                     {index < user.links.length - 1 ? ', ' : ''}{' '}
-                    {/* Hiển thị dấu phẩy sau mỗi link nếu không phải là phần tử cuối */}
                   </span>
                 ))
               ) : (

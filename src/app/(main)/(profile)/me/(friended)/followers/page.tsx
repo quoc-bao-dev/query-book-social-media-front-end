@@ -5,9 +5,13 @@ import { sCurUserProfileSignal } from '../../../signal/curUserProfileSignal';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import EllipsisHorizontalIcon from '@/components/icons/EllipsisHorizontalIcon';
+import { useFollowsQuery } from '@/queries/follow';
 
 const Page = () => {
   const { user } = sCurUserProfileSignal.use();
+  const { data: Follow } = useFollowsQuery();
+  console.log('follow', Follow);
+
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -36,9 +40,13 @@ const Page = () => {
           {/* Avatar */}
           <div className='w-16 h-16 rounded-full overflow-hidden border border-gray-300'>
             <Avatar
-              src={`https://avatar.iran.liara.run/public?name=${encodeURIComponent(
-                friend?.fullName || 'User',
-              )}`}
+              src={
+                friend?.avatarUrl
+                  ? friend.avatarUrl
+                  : `https://avatar.iran.liara.run/public?name=${encodeURIComponent(
+                      (friend?.fullName?.charAt(0) || '').toUpperCase(),
+                    )}`
+              }
               className='w-full h-full object-cover'
             />
           </div>

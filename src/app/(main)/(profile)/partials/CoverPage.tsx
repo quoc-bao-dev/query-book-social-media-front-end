@@ -3,31 +3,30 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useAuth } from '@/store/authSignal';
 import {
   useFriendRequestQuery,
   useFriendsQuery,
   useSendRequestMutation,
   useSendRequestsQuery,
 } from '@/queries/friend';
-import { useAuth } from '@/store/authSignal';
+import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
 
 import Avatar from '@/components/common/Avatar';
+
 import Camera from '@/components/icons/Camera';
 
 import CancelInvitationButton from '../[userId]/partials/CancelinvitationButton';
 import FollowButton from '../[userId]/partials/FollowButton';
 import FollowedButton from '../[userId]/partials/FollowedButton';
 import FriendButton from '../[userId]/partials/FriendButton';
-
 import Friended from '../[userId]/partials/Friended';
 import FriendStatusButton from '../[userId]/partials/FriendStatusButton';
 import PostButton from '../[userId]/partials/PostButton';
 import ProfileButton from '../[userId]/partials/ProfileButton';
-
-import { sCurUserProfileSignal } from '../signal/curUserProfileSignal';
-
 import FriendRequestsButton from '../[userId]/partials/FriendRequests';
 import PostOptionsMenu from '../[userId]/partials/PostOptionsMenu';
+
 import AvatarModal from '../me/(me)/partials/AvatarModal';
 import CoverModal from '../me/(me)/partials/CoverModal';
 import AvatarModalUser from './AvatarModalUser';
@@ -344,9 +343,7 @@ const CoverPage = () => {
           </>
         )}
       </div>
-
       {/* Hoso - Baiviet */}
-
       {/* Mode */}
       <div className=''>
         {/* Modal của AvatarModal */}

@@ -74,12 +74,6 @@ const Page = () => {
                 >
                   Xem trang cá nhân
                 </Link>
-                <button className='w-full text-left px-3 py-2 hover:bg-gray-200 text-neutral-950'>
-                  💬 Nhắn tin
-                </button>
-                <button className='w-full text-left px-3 py-2 hover:bg-red-100 text-red-600'>
-                  ❌ Xóa kết bạn
-                </button>
               </div>
             )}
           </div>

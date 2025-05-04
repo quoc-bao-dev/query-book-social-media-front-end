@@ -70,9 +70,9 @@ const Page = () => {
       newErrors.description = 'Mô tả không quá 500 ký tự';
     }
 
-    if (!formData.content.trim()) {
+    if (!formData.content!.trim()) {
       newErrors.content = 'Vui lòng nhập nội dung công việc';
-    } else if (formData.content.length > 1000) {
+    } else if (formData.content!.length > 1000) {
       newErrors.content = 'Nội dung không quá 1000 ký tự';
     }
 
@@ -403,7 +403,9 @@ const Page = () => {
                               onClick={() => handleDelete(work._id)}
                               className='text-error-600 hover:text-error-700'
                               title='Xóa'
-                            ></button>
+                            >
+                              <Pen className='w-5 h-5' />
+                            </button>
                           </div>
 
                           <div className='space-y-1'>
