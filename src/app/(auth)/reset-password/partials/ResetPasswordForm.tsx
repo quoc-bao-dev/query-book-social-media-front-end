@@ -10,6 +10,7 @@ import {
   ResetPasswordSchema,
   ResetPasswordSchemaType,
 } from '../schemas/reset-pass-schema';
+import { swal } from '@/utils/swal';
 
 const ResetPasswordForm = () => {
   const token = useSearchParams().get('token');
@@ -24,14 +25,18 @@ const ResetPasswordForm = () => {
     resolver: zodResolver(ResetPasswordSchema),
   });
   const onSubmit = async (data: ResetPasswordSchemaType) => {
-    console.log(data);
-    console.log(token);
     const res = await axios.post(`${config.BASE_URL}/auth/reset-password`, {
       password: data.password,
       resetPassToken: token,
     });
 
     if (res.status === 200) {
+      swal.fire({
+        icon: 'success',
+        title: 'Cập nhật mật khẩu thành công!',
+        text: 'Cập nhật mật khẩu thành công, vui lòng đăng nhập lại!',
+        position: 'top',
+      });
       router.push('/login');
     }
   };

@@ -119,7 +119,6 @@ const NotifyRow = ({ notify, time }: Props) => {
       </div>
     );
   }
-  return <div>NotifyRow</div>;
 };
 
 export default NotifyRow;

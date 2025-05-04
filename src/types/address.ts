@@ -14,3 +14,31 @@ interface Province {
     code: string;
     name: string;
 }
+
+export interface CreateAddressPayload {
+    province: string;
+    provinceSlug: string;
+    provinceWithType: string;
+    district: string;
+    districtSlug: string;
+    districtWithType: string;
+    ward: string;
+    wardSlug: string;
+    wardWithType: string;
+    address: string;
+    country: string;
+}
+
+export interface Address {
+    province: string;
+    provinceSlug: string;
+    provinceWithType: string;
+    district: string;
+    districtSlug: string;
+    districtWithType: string;
+    ward: string;
+    wardSlug: string;
+    wardWithType: string;
+    address: string;
+    country: string;
+}

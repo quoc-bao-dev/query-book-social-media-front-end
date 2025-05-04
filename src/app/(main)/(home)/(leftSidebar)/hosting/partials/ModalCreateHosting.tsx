@@ -49,12 +49,16 @@ const ModalCreateHosting = () => {
       }
     }
   };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={() => sModalCreateHosting.set((n) => (n.value.isOpen = false))}
     >
-      <form className='p-4' onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className='p-4 bg-card rounded-lg w-[300px]'
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <h2 className=' font-semibold text-neutral-600 pb-3'>Create hosting</h2>
         {message && <p className='text-error-500 text-sm my-2'>{message}</p>}
         <Input

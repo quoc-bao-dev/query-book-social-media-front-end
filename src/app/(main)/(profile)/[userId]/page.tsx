@@ -1,14 +1,13 @@
 import GlobeAlt from '@/components/icons/Globe-alt';
 import Inbox from '@/components/icons/Inbox';
 import MapPin from '@/components/icons/Map-pin';
-import Phone from '@/components/icons/Phone';
 import { config } from '@/config';
 import httpClient from '@/httpClient/httpClient';
+import { useAddressIdQuery } from '@/queries/address';
 import { HttpResponse } from '@/types/common';
 import { UserProfileResponse } from '@/types/user';
 import SetCurUserProfileSignal from '../partials/SetCurUserProfileSignal';
 import PostsOfUser from './partials/PostsOfUser';
-import Fire from '@/components/icons/Fire';
 
 type PageProps = {
   params: { userId: string };
@@ -22,7 +21,6 @@ const Page = async ({ params }: PageProps) => {
       `${config.BASE_URL}/users/profile/${userId}`,
     )
   ).data;
-  console.log('[user]', user);
 
   return (
     <div className='block md:flex md:justify-between md:gap-4 px-4 md:px-0'>

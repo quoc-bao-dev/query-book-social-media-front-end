@@ -10,7 +10,7 @@ import { useNotificationQuery } from '@/queries/notification';
 import { swal } from '@/utils/swal';
 import { useEffect } from 'react';
 import { signify } from 'react-signify';
-import { useNotification } from '../Layout/Header';
+import { sNotification, useNotification } from '../Layout/Header';
 import NotifyRow from './NotifyRow';
 import Link from 'next/link';
 
@@ -135,27 +135,31 @@ const NotifyDrawer = () => {
               <div className='px-3 py-2 rounded-sm bg-card flex items-center justify-between text-neutral-900/70'>
                 <p className='text-sm font-semibold'>All</p>
                 <div className='py-1 px-2 rounded-sm text-xs font-semibold text-gray-50 bg-neutral-900/70'>
-                  22
+                  <sNotification.HardWrap>
+                    {({ count }) => (
+                      <>{count > 0 && <p className='m-auto'>{count}</p>}</>
+                    )}
+                  </sNotification.HardWrap>
                 </div>
               </div>
               {/* item */}
 
               {/* item */}
-              <div className='px-3 py-2 rounded-sm bg-card flex items-center justify-between text-neutral-900/70'>
+              {/* <div className='px-3 py-2 rounded-sm bg-card flex items-center justify-between text-neutral-900/70'>
                 <p className='text-sm font-semibold'>All</p>
                 <div className='py-1 px-2 rounded-sm text-xs font-semibold text-gray-50 bg-neutral-900/70'>
                   22
                 </div>
-              </div>
+              </div> */}
               {/* item */}
 
               {/* item */}
-              <div className='px-3 py-2 rounded-sm bg-card flex items-center justify-between text-neutral-900/70'>
+              {/* <div className='px-3 py-2 rounded-sm bg-card flex items-center justify-between text-neutral-900/70'>
                 <p className='text-sm font-semibold'>All</p>
                 <div className='py-1 px-2 rounded-sm text-xs font-semibold text-gray-50 bg-neutral-900/70'>
                   22
                 </div>
-              </div>
+              </div> */}
               {/* item */}
             </div>
           </div>

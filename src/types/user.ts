@@ -42,6 +42,7 @@ export type UserProfileResponse = {
   followings: Following[];
   interests: string[];
   address: Address[];
+  isTwoFactorAuthEnabled: boolean;
   createdAt: string;
 };
 
