@@ -65,7 +65,7 @@ const Page = () => {
             {openMenuId === friend.id && (
               <div
                 ref={menuRef}
-                className='absolute top-10 right-2 w-40 bg-white shadow-lg rounded-lg text-sm flex flex-col gap-2 z-50'
+                className='absolute top-10 right-2 w-40 bg-card shadow-lg rounded-lg text-sm flex flex-col gap-2 z-50'
               >
                 <Link
                   href={`/${friend.id}`}
@@ -73,12 +73,6 @@ const Page = () => {
                 >
                   Xem trang cá nhân
                 </Link>
-                <button className='w-full text-left px-3 py-2 hover:bg-gray-200 text-neutral-950'>
-                  💬 Nhắn tin
-                </button>
-                <button className='w-full text-left px-3 py-2 hover:bg-red-100 text-red-600'>
-                  ❌ Xóa kết bạn
-                </button>
               </div>
             )}
           </div>

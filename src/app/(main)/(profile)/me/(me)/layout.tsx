@@ -5,26 +5,27 @@ import MapPin from '@/components/icons/Map-pin';
 import { useAuth } from '@/store/authSignal';
 import { PropsWithChildren } from 'react';
 import SetCurUserProfileSignal from '../../partials/SetCurUserProfileSignal';
+import { useAddresQuery } from '@/queries/address';
 
 const layout = ({ children }: PropsWithChildren) => {
   const { user } = useAuth();
+  const { data: address } = useAddresQuery();
 
   return (
     <div className='block md:flex md:justify-between md:gap-4 px-4 md:px-0'>
-      {/* About */}
+      {/* About Section */}
       <div className='w-full space-y-3 md:w-[310px] md:flex-col'>
         <SetCurUserProfileSignal user={user} />
 
-        {/* FollowFollow */}
-        <div className=' h-24 rounded-2xl overflow-hidden relative border-b border flex justify-around items-center bg-card'>
+        {/* Follower and Following Section */}
+        <div className='h-24 rounded-2xl overflow-hidden relative border-b border flex justify-around items-center bg-card'>
           <div className='text-center'>
-            <span className='block text-3xl font-bold text-neutral-900 justify-center'>
+            <span className='block text-3xl font-bold text-neutral-900'>
               {user?.followerCount}
             </span>
             <span className='text-sm text-neutral-900'>Người theo dõi</span>
           </div>
           <div className='border-l border-gray-500 h-16'></div>
-          {/* Đường kẻ phân cách */}
           <div className='text-center'>
             <span className='block text-3xl font-bold text-neutral-900'>
               {user?.followingCount}
@@ -32,17 +33,16 @@ const layout = ({ children }: PropsWithChildren) => {
             <span className='text-sm text-neutral-900'>Đang theo dõi</span>
           </div>
         </div>
-        {/* Follow */}
 
-        {/**/}
-        <div className='rounded-2xl overflow-hidden relative border-b border p-4 pt-3 h-auto bg-card '>
-          <div className='px-2 block '>
+        {/* Bio Section */}
+        <div className='rounded-2xl overflow-hidden relative border-b border p-4 pt-3 h-auto bg-card'>
+          <div className='px-2'>
             <span className='text-xl text-neutral-900 font-semibold'>
               Giới thiệu
             </span>
           </div>
-          <div className='px-4 block text-center mt-2 md:w-[276px]'>
-            <span className='block text-sm text-neutral-900 break-word'>
+          <div className='px-4 text-center mt-2 md:w-[276px]'>
+            <span className='block text-sm text-neutral-900 break-words'>
               {user?.bio || (
                 <span className='flex justify-center items-center text-neutral-400 italic opacity-50'>
                   chưa có phần giới thiệu
@@ -50,21 +50,28 @@ const layout = ({ children }: PropsWithChildren) => {
               )}
             </span>
           </div>
+
+          {/* Address Section */}
           <div className='flex items-center mt-4 px-4 space-x-3 group relative'>
-            <MapPin />
+            <MapPin className='w-6 h-6' />{' '}
+            {/* Giữ kích thước mặc định của icon */}
             <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
-              {Array.isArray(user?.address) && user.address.length > 0 ? (
-                user.address.join(', ') // Chuyển mảng thành chuỗi, cách nhau bởi dấu phẩy
-              ) : (
+              {!address ? (
                 <span className='flex justify-center items-center text-neutral-400 italic opacity-50'>
                   Chưa có địa chỉ
                 </span>
+              ) : (
+                <div className='block text-sm text-neutral-900 break-words'>
+                  {address.address}, {address.ward}, {address.district},{' '}
+                  {address.province}
+                </div>
               )}
             </span>
           </div>
 
+          {/* Email Section */}
           <div className='flex items-center mt-4 px-4 space-x-3 group relative'>
-            <Inbox />
+            <Inbox className='w-6 h-6' />
             <span className="text-sm text-neutral-800 relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-neutral-500 after:transition-all after:duration-300 group-hover:after:w-full">
               {user?.email || (
                 <span className='flex justify-center items-center text-neutral-400 italic opacity-50'>
@@ -73,8 +80,10 @@ const layout = ({ children }: PropsWithChildren) => {
               )}
             </span>
           </div>
+
+          {/* Links Section */}
           <div className='flex items-center mt-4 px-4 space-x-3 group relative'>
-            <GlobeAlt />
+            <GlobeAlt className='w-6 h-6' />
             <div className='text-sm text-neutral-800'>
               {Array.isArray(user?.links) && user.links.length > 0 ? (
                 user.links.map((link, index) => (
@@ -87,7 +96,8 @@ const layout = ({ children }: PropsWithChildren) => {
                     >
                       {link.title}
                     </a>
-                    {index < user.links.length - 1 ? ', ' : ''}
+                    {index < user.links.length - 1 ? ', ' : ''}{' '}
+                    {/* Hiển thị dấu phẩy sau mỗi link nếu không phải là phần tử cuối */}
                   </span>
                 ))
               ) : (
@@ -98,9 +108,9 @@ const layout = ({ children }: PropsWithChildren) => {
             </div>
           </div>
         </div>
-        {/**/}
       </div>
-      {/* About */}
+
+      {/* Main Content */}
       <div className=''>{children}</div>
     </div>
   );

@@ -5,13 +5,17 @@ import Avatar from '@/components/common/Avatar';
 import EllipsisHorizontalIcon from '@/components/icons/EllipsisHorizontalIcon';
 import { sCurUserProfileSignal } from '../../../signal/curUserProfileSignal';
 import Link from 'next/link';
+import { useFollowsQuery } from '@/queries/follow';
 
 const Page = () => {
-  const { user } = sCurUserProfileSignal.use();
+  const { data: Follower } = useFollowsQuery();
+
+  console.log(Follower);
+
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
-  if (!user) {
+  if (!Follower) {
     return <div>Loading...</div>;
   }
 
@@ -71,6 +75,12 @@ const Page = () => {
                 >
                   Xem trang cá nhân
                 </Link>
+                <button className='w-full text-left px-3 py-2 hover:bg-gray-200 text-neutral-900'>
+                  💬 Nhắn tin
+                </button>
+                <button className='w-full text-left px-3 py-2 hover:bg-red-100 text-red-600'>
+                  ❌ Xóa kết bạn
+                </button>
               </div>
             )}
           </div>

@@ -1,13 +1,25 @@
 import { sCurUserProfileSignal } from '@/app/(main)/(profile)/signal/curUserProfileSignal';
 import axiosClient from '@/httpClient';
 import { HttpResponse } from '@/types/common';
-import { UserProfileResponse } from '@/types/user';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { UserProfileResponse, UserResponse } from '@/types/user';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 /**
  * Gửi yêu cầu theo dõi người dùng
  * @param id ID của người dùng cần theo dõi
  */
+
+const getFollow = async () => {
+  const res = await axiosClient.get<HttpResponse<UserResponse[]>>('/follow');
+  return res.data.data;
+};
+
+export const useFollowsQuery = () =>
+  useQuery<UserResponse[]>({
+    queryKey: ['follow'],
+    queryFn: getFollow,
+  });
+
 const postFollow = (id: string) => axiosClient.post(`/follow/${id}`);
 
 /**
@@ -75,4 +87,6 @@ export const useUnfollowMutation = (
     },
   });
 };
+
+
 

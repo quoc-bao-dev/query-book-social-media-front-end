@@ -338,7 +338,11 @@ const CoverPage = () => {
             <Friended />
           </Link>
         </div>
-        <PostOptionsMenu />
+        {user?.id !== userMe?.id && user?.id && (
+          <>
+            <PostOptionsMenu />
+          </>
+        )}
       </div>
 
       {/* Hoso - Baiviet */}
