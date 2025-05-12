@@ -70,11 +70,11 @@ const SidebarRight = () => {
       {/* Friends */}
 
       {/* Jobs */}
-      <div className='pt-6'>
+      {/* <div className='pt-6'>
         <div className='pb-1 font-semibold'>
           <p>{t('jobs')}</p>
         </div>
-      </div>
+      </div> */}
       {/* Jobs */}
     </>
   );
