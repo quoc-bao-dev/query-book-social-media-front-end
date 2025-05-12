@@ -40,7 +40,8 @@ export async function middleware(request: NextRequest) {
       console.log('[error]: refresh token in middleware ');
       console.log(error);
 
-      return NextResponse.redirect(new URL('/login', request.url));
+      // return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.next();
     }
   }
 }
