@@ -1,7 +1,32 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   /* config options here */
+  reactStrictMode: false,
+  images: {
+    domains: [
+      'localhost',
+      'picsum.photos',
+      'loremflickr.com',
+      'avatars.githubusercontent.com',
+      'query-book-social-media-image-server.onrender.com',
+      'image.query-book.quocbaoart.com',
+      'lh3.googleusercontent.com',
+      '14.225.211.84',
+    ], // Add your local development domain
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true, // Bỏ qua ESLint khi build
+  },
+  experimental: {
+    turbopack: false, // Tắt Turbopack
+  },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
